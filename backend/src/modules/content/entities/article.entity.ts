@@ -18,12 +18,12 @@ export class Article {
   @Column({ type: 'text', name: 'content_html' })
   contentHtml: string;
 
-  @ManyToOne(() => User, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'author_id' })
-  author: User;
+  author?: User;
 
-  @Column({ name: 'author_id' })
-  authorId: string;
+  @Column({ name: 'author_id', nullable: true })
+  authorId?: string;
 
   @Column({ default: 'PUBLISHED' }) // DRAFT, PUBLISHED
   status: string;

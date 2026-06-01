@@ -56,7 +56,6 @@ export class ContentService implements OnApplicationBootstrap {
             <h3>2. Kỹ thuật ủ bột cà phê</h3>
             <p>Luôn rót khoảng 20ml nước sôi (nhiệt độ khoảng 92 - 95 độ C) vào đáy phin và nắp phin trước để làm nóng bột cà phê. Ủ trong vòng 1-2 phút cho bột nở đều trước khi châm thêm nước lần hai.</p>
           `,
-          authorId: '00000000-0000-0000-0000-000000000000', // System default
           status: 'PUBLISHED',
           publishedAt: new Date(),
         },
@@ -65,13 +64,12 @@ export class ContentService implements OnApplicationBootstrap {
           title: 'Cà phê Specialty là gì? Khám phá xu hướng F&B hiện đại',
           slug: 'ca-phe-specialty-la-gi-xu-huong-fb-hien-dai',
           contentHtml: `
-            <p>Specialty Coffee (cà phê đặc sản) không đơn thuần là một tách nước uống chứa cafein mà là câu chuyện nghệ thuật bắt đầu từ nông hộ gieo trồng cho đến nghệ nhân rang xay.</p>
+            <p>Specialty Coffee (cà phê đặc sản) không đơn thuần là một tách nước uống chứa cafein mà là câu chuyện nghệ thuật bắt tay từ nông hộ gieo trồng cho đến nghệ nhân rang xay.</p>
             <h3>1. Tiêu chuẩn đánh giá Specialty Coffee</h3>
             <p>Theo Hiệp hội Cà phê Đặc sản Quốc tế (SCA), các mẫu cà phê đạt điểm thử nếm (Cupping Score) từ 80 điểm trở lên trên thang điểm 100 mới chính thức được công nhận là Specialty Coffee.</p>
             <h3>2. Trải nghiệm hương vị tinh tế</h3>
             <p>Cà phê đặc sản giữ lại trọn vẹn hương vị tự nhiên của thổ nhưỡng, mang nốt hương hoa quả phong phú, vị chua thanh thoát thanh lịch.</p>
           `,
-          authorId: '00000000-0000-0000-0000-000000000000',
           status: 'PUBLISHED',
           publishedAt: new Date(),
         },
