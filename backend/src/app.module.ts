@@ -19,6 +19,9 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { PromotionsModule } from './modules/promotions/promotions.module';
 import { FranchiseModule } from './modules/franchise/franchise.module';
+import { ContentModule } from './modules/content/content.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
+import { MediaModule } from './modules/media/media.module';
 
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -47,6 +50,10 @@ import { Coupon } from './modules/promotions/entities/coupon.entity';
 import { CouponUsage } from './modules/promotions/entities/coupon-usage.entity';
 import { FranchisePackage } from './modules/franchise/entities/franchise-package.entity';
 import { FranchiseApplication } from './modules/franchise/entities/franchise-application.entity';
+import { Article } from './modules/content/entities/article.entity';
+import { Banner } from './modules/content/entities/banner.entity';
+import { Review } from './modules/reviews/entities/review.entity';
+import { MediaFile } from './modules/media/entities/media-file.entity';
 
 @Module({
   imports: [
@@ -104,6 +111,10 @@ import { FranchiseApplication } from './modules/franchise/entities/franchise-app
           CouponUsage,
           FranchisePackage,
           FranchiseApplication,
+          Article,
+          Banner,
+          Review,
+          MediaFile,
         ],
         synchronize: true, // Safe for local sandboxed development
       }),
@@ -118,6 +129,9 @@ import { FranchiseApplication } from './modules/franchise/entities/franchise-app
     PaymentsModule,
     PromotionsModule,
     FranchiseModule,
+    ContentModule,
+    ReviewsModule,
+    MediaModule,
   ],
   providers: [
     {

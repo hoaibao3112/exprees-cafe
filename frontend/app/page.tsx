@@ -19,8 +19,14 @@ export default function Home() {
             Express Cafe
           </span>
         </div>
-        <div className="flex gap-4">
-          <Link href="/login" className="px-4 py-2 text-sm font-semibold hover:text-white transition-colors">
+        <div className="flex gap-4 items-center">
+          <Link href="/blog" className="px-3 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">
+            Bản tin F&B
+          </Link>
+          <Link href="/reviews" className="px-3 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">
+            Đánh giá verified
+          </Link>
+          <Link href="/login" className="px-3 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">
             Đăng nhập
           </Link>
           <Link href="/register" className="px-5 py-2 text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-full transition-all shadow-md shadow-indigo-600/20">

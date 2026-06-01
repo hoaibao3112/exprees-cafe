@@ -1,0 +1,65 @@
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ContentService } from './content.service';
+import { Public } from '../../common/decorators/public.decorator';
+
+@ApiTags('Content (Blogs & Banners)')
+@Controller('content')
+export class ContentController {
+  constructor(private readonly contentService: ContentService) {}
+
+  @Public()
+  @Get('articles')
+  @ApiOperation({ summary: 'Get all published blog articles' })
+  getArticles() {
+    return this.contentService.findAllArticles();
+  }
+
+  @Public()
+  @Get('articles/:slug')
+  @ApiOperation({ summary: 'Get article details by slug' })
+  getArticleBySlug(@Param('slug') slug: string) {
+    return this.contentService.findArticleBySlug(slug);
+  }
+
+  @Public()
+  @Get('banners')
+  @ApiOperation({ summary: 'Get active slideshow banners' })
+  getBanners() {
+    return this.contentService.findAllBanners();
+  }
+
+  @Post('admin/articles')
+  @ApiOperation({ summary: 'Create new article (Admin)' })
+  createArticle(
+    @Body()
+    dto: {
+      blogHandle?: string;
+      title: string;
+      slug: string;
+      contentHtml: string;
+      authorId: string;
+      status?: string;
+    },
+  ) {
+    return this.contentService.createArticle(dto);
+  }
+
+  @Post('admin/banners')
+  @ApiOperation({ summary: 'Create new banner slide (Admin)' })
+  createBanner(
+    @Body()
+    dto: {
+      title: string;
+      imageUrl: string;
+      linkUrl?: string;
+      position?: string;
+      sortOrder?: number;
+      isActive?: boolean;
+      startsAt?: Date;
+      endsAt?: Date;
+    },
+  ) {
+    return this.contentService.createBanner(dto);
+  }
+}

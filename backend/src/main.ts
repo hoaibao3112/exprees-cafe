@@ -1,6 +1,8 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import express from 'express';
+import { join } from 'path';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
@@ -9,6 +11,9 @@ async function bootstrap() {
     rawBody: true, // required for webhook signatures later
     logger: ['error', 'warn', 'log', 'debug'],
   });
+
+  // Serve static uploads
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
 
   // Enable CORS
   app.enableCors({
