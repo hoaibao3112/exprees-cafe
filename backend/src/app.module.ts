@@ -12,6 +12,13 @@ import redisConfig from './config/redis.config';
 import { RedisModule } from './common/redis/redis.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { ProductsModule } from './modules/products/products.module';
+import { CartModule } from './modules/cart/cart.module';
+import { OrdersModule } from './modules/orders/orders.module';
+import { BranchesModule } from './modules/branches/branches.module';
+import { PaymentsModule } from './modules/payments/payments.module';
+import { PromotionsModule } from './modules/promotions/promotions.module';
+import { FranchiseModule } from './modules/franchise/franchise.module';
 
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -26,6 +33,20 @@ import { Address } from './modules/users/entities/address.entity';
 import { LoyaltyTransaction } from './modules/users/entities/loyalty-transaction.entity';
 import { RefreshToken } from './modules/auth/entities/refresh-token.entity';
 import { OtpCode } from './modules/auth/entities/otp-code.entity';
+import { Product } from './modules/products/entities/product.entity';
+import { Category } from './modules/products/entities/category.entity';
+import { ProductVariant } from './modules/products/entities/product-variant.entity';
+import { ProductImage } from './modules/products/entities/product-image.entity';
+import { CartItem } from './modules/cart/entities/cart-item.entity';
+import { Order } from './modules/orders/entities/order.entity';
+import { OrderItem } from './modules/orders/entities/order-item.entity';
+import { Branch } from './modules/branches/entities/branch.entity';
+import { Payment } from './modules/payments/entities/payment.entity';
+import { Promotion } from './modules/promotions/entities/promotion.entity';
+import { Coupon } from './modules/promotions/entities/coupon.entity';
+import { CouponUsage } from './modules/promotions/entities/coupon-usage.entity';
+import { FranchisePackage } from './modules/franchise/entities/franchise-package.entity';
+import { FranchiseApplication } from './modules/franchise/entities/franchise-application.entity';
 
 @Module({
   imports: [
@@ -69,6 +90,20 @@ import { OtpCode } from './modules/auth/entities/otp-code.entity';
           LoyaltyTransaction,
           RefreshToken,
           OtpCode,
+          Product,
+          Category,
+          ProductVariant,
+          ProductImage,
+          CartItem,
+          Order,
+          OrderItem,
+          Branch,
+          Payment,
+          Promotion,
+          Coupon,
+          CouponUsage,
+          FranchisePackage,
+          FranchiseApplication,
         ],
         synchronize: true, // Safe for local sandboxed development
       }),
@@ -76,6 +111,13 @@ import { OtpCode } from './modules/auth/entities/otp-code.entity';
     RedisModule,
     AuthModule,
     UsersModule,
+    ProductsModule,
+    CartModule,
+    OrdersModule,
+    BranchesModule,
+    PaymentsModule,
+    PromotionsModule,
+    FranchiseModule,
   ],
   providers: [
     {

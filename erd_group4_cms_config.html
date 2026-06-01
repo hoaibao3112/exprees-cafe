@@ -1,0 +1,125 @@
+
+<style>
+#erd4 svg { width: 100%; }
+#erd4 svg.erDiagram .row-rect-odd path,
+#erd4 svg.erDiagram .row-rect-odd rect,
+#erd4 svg.erDiagram .row-rect-even path,
+#erd4 svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<div style="padding:0.5rem 0 0.25rem;font-size:13px;font-weight:500;color:var(--color-text-secondary)">Nhóm 4 — CMS · Config · Services · Contacts · Combos</div>
+<div id="erd4"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false, theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark, fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const { svg } = await mermaid.render('erd4-svg', `erDiagram
+  PAGES {
+    uuid id PK
+    string title
+    string slug UK
+    text content_html
+    string meta_title
+    string meta_description
+    bool is_published
+    timestamp updated_at
+  }
+  SETTINGS {
+    string key PK
+    text value
+    string description
+    string group
+    timestamp updated_at
+  }
+  SERVICES {
+    uuid id PK
+    string title
+    string slug UK
+    text description_html
+    string image_url
+    int sort_order
+    bool is_active
+    timestamp created_at
+  }
+  CONTACT_REQUESTS {
+    uuid id PK
+    string full_name
+    string phone
+    string email
+    string subject
+    text message
+    string source
+    string status
+    timestamp created_at
+  }
+  NEWSLETTER_SUBSCRIBERS {
+    uuid id PK
+    string email UK
+    bool is_active
+    timestamp subscribed_at
+  }
+  PRODUCT_COMBOS {
+    uuid id PK
+    string name
+    string slug UK
+    text description
+    decimal price
+    string image_url
+    bool is_active
+    timestamp created_at
+  }
+  COMBO_ITEMS {
+    uuid id PK
+    uuid combo_id FK
+    uuid variant_id FK
+    int quantity
+    int sort_order
+  }
+  AUDIT_LOGS {
+    uuid id PK
+    uuid user_id FK
+    string action
+    string entity_type
+    uuid entity_id
+    jsonb old_data
+    jsonb new_data
+    string ip_address
+    timestamp created_at
+  }
+  USERS {
+    uuid id PK
+    string email UK
+    string full_name
+  }
+  PRODUCT_VARIANTS {
+    uuid id PK
+    string name
+    string sku UK
+    decimal price
+  }
+  PRODUCT_COMBOS ||--o{ COMBO_ITEMS : "contains"
+  PRODUCT_VARIANTS ||--o{ COMBO_ITEMS : "in"
+  USERS ||--o{ AUDIT_LOGS : "performs"
+`);
+document.getElementById('erd4').innerHTML = svg;
+document.querySelectorAll('#erd4 svg.erDiagram .node').forEach(node => {
+  const fp = node.querySelector('path[d]'); if (!fp) return;
+  const nums = fp.getAttribute('d').match(/-?[\d.]+/g)?.map(Number); if (!nums || nums.length < 8) return;
+  const xs = [nums[0],nums[2],nums[4],nums[6]], ys = [nums[1],nums[3],nums[5],nums[7]];
+  const x=Math.min(...xs),y=Math.min(...ys),w=Math.max(...xs)-x,h=Math.max(...ys)-y;
+  const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('rx','8');
+  for(const a of['fill','stroke','stroke-width','class','style'])if(fp.hasAttribute(a))r.setAttribute(a,fp.getAttribute(a));
+  fp.replaceWith(r);
+});
+document.querySelectorAll('#erd4 svg.erDiagram .row-rect-odd path,#erd4 svg.erDiagram .row-rect-even path').forEach(p=>p.setAttribute('stroke','none'));
+</script>

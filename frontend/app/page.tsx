@@ -48,32 +48,35 @@ export default function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 mb-16">
-          <Link href="/register" className="group flex h-14 items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-500 px-8 text-base font-bold text-white transition-all shadow-xl shadow-indigo-600/30">
-            Khám phá ngay
+          <Link href="/branches" className="group flex h-14 items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-500 px-8 text-base font-bold text-white transition-all shadow-xl shadow-indigo-600/30">
+            Tìm cửa hàng gần đây
             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
-          <Link href="/login" className="flex h-14 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-8 text-base font-bold transition-all">
-            Đăng nhập tài khoản
+          <Link href="/franchise" className="flex h-14 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-8 text-base font-bold transition-all">
+            Hợp tác Nhượng quyền
+          </Link>
+          <Link href="/promotions" className="flex h-14 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 px-8 text-base font-bold text-indigo-400 transition-all">
+            Xem khuyến mãi
           </Link>
         </div>
 
         {/* Feature Highlights Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left">
-          <div className="glass-panel p-6 rounded-2xl">
+          <Link href="/promotions" className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer">
             <Coffee className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="font-bold text-base mb-2">Menu Đa Dạng</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed">Thực đơn phong phú với các món nước pha chế đặc biệt, cập nhật liên tục theo mùa.</p>
-          </div>
-          <div className="glass-panel p-6 rounded-2xl">
+            <h3 className="font-bold text-base mb-2">Cổng Khuyến Mãi</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed">Áp dụng mã WELCOME100 nhận 100K hoặc EXPRESS50 nhận 10% chiết khấu giỏ hàng tức thì.</p>
+          </Link>
+          <Link href="/profile" className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer">
             <ShieldCheck className="w-8 h-8 text-indigo-400 mb-4" />
             <h3 className="font-bold text-base mb-2">Tích Điểm Thành Viên</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed">Đăng ký nhận ngay 100 điểm thưởng. Đổi nước miễn phí và quà tặng VIP không giới hạn.</p>
-          </div>
-          <div className="glass-panel p-6 rounded-2xl">
+            <p className="text-zinc-400 text-sm leading-relaxed">Đăng ký nhận ngay 100 điểm thưởng. Quản lý địa chỉ giao hàng và tài khoản cá nhân tiện lợi.</p>
+          </Link>
+          <Link href="/branches" className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer">
             <CreditCard className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="font-bold text-base mb-2">Giao Hàng Nhanh Chóng</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed">Tìm chi nhánh gần nhất, đặt hàng nhận nước ngay tại quầy hoặc giao hàng tận nơi tiện lợi.</p>
-          </div>
+            <h3 className="font-bold text-base mb-2">GPS Tìm Chi Nhánh</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed">Tự động định vị, tính khoảng cách Haversine và hiển thị bản đồ các chi nhánh Express Cafe.</p>
+          </Link>
         </div>
       </main>
 

@@ -1,0 +1,133 @@
+
+<style>
+#erd3 svg { width: 100%; }
+#erd3 svg.erDiagram .row-rect-odd path,
+#erd3 svg.erDiagram .row-rect-odd rect,
+#erd3 svg.erDiagram .row-rect-even path,
+#erd3 svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<div style="padding:0.5rem 0 0.25rem;font-size:13px;font-weight:500;color:var(--color-text-secondary)">Nhóm 3 — Content · Reviews · Notifications · Media</div>
+<div id="erd3"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const { svg } = await mermaid.render('erd3-svg', `erDiagram
+  ARTICLES {
+    uuid id PK
+    string blog_handle
+    string title
+    string slug UK
+    text content_html
+    uuid author_id FK
+    string status
+    timestamp published_at
+    timestamp created_at
+  }
+  BANNERS {
+    uuid id PK
+    string title
+    string image_url
+    string link_url
+    string position
+    int sort_order
+    bool is_active
+    timestamp starts_at
+    timestamp ends_at
+  }
+  REVIEWS {
+    uuid id PK
+    uuid user_id FK
+    uuid order_id FK
+    string target_type
+    uuid target_id
+    int rating
+    text comment
+    bool is_verified_purchase
+    string status
+    timestamp created_at
+  }
+  NOTIFICATIONS {
+    uuid id PK
+    uuid user_id FK
+    string type
+    string title
+    text body
+    jsonb data
+    bool is_read
+    timestamp read_at
+    timestamp created_at
+  }
+  MEDIA_FILES {
+    uuid id PK
+    uuid uploaded_by FK
+    string original_name
+    string file_key
+    string cdn_url
+    string mime_type
+    int size_bytes
+    string entity_type
+    uuid entity_id
+    timestamp created_at
+  }
+  LOYALTY_TRANSACTIONS {
+    uuid id PK
+    uuid user_id FK
+    uuid order_id FK
+    string type
+    int points
+    string description
+    timestamp created_at
+  }
+  USERS {
+    uuid id PK
+    string email UK
+    string full_name
+  }
+  ORDERS {
+    uuid id PK
+    string order_code UK
+    string status
+  }
+  USERS ||--o{ ARTICLES : "writes"
+  USERS ||--o{ REVIEWS : "writes"
+  USERS ||--o{ NOTIFICATIONS : "receives"
+  USERS ||--o{ LOYALTY_TRANSACTIONS : "earns"
+  USERS ||--o{ MEDIA_FILES : "uploads"
+  ORDERS ||--o{ REVIEWS : "generates"
+  ORDERS ||--o{ LOYALTY_TRANSACTIONS : "credits"
+`);
+document.getElementById('erd3').innerHTML = svg;
+document.querySelectorAll('#erd3 svg.erDiagram .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill','stroke','stroke-width','class','style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd3 svg.erDiagram .row-rect-odd path, #erd3 svg.erDiagram .row-rect-even path').forEach(p => p.setAttribute('stroke','none'));
+</script>

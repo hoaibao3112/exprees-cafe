@@ -1,0 +1,212 @@
+
+<style>
+#erd1 svg { width: 100%; }
+#erd1 svg.erDiagram .row-rect-odd path,
+#erd1 svg.erDiagram .row-rect-odd rect,
+#erd1 svg.erDiagram .row-rect-even path,
+#erd1 svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<div style="padding:0.5rem 0 0.25rem;font-size:13px;font-weight:500;color:var(--color-text-secondary)">Nhóm 1 — Auth · Users · Products · Orders · Cart</div>
+<div id="erd1"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false, theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark, fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const { svg } = await mermaid.render('erd1-svg', `erDiagram
+  USERS {
+    uuid id PK
+    string email UK
+    string phone UK
+    string password_hash
+    string full_name
+    string avatar_url
+    int loyalty_points
+    string status
+    uuid role_id FK
+    timestamp email_verified_at
+    timestamp created_at
+    timestamp updated_at
+  }
+  ROLES {
+    uuid id PK
+    string name UK
+    string description
+  }
+  PERMISSIONS {
+    uuid id PK
+    string action UK
+    string resource
+    string description
+  }
+  ROLE_PERMISSIONS {
+    uuid role_id FK
+    uuid permission_id FK
+  }
+  REFRESH_TOKENS {
+    uuid id PK
+    uuid user_id FK
+    string token_hash UK
+    string device_info
+    string ip_address
+    timestamp expires_at
+    bool is_revoked
+    timestamp created_at
+  }
+  OTP_CODES {
+    uuid id PK
+    string identifier
+    string type
+    string code_hash
+    int attempts
+    bool is_used
+    timestamp expires_at
+    timestamp created_at
+  }
+  ADDRESSES {
+    uuid id PK
+    uuid user_id FK
+    string label
+    string full_address
+    string ward
+    string district
+    string province
+    float lat
+    float lng
+    bool is_default
+  }
+  CATEGORIES {
+    uuid id PK
+    string name
+    string slug UK
+    uuid parent_id FK
+    string image_url
+    int sort_order
+    bool is_active
+  }
+  TAGS {
+    uuid id PK
+    string name UK
+    string slug UK
+  }
+  PRODUCTS {
+    uuid id PK
+    uuid category_id FK
+    string name
+    string slug UK
+    text description
+    string status
+    bool is_featured
+    float avg_rating
+    int review_count
+    timestamp created_at
+    timestamp updated_at
+  }
+  PRODUCT_TAGS {
+    uuid product_id FK
+    uuid tag_id FK
+  }
+  PRODUCT_VARIANTS {
+    uuid id PK
+    uuid product_id FK
+    string name
+    decimal price
+    decimal compare_price
+    int stock_quantity
+    string sku UK
+    bool is_active
+    int sort_order
+  }
+  PRODUCT_IMAGES {
+    uuid id PK
+    uuid product_id FK
+    string url
+    string alt_text
+    int sort_order
+    bool is_primary
+  }
+  ORDERS {
+    uuid id PK
+    uuid user_id FK
+    uuid branch_id FK
+    uuid address_id FK
+    uuid coupon_id FK
+    string order_code UK
+    string type
+    string status
+    decimal subtotal
+    decimal shipping_fee
+    decimal discount_amount
+    decimal total
+    string note
+    string cancel_reason
+    timestamp confirmed_at
+    timestamp completed_at
+    timestamp created_at
+  }
+  ORDER_ITEMS {
+    uuid id PK
+    uuid order_id FK
+    uuid variant_id FK
+    int quantity
+    decimal unit_price
+    decimal total_price
+    jsonb variant_snapshot
+  }
+  ORDER_STATUS_LOGS {
+    uuid id PK
+    uuid order_id FK
+    string from_status
+    string to_status
+    uuid changed_by FK
+    string note
+    timestamp created_at
+  }
+  CART_ITEMS {
+    uuid id PK
+    uuid user_id FK
+    uuid variant_id FK
+    int quantity
+    timestamp updated_at
+  }
+  ROLES ||--o{ USERS : "assigned to"
+  ROLES ||--o{ ROLE_PERMISSIONS : "has"
+  PERMISSIONS ||--o{ ROLE_PERMISSIONS : "in"
+  USERS ||--o{ REFRESH_TOKENS : "has"
+  USERS ||--o{ ADDRESSES : "has"
+  USERS ||--o{ ORDERS : "places"
+  USERS ||--o{ CART_ITEMS : "has"
+  USERS ||--o{ ORDER_STATUS_LOGS : "changes"
+  CATEGORIES ||--o{ CATEGORIES : "parent of"
+  CATEGORIES ||--o{ PRODUCTS : "contains"
+  PRODUCTS ||--o{ PRODUCT_VARIANTS : "has"
+  PRODUCTS ||--o{ PRODUCT_IMAGES : "has"
+  PRODUCTS ||--o{ PRODUCT_TAGS : "tagged"
+  TAGS ||--o{ PRODUCT_TAGS : "tags"
+  PRODUCT_VARIANTS ||--o{ ORDER_ITEMS : "in"
+  PRODUCT_VARIANTS ||--o{ CART_ITEMS : "in"
+  ORDERS ||--o{ ORDER_ITEMS : "contains"
+  ORDERS ||--o{ ORDER_STATUS_LOGS : "tracks"
+`);
+document.getElementById('erd1').innerHTML = svg;
+document.querySelectorAll('#erd1 svg.erDiagram .node').forEach(node => {
+  const fp = node.querySelector('path[d]'); if (!fp) return;
+  const nums = fp.getAttribute('d').match(/-?[\d.]+/g)?.map(Number); if (!nums || nums.length < 8) return;
+  const xs = [nums[0],nums[2],nums[4],nums[6]], ys = [nums[1],nums[3],nums[5],nums[7]];
+  const x=Math.min(...xs),y=Math.min(...ys),w=Math.max(...xs)-x,h=Math.max(...ys)-y;
+  const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+  r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',w);r.setAttribute('height',h);r.setAttribute('rx','8');
+  for(const a of['fill','stroke','stroke-width','class','style'])if(fp.hasAttribute(a))r.setAttribute(a,fp.getAttribute(a));
+  fp.replaceWith(r);
+});
+document.querySelectorAll('#erd1 svg.erDiagram .row-rect-odd path,#erd1 svg.erDiagram .row-rect-even path').forEach(p=>p.setAttribute('stroke','none'));
+</script>

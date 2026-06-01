@@ -1,0 +1,142 @@
+
+<style>
+#erd1 svg { width: 100%; }
+#erd1 svg.erDiagram .row-rect-odd path,
+#erd1 svg.erDiagram .row-rect-odd rect,
+#erd1 svg.erDiagram .row-rect-even path,
+#erd1 svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<div style="padding:0.5rem 0 0.25rem;font-size:13px;font-weight:500;color:var(--color-text-secondary)">Nhóm 1 — Core: Users · Products · Orders · Cart</div>
+<div id="erd1"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const { svg } = await mermaid.render('erd1-svg', `erDiagram
+  USERS {
+    uuid id PK
+    string email UK
+    string phone UK
+    string full_name
+    string avatar_url
+    int loyalty_points
+    string status
+    timestamp created_at
+  }
+  ADDRESSES {
+    uuid id PK
+    uuid user_id FK
+    string label
+    string full_address
+    float lat
+    float lng
+    bool is_default
+  }
+  CATEGORIES {
+    uuid id PK
+    string name
+    string slug UK
+    uuid parent_id FK
+    int sort_order
+    bool is_active
+  }
+  PRODUCTS {
+    uuid id PK
+    uuid category_id FK
+    string name
+    string slug UK
+    text description
+    string status
+    bool is_featured
+    timestamp created_at
+  }
+  PRODUCT_VARIANTS {
+    uuid id PK
+    uuid product_id FK
+    string name
+    decimal price
+    int stock_quantity
+    string sku UK
+    bool is_active
+  }
+  PRODUCT_IMAGES {
+    uuid id PK
+    uuid product_id FK
+    string url
+    int sort_order
+    bool is_primary
+  }
+  ORDERS {
+    uuid id PK
+    uuid user_id FK
+    uuid branch_id FK
+    string order_code UK
+    string type
+    string status
+    decimal subtotal
+    decimal discount_amount
+    decimal total
+    string note
+    timestamp created_at
+  }
+  ORDER_ITEMS {
+    uuid id PK
+    uuid order_id FK
+    uuid variant_id FK
+    int quantity
+    decimal unit_price
+    decimal total_price
+    string variant_snapshot
+  }
+  CART_ITEMS {
+    uuid id PK
+    uuid user_id FK
+    uuid variant_id FK
+    int quantity
+    timestamp updated_at
+  }
+  USERS ||--o{ ADDRESSES : "has"
+  USERS ||--o{ ORDERS : "places"
+  USERS ||--o{ CART_ITEMS : "has"
+  CATEGORIES ||--o{ CATEGORIES : "parent"
+  CATEGORIES ||--o{ PRODUCTS : "contains"
+  PRODUCTS ||--o{ PRODUCT_VARIANTS : "has"
+  PRODUCTS ||--o{ PRODUCT_IMAGES : "has"
+  PRODUCT_VARIANTS ||--o{ ORDER_ITEMS : "in"
+  PRODUCT_VARIANTS ||--o{ CART_ITEMS : "in"
+  ORDERS ||--o{ ORDER_ITEMS : "contains"
+`);
+document.getElementById('erd1').innerHTML = svg;
+document.querySelectorAll('#erd1 svg.erDiagram .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill','stroke','stroke-width','class','style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd1 svg.erDiagram .row-rect-odd path, #erd1 svg.erDiagram .row-rect-even path').forEach(p => p.setAttribute('stroke','none'));
+</script>
