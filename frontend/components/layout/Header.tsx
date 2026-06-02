@@ -52,7 +52,10 @@ export function Header() {
 
   // Determine if a menu link is currently active based on path
   const isLinkActive = (item: typeof NAV_ITEMS[0]) => {
-    return pathname.startsWith(item.href);
+    if (item.href === '/') {
+      return pathname === '/';
+    }
+    return pathname === item.href || pathname.startsWith(item.href + '/');
   };
 
   return (

@@ -3,19 +3,27 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useFranchisePackageByIdQuery } from '../../../hooks/useFranchiseQueries';
+import { resolveUploadUrl } from '../../../lib/api';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { ArrowRight, CheckCircle, ArrowLeft, Coffee, Gift, Monitor, Store, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-export default function FranchiseDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = React.use(params);
+export default function FranchiseDetailPage(props: { params: { id: string } }) {
+  // Next may pass `params` as a Promise in client components — unwrap with React.use()
+  const resolvedParams = React.use(props.params as any) as { id: string };
   const { id } = resolvedParams;
 
   const { data: pkg, isLoading, error } = useFranchisePackageByIdQuery(id);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const packageImages = pkg?.images && pkg.images.length > 0 ? pkg.images : ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800'];
+  // Debug log
+  React.useEffect(() => {
+    console.log('Franchise package data:', pkg);
+    console.log('Package images:', pkg?.images);
+  }, [pkg]);
+
+  const packageImages = pkg?.images && pkg.images.length > 0 ? pkg.images.map((p: string) => resolveUploadUrl(p)) : ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800'];
 
   if (isLoading) {
     return (
@@ -28,7 +36,21 @@ export default function FranchiseDetailPage({ params }: { params: Promise<{ id: 
     );
   }
 
-  if (error || !pkg) {
+  if (error) {
+    console.error('Error loading franchise package:', error);
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">Lỗi tải gói nhượng quyền: {error.message}</p>
+          <Link href="/franchise" className="text-orange-500 hover:underline">
+            Quay lại trang nhượng quyền
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!pkg) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -154,7 +176,7 @@ export default function FranchiseDetailPage({ params }: { params: Promise<{ id: 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/franchise"
+                href={`/franchise/register?packageId=${pkg.id}`}
                 className="flex-1 flex items-center justify-center gap-2 px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm uppercase tracking-wider rounded-2xl shadow-lg shadow-orange-500/25 transition-all hover:scale-105 active:scale-95"
               >
                 Đăng ký nhượng quyền ngay

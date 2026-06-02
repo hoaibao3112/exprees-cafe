@@ -203,3 +203,21 @@ export const adminSettingsApi = {
       body: JSON.stringify(data),
     }),
 };
+
+// ===================== SERVICES =====================
+export const adminServicesApi = {
+  getAll: () => adminFetch<any[]>('/services'),
+  getById: (id: string) => adminFetch<any>(`/services/${id}`),
+  create: (data: any) =>
+    adminFetch<any>('/services', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: any) =>
+    adminFetch<any>(`/services/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    adminFetch<void>(`/services/${id}`, { method: 'DELETE' }),
+};

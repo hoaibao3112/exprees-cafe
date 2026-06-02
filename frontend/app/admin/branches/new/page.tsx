@@ -17,8 +17,8 @@ const branchSchema = z.object({
   openTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Định dạng giờ mở cửa không hợp lệ (HH:MM)'),
   closeTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Định dạng giờ đóng cửa không hợp lệ (HH:MM)'),
   imageUrl: z.string().url('Đường dẫn ảnh không hợp lệ').or(z.literal('')).optional(),
-  lat: z.preprocess((val) => Number(val), z.number({ invalid_type_error: 'Vĩ độ phải là số' }).min(-90).max(90)),
-  lng: z.preprocess((val) => Number(val), z.number({ invalid_type_error: 'Kinh độ phải là số' }).min(-180).max(180)),
+  lat: z.number({ message: 'Vĩ độ phải là số' }).min(-90, 'Vĩ độ tối thiểu là -90').max(90, 'Vĩ độ tối đa là 90'),
+  lng: z.number({ message: 'Kinh độ phải là số' }).min(-180, 'Kinh độ tối thiểu là -180').max(180, 'Kinh độ tối đa là 180'),
   isFlagship: z.boolean(),
   status: z.enum(['ACTIVE', 'INACTIVE'] as const),
 });
@@ -179,7 +179,7 @@ export default function AdminNewBranchPage() {
                 <input
                   type="number"
                   step="any"
-                  {...register('lat')}
+                  {...register('lat', { valueAsNumber: true })}
                   placeholder="Ví dụ: 10.7624"
                   className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/8 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 text-sm"
                 />
@@ -194,7 +194,7 @@ export default function AdminNewBranchPage() {
                 <input
                   type="number"
                   step="any"
-                  {...register('lng')}
+                  {...register('lng', { valueAsNumber: true })}
                   placeholder="Ví dụ: 106.7096"
                   className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/8 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 text-sm"
                 />

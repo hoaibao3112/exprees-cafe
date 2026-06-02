@@ -96,7 +96,7 @@ export default function AboutPage() {
       <Header />
 
       <section
-        className="relative h-[165px] overflow-hidden border-b border-zinc-200"
+        className="relative h-[260px] md:h-[320px] lg:h-[360px] overflow-hidden border-b border-zinc-200"
         style={{
           backgroundImage:
             'linear-gradient(90deg, rgba(33, 24, 18, 0.92), rgba(33, 24, 18, 0.42)), url(/h-about_banner.jpg)',

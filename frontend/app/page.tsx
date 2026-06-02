@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Coffee, 
   ChevronLeft, 
@@ -188,12 +189,16 @@ export default function Home() {
             }`}
           >
             {/* Slide Image */}
-            <div 
-              className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-[8000ms] scale-105"
-              style={{ 
-                backgroundImage: `url(${slide.url})`,
-              }}
-            />
+            <div className="absolute inset-0 w-full h-full transition-transform duration-[8000ms] scale-105">
+              <Image
+                src={slide.url}
+                alt={slide.alt}
+                fill
+                priority={idx === 0}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </div>
             {/* Premium Overlay Shadow for Light Text Contrast */}
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-black/30 to-black/40 pointer-events-none" />
             
@@ -222,7 +227,7 @@ export default function Home() {
                   idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                 }`}>
                   <Link 
-                    href="/franchise" 
+                    href="/franchise/register" 
                     className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-full transition-all shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95"
                   >
                     Đăng Ký Tư Vấn <ArrowRight className="w-4 h-4" />
@@ -294,10 +299,10 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {packages.map((pkg, idx) => {
-                const details = MODEL_DETAILS[pkg.modelType] || {
-                  image: '/media__1780386795847.png',
-                  tag: 'MÔ HÌNH NHƯỢNG QUYỀN',
-                  title: pkg.name
+                const details = {
+                  image: (pkg.images && pkg.images.length > 0) ? pkg.images[0] : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png'),
+                  tag: MODEL_DETAILS[pkg.modelType]?.tag || 'MÔ HÌNH NHƯỢNG QUYỀN',
+                  title: pkg.name,
                 };
 
                 return (
@@ -310,10 +315,12 @@ export default function Home() {
                     <div>
                       {/* Card Image */}
                       <div className="relative aspect-[4/3] w-full overflow-hidden">
-                        <img 
+                        <Image 
                           src={details.image} 
                           alt={details.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
                       </div>
 
@@ -377,10 +384,12 @@ export default function Home() {
                 >
                   {/* Card Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
-                    <img 
+                    <Image 
                       src={article.imageUrl || '/slideshow_1.jpg'} 
                       alt={article.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   </div>
 
@@ -432,10 +441,12 @@ export default function Home() {
                     <div>
                       {/* Video Thumbnail (YouTube preview overlay) */}
                       <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
-                        <img 
+                        <Image 
                           src={video.thumbnailUrl} 
                           alt={video.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
                         />
                         {/* Red Play Overlay */}
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -492,10 +503,12 @@ export default function Home() {
                 >
                   {/* Storefront Image */}
                   <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
-                    <img 
+                    <Image 
                       src={branch.imageUrl || '/slideshow_3.jpg'} 
                       alt={branch.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                   </div>
 
@@ -529,10 +542,12 @@ export default function Home() {
             <div className="lg:col-span-5 relative" data-animate="fade-right" data-delay="100">
               <div className="absolute inset-0 bg-orange-500 rounded-3xl translate-x-3 translate-y-3 z-0" />
               <div className="relative z-10 aspect-square rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-zinc-200">
-                <img 
+                <Image 
                   src="/h-about_banner.jpg" 
                   alt="Express Cafe Team" 
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 40vw"
+                  className="object-cover"
                 />
               </div>
             </div>

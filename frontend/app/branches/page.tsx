@@ -14,8 +14,8 @@ import {
   Map,
   X
 } from 'lucide-react';
-import { useBranchesQuery, Branch } from '../../hooks/useBranchQueries';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
+import { resolveUploadUrl } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 
@@ -27,40 +27,39 @@ export default function BranchesPage() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [activeRegion, setActiveRegion] = useState<RegionFilter>('ALL');
-  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+  const [branches, setBranches] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch branches dynamically from NestJS backend
-  const { data: branches, isLoading } = useBranchesQuery();
-
-  // Auto-select branch if ID is passed in URL query
   useEffect(() => {
-    if (branches && branches.length > 0) {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-      if (id) {
-        const match = branches.find(b => b.id === id);
-        if (match) {
-          setSelectedBranch(match);
-        }
-      }
-    }
-  }, [branches]);
+    fetch('http://localhost:3000/api/v1/branches')
+      .then(res => res.json())
+      .then(data => {
+        // Handle different response formats
+        const branchesData = Array.isArray(data) ? data : (data.data || []);
+        setBranches(branchesData);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading branches:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   // Helper to categorize branches into regions for smart filtering
-  const getBranchRegion = (branch: Branch): RegionFilter => {
-    const name = branch.name.toLowerCase();
-    const addr = branch.address.toLowerCase();
+  const getBranchRegion = (branch: any): RegionFilter => {
+    const name = (branch.name || '').toLowerCase();
+    const desc = (branch.description || '').toLowerCase();
     
     if (
       name.includes('quận 1') || name.includes('quận 3') || name.includes('quận 5') ||
-      addr.includes('quận 1') || addr.includes('quận 3') || addr.includes('quận 5')
+      desc.includes('quận 1') || desc.includes('quận 3') || desc.includes('quận 5')
     ) {
       return 'CENTER';
     }
     
     if (
       name.includes('quận 9') || name.includes('thủ đức') ||
-      addr.includes('quận 9') || addr.includes('thủ đức')
+      desc.includes('quận 9') || desc.includes('thủ đức')
     ) {
       return 'EAST';
     }
@@ -70,9 +69,10 @@ export default function BranchesPage() {
 
   // Filter based on search input and region tabs
   const filteredBranches = (branches || []).filter((branch) => {
+    const q = searchTerm.toLowerCase();
     const matchesSearch = 
-      branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      branch.address.toLowerCase().includes(searchTerm.toLowerCase());
+      (branch.name || '').toLowerCase().includes(q) ||
+      (branch.description || '').toLowerCase().includes(q);
       
     if (activeRegion === 'ALL') return matchesSearch;
     return matchesSearch && getBranchRegion(branch) === activeRegion;
@@ -200,7 +200,7 @@ export default function BranchesPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredBranches.map((branch, index) => (
               <div 
-                key={branch.id}
+                key={branch.id || index}
                 data-animate="fade-up"
                 data-delay={String(((index % 3) + 1) * 100)}
                 className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-orange-500/5 flex flex-col justify-between"
@@ -209,15 +209,10 @@ export default function BranchesPage() {
                   {/* Card Banner Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
                     <img 
-                      src={branch.imageUrl || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop'} 
+                      src={branch.images && branch.images.length > 0 ? resolveUploadUrl(branch.images[0]) : (branch.imageUrl || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop')} 
                       alt={branch.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    {branch.isFlagship && (
-                      <span className="absolute top-4 left-4 bg-orange-500 text-white text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-md tracking-wider shadow-md">
-                        Flagship
-                      </span>
-                    )}
                   </div>
 
                   {/* Card Content Body */}
@@ -227,19 +222,19 @@ export default function BranchesPage() {
                     </h3>
                     <p className="text-xs text-zinc-500 mt-2 flex items-start gap-1.5 leading-relaxed line-clamp-2 min-h-[2.5rem] font-light">
                       <MapPin className="w-4 h-4 text-zinc-400 shrink-0 mt-0.5" />
-                      <span>{branch.address}</span>
+                      <span>{branch.address || (branch.description?.split('Địa chỉ:')?.[1]?.split('\n')[0] || 'Liên hệ chi nhánh')}</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Card Button Footer */}
                 <div className="p-6 pt-0 mt-2">
-                  <button
-                    onClick={() => setSelectedBranch(branch)}
-                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-orange-500/10 cursor-pointer active:scale-[0.98]"
+                  <Link
+                    href={`/branches/${branch.id}`}
+                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block"
                   >
                     Xem chi tiết
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -247,129 +242,6 @@ export default function BranchesPage() {
         )}
 
       </main>
-
-      {/* 4. Interactive Detail Modal Drawer */}
-      {selectedBranch && (
-        <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-white rounded-[32px] shadow-2xl relative border border-zinc-100 overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-            
-            {/* Header info */}
-            <div className="relative h-60 w-full bg-zinc-100">
-              <img 
-                src={selectedBranch.imageUrl || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop'} 
-                alt={selectedBranch.name} 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-6" />
-              
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedBranch(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white transition-all cursor-pointer hover:scale-105 active:scale-95"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="absolute bottom-6 left-6 right-6">
-                <span className="text-[10px] font-extrabold text-orange-400 bg-orange-500/15 border border-orange-500/20 px-3 py-1 rounded-lg uppercase tracking-wider">
-                  {selectedBranch.isFlagship ? 'Chi nhánh Flagship' : 'Cửa hàng Express'}
-                </span>
-                <h2 className="text-xl md:text-2xl font-black text-white mt-2 leading-tight uppercase">
-                  {selectedBranch.name}
-                </h2>
-              </div>
-            </div>
-
-            {/* Content Details */}
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-              
-              {/* Left Column: Info list */}
-              <div className="space-y-4">
-                <h3 className="font-extrabold text-xs text-zinc-900 uppercase tracking-widest flex items-center gap-1.5 pb-2 border-b border-zinc-100">
-                  <Sparkles className="w-4 h-4 text-orange-500" /> Thông tin cửa hàng
-                </h3>
-                
-                <div className="flex items-start gap-2.5 text-xs text-zinc-650">
-                  <MapPin className="w-4 h-4 text-zinc-400 shrink-0 mt-0.5" />
-                  <div>
-                    <span className="font-bold text-zinc-800 block mb-0.5">Địa chỉ</span>
-                    <p className="leading-relaxed font-light">{selectedBranch.address}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 text-xs text-zinc-650">
-                  <Phone className="w-4 h-4 text-zinc-400 shrink-0" />
-                  <div>
-                    <span className="font-bold text-zinc-800 block">Số điện thoại</span>
-                    <a href={`tel:${selectedBranch.phone}`} className="hover:text-orange-500 font-medium transition-colors">
-                      {selectedBranch.phone || 'Liên hệ chi nhánh'}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 text-xs text-zinc-655">
-                  <Clock className="w-4 h-4 text-zinc-400 shrink-0" />
-                  <div>
-                    <span className="font-bold text-zinc-800 block">Giờ hoạt động</span>
-                    <p className="font-light">
-                      {selectedBranch.openingHours 
-                        ? `${selectedBranch.openingHours.open} - ${selectedBranch.openingHours.close}` 
-                        : '07:00 - 22:00'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: GPS Simulated Mini Map */}
-              <div className="flex flex-col">
-                <h3 className="font-extrabold text-xs text-zinc-900 uppercase tracking-widest flex items-center gap-1.5 pb-2 border-b border-zinc-100 mb-3">
-                  <Map className="w-4 h-4 text-orange-500" /> Chỉ đường GPS
-                </h3>
-                
-                {/* Styled mini simulated map panel */}
-                <div className="flex-1 min-h-[140px] rounded-2xl border border-zinc-200 overflow-hidden relative bg-zinc-100 flex flex-col justify-end p-4 shadow-inner">
-                  <div className="absolute inset-0 opacity-20" 
-                       style={{
-                         backgroundImage: `radial-gradient(rgba(249, 115, 22, 0.2) 1.5px, transparent 0), radial-gradient(rgba(249, 115, 22, 0.2) 1.5px, transparent 0)`,
-                         backgroundSize: '24px 24px',
-                         backgroundPosition: '0 0, 12px 12px'
-                       }} 
-                  />
-                  
-                  {/* Central Node representing branch marker with pulsing radar */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative flex items-center justify-center">
-                      <span className="animate-ping absolute inline-flex h-12 w-12 rounded-full bg-orange-400 opacity-40"></span>
-                      <span className="animate-pulse absolute inline-flex h-8 w-8 rounded-full bg-orange-500 opacity-20"></span>
-                      <div className="animate-bounce relative flex flex-col items-center">
-                        <div className="w-9 h-9 rounded-full bg-orange-500/20 border border-orange-500 flex items-center justify-center shadow-lg backdrop-blur-[2px]">
-                          <Coffee className="w-4 h-4 text-orange-500" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="z-10 bg-white/90 backdrop-blur-md border border-zinc-150 p-2.5 rounded-xl shadow-md text-[10px] text-zinc-500">
-                    <span className="font-bold text-zinc-800 block leading-tight">GPS Coordinates</span>
-                    <span className="block mt-0.5">Lat: {selectedBranch.lat} • Lng: {selectedBranch.lng}</span>
-                  </div>
-                </div>
-
-                <a 
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedBranch.address)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-3 py-2.5 bg-zinc-900 hover:bg-orange-500 text-white font-extrabold text-[10px] uppercase tracking-wider text-center rounded-xl transition-all shadow-md active:scale-[0.98]"
-                >
-                  Mở Google Maps
-                </a>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-      )}
 
       {/* 5. Footer */}
       <Footer />

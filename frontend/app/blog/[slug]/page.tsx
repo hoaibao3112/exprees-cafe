@@ -21,10 +21,10 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default function ArticleDetailPage({ params }: PageProps) {
+export default function ArticleDetailPage(props: PageProps) {
   useScrollAnimation();
-  // Unwrap parameters using standard React 19 / Next.js 16 `React.use()` pattern
-  const { slug } = React.use(params);
+  const resolvedParams = React.use(props.params);
+  const { slug } = resolvedParams as { slug: string };
 
   const [newsletterEmail, setNewsletterEmail] = React.useState<string>('');
   const [newsletterFeedback, setNewsletterFeedback] = React.useState<boolean>(false);

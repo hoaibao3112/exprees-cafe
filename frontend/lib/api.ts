@@ -1,6 +1,24 @@
 import { useAuthStore } from '../store/useAuthStore';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+// Base host for serving uploaded static assets (no trailing slash)
+export const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '');
+
+// Resolve an uploaded asset path (e.g. "uploads/...jpg") to a full URL.
+// Falls back to localhost:3000 in development when no explicit BACKEND URL is provided.
+export function resolveUploadUrl(path?: string | null) {
+  if (!path) return '';
+  // If already absolute (http(s) or protocol-relative), return as-is
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('//')) {
+    return path;
+  }
+
+  const fallbackDev = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
+  const base = (process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '')) || fallbackDev;
+
+  // Ensure no duplicate slashes when joining
+  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+}
 
 export class ApiError extends Error {
   statusCode: number;

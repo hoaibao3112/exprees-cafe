@@ -26,8 +26,9 @@ function formatPrice(value: number | null) {
   return `${value.toLocaleString('vi-VN')} đ`;
 }
 
-export default function ProductDetailPage({ params }: PageProps) {
-  const { slug } = React.use(params);
+export default function ProductDetailPage(props: PageProps) {
+  const resolvedParams = React.use(props.params);
+  const { slug } = resolvedParams as { slug: string };
   const { data: product, isLoading, error } = useProductDetailQuery(slug);
   const [activeImageIndex, setActiveImageIndex] = React.useState(0);
 

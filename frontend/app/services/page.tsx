@@ -1,19 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Coffee, 
   ChevronRight, 
-  ArrowRight,
-  Sparkles,
-  CheckCircle2,
-  X,
-  MessageSquare,
-  RefreshCw
+  ArrowRight
 } from 'lucide-react';
-import { useServicesQuery, Article } from '../../hooks/useContentQueries';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
+import { resolveUploadUrl } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 
@@ -21,66 +16,23 @@ export default function ServicesPage() {
   // Activate scroll animations
   useScrollAnimation();
 
-  const [selectedService, setSelectedService] = useState<Article | null>(null);
-  const [consultForm, setConsultForm] = useState({ name: '', phone: '', note: '' });
-  const [formFeedback, setFormFeedback] = useState(false);
+  const [services, setServices] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch F&B services dynamically from backend via content/articles filtering
-  const { data: services, isLoading } = useServicesQuery();
-
-  const handleConsultSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!consultForm.name || !consultForm.phone) return;
-    
-    // Simulate consultation registry
-    setFormFeedback(true);
-    setTimeout(() => {
-      setFormFeedback(false);
-      setConsultForm({ name: '', phone: '', note: '' });
-      setSelectedService(null);
-    }, 2000);
-  };
-
-  // Unique F&B value-add benefits based on the selected service
-  const getServiceBenefits = (slug: string): string[] => {
-    switch (slug) {
-      case 'cung-cap-ca-phe-si':
-        return [
-          'Hạt cà phê hữu cơ 100% Robusta & Arabica xuất xứ Tây Nguyên.',
-          'Quy trình rang xay hiện đại đạt chuẩn ISO 22000.',
-          'Chính sách chiết khấu lũy tiến hấp dẫn lên đến 35%.',
-          'Miễn phí vận chuyển nội thành cho đơn hàng từ 10kg.'
-        ];
-      case 'sua-may-ca-phe-chuyen-nghiep':
-        return [
-          'Đội ngũ kỹ sư giàu kinh nghiệm thực chiến trên 5 năm.',
-          'Cam kết linh kiện nhập khẩu chính hãng Ý, Tây Ban Nha 100%.',
-          'Khắc phục sự cố nhanh chóng trong vòng 2-4h khu vực nội thành.',
-          'Bảo hành chính hãng sau sửa chữa từ 3 đến 6 tháng.'
-        ];
-      case 'cho-thue-may-ca-phe':
-        return [
-          'Miễn phí đặt cọc máy cho văn phòng và chuỗi F&B liên kết.',
-          'Bảo dưỡng định kỳ miễn phí hàng tháng.',
-          'Tặng kèm bộ ly, muỗng và ca đong inox cao cấp.',
-          'Hỗ trợ đổi dòng máy lớn hơn khi doanh số quán tăng trưởng.'
-        ];
-      case 'tu-van-setup-quan-tron-goi':
-        return [
-          'Tối ưu hóa thiết kế mặt bằng và quầy bar theo nguyên lý 1 chiều.',
-          'Menu đồ uống đa dạng, bắt trend và định phí vốn (costing) tối ưu.',
-          'Đào tạo pha chế trực tiếp bởi các Barista Trainer cúp vàng quốc gia.',
-          'Chuyển giao phần mềm quản lý POS & CMS thông minh.'
-        ];
-      default:
-        return [
-          'Nguyên liệu chất lượng cao có đầy đủ giấy công bố chất lượng.',
-          'Cam kết nguồn cung ổn định lâu dài không bị đứt gãy hàng.',
-          'Cung cấp mẫu thử (sample) miễn phí trước khi ký hợp đồng.',
-          'Hỗ trợ tư vấn công thức pha chế sáng tạo mới hàng tháng.'
-        ];
-    }
-  };
+  useEffect(() => {
+    fetch('http://localhost:3000/api/v1/services')
+      .then(res => res.json())
+      .then(data => {
+        // Handle different response formats
+        const servicesData = Array.isArray(data) ? data : (data.data || []);
+        setServices(servicesData);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading services:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 font-sans flex flex-col justify-between antialiased">
@@ -156,7 +108,7 @@ export default function ServicesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <div 
-                key={service.id}
+                key={service.id || index}
                 data-animate="fade-up"
                 data-delay={String(((index % 3) + 1) * 100)}
                 className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-orange-500/5 flex flex-col justify-between"
@@ -165,8 +117,8 @@ export default function ServicesPage() {
                   {/* Card Banner Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
                     <img 
-                      src={service.imageUrl || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop'} 
-                      alt={service.title}
+                      src={service.images && service.images.length > 0 ? resolveUploadUrl(service.images[0]) : (service.imageUrl || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop')} 
+                      alt={service.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
@@ -175,22 +127,22 @@ export default function ServicesPage() {
                   {/* Card Content Body */}
                   <div className="p-6">
                     <h3 className="font-extrabold text-base text-zinc-950 group-hover:text-orange-500 transition-colors duration-355 leading-tight">
-                      {service.title}
+                      {service.name}
                     </h3>
                     <p className="text-xs text-zinc-500 mt-3 leading-relaxed line-clamp-3 min-h-[3.3rem] font-light">
-                      {service.contentHtml}
+                      {service.description}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Button Footer */}
                 <div className="p-6 pt-0">
-                  <button
-                    onClick={() => setSelectedService(service)}
-                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-orange-500/10 cursor-pointer active:scale-[0.98]"
+                  <Link
+                    href={`/services/${service.id}`}
+                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block"
                   >
                     Xem chi tiết
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -198,133 +150,6 @@ export default function ServicesPage() {
         )}
 
       </main>
-
-      {/* 4. Interactive Detail Modal Drawer & Consultation Form */}
-      {selectedService && (
-        <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-3xl bg-white rounded-[32px] shadow-2xl relative border border-zinc-100 overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 max-h-[90vh] overflow-y-auto custom-scrollbar">
-            
-            {/* Header info */}
-            <div className="relative h-56 md:h-64 w-full bg-zinc-100">
-              <img 
-                src={selectedService.imageUrl || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop'} 
-                alt={selectedService.title} 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent flex flex-col justify-end p-6" />
-              
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedService(null)}
-                className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/60 hover:bg-black/80 flex items-center justify-center text-white transition-all cursor-pointer hover:scale-105 active:scale-95"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <div className="absolute bottom-6 left-6 right-6">
-                <span className="text-[10px] font-extrabold text-orange-400 bg-orange-500/15 border border-orange-500/20 px-3 py-1 rounded-lg uppercase tracking-wider">
-                  Dịch vụ liên kết F&B
-                </span>
-                <h2 className="text-xl md:text-3xl font-black text-white mt-2.5 leading-tight uppercase tracking-wide">
-                  {selectedService.title}
-                </h2>
-              </div>
-            </div>
-
-            {/* Content & Form Details Grid */}
-            <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-12 gap-8">
-              
-              {/* Left Column: Description & Benefits list (md:col-span-7) */}
-              <div className="md:col-span-7 space-y-6">
-                <div>
-                  <h3 className="font-extrabold text-xs text-zinc-950 uppercase tracking-widest flex items-center gap-2 pb-2.5 border-b border-zinc-100">
-                    <Sparkles className="w-4 h-4 text-orange-500" /> Về dịch vụ của chúng tôi
-                  </h3>
-                  <p className="text-xs text-zinc-600 leading-relaxed mt-3.5 font-light">
-                    {selectedService.contentHtml}
-                  </p>
-                </div>
-
-                <div className="space-y-3.5">
-                  <h4 className="font-extrabold text-xs text-zinc-800 tracking-wide">
-                    Quyền lợi của đối tác đồng hành:
-                  </h4>
-                  <ul className="space-y-3">
-                    {getServiceBenefits(selectedService.slug).map((benefit, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-xs text-zinc-600 leading-relaxed font-light">
-                        <CheckCircle2 className="w-4.5 h-4.5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Right Column: Contact Consultation Form (md:col-span-5) */}
-              <div className="md:col-span-5">
-                <div className="p-6 bg-zinc-50 border border-zinc-200/80 rounded-3xl flex flex-col gap-4 shadow-sm">
-                  <h3 className="font-extrabold text-xs text-zinc-950 uppercase tracking-widest flex items-center gap-1.5 border-b border-zinc-200 pb-2.5">
-                    <MessageSquare className="w-4.5 h-4.5 text-orange-500" /> Nhận tư vấn ngay
-                  </h3>
-                  
-                  <form onSubmit={handleConsultSubmit} className="flex flex-col gap-3.5">
-                    <div>
-                      <label className="block text-[10px] font-extrabold text-zinc-500 uppercase tracking-wider mb-1.5">Họ và tên *</label>
-                      <input 
-                        type="text"
-                        required
-                        value={consultForm.name}
-                        onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })}
-                        placeholder="Nhập họ và tên..."
-                        className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder-zinc-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-extrabold text-zinc-500 uppercase tracking-wider mb-1.5">Số điện thoại *</label>
-                      <input 
-                        type="tel"
-                        required
-                        value={consultForm.phone}
-                        onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })}
-                        placeholder="Nhập số điện thoại..."
-                        className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder-zinc-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-extrabold text-zinc-500 uppercase tracking-wider mb-1.5">Ghi chú yêu cầu</label>
-                      <textarea 
-                        rows={2}
-                        value={consultForm.note}
-                        onChange={(e) => setConsultForm({ ...consultForm, note: e.target.value })}
-                        placeholder="VD: Tư vấn chi tiết báo giá..."
-                        className="w-full px-4 py-2.5 bg-white border border-zinc-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder-zinc-400"
-                      />
-                    </div>
-
-                    {formFeedback && (
-                      <div className="p-3 bg-emerald-50 border border-emerald-250/20 text-emerald-600 rounded-2xl text-[10px] leading-relaxed text-center font-semibold animate-pulse">
-                        Đăng ký thành công! Đội ngũ tư vấn sẽ liên hệ bạn ngay lập tức.
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={formFeedback}
-                      className="w-full py-3 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 active:bg-orange-700 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all cursor-pointer text-center active:scale-[0.98] shadow-md shadow-orange-500/10"
-                    >
-                      {formFeedback ? 'ĐANG GỬI...' : 'ĐĂNG KÝ NGAY'}
-                    </button>
-                  </form>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-      )}
 
       {/* 5. Footer */}
       <Footer />

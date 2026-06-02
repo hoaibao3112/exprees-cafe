@@ -32,7 +32,7 @@ const articleSchema = z.object({
   title: z.string().min(1, 'Tiêu đề không được để trống').max(200, 'Tiêu đề tối đa 200 ký tự'),
   slug: z.string().min(1, 'Slug không được để trống').regex(/^[a-z0-9-]+$/, 'Slug chỉ gồm chữ thường, số và dấu gạch ngang'),
   blogHandle: z.enum(['news', 'blog', 'services'] as const, {
-    errorMap: () => ({ message: 'Danh mục không hợp lệ' }),
+    message: 'Danh mục không hợp lệ',
   }),
   imageUrl: z.string().url('Đường dẫn ảnh không hợp lệ').or(z.literal('')).optional(),
   content: z.string().min(10, 'Nội dung tối thiểu 10 ký tự'),

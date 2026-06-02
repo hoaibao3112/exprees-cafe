@@ -102,15 +102,15 @@ export default function FranchisePage() {
             ))
           ) : (
             (packages || []).map((pkg, idx) => {
-              const details = MODEL_DETAILS[pkg.modelType] || {
-                image: '/media__1780386795847.png',
-                title: pkg.name
+              const details = {
+                image: (pkg.images && pkg.images.length > 0) ? pkg.images[0] : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png'),
+                title: pkg.name,
               };
 
               return (
                 <Link 
                   key={pkg.id}
-                  href={`/franchise/register?packageId=${pkg.id}`}
+                  href={`/franchise/${pkg.id}`}
                   data-animate="fade-up"
                   data-delay={String((idx + 1) * 100)}
                   className="group relative aspect-[4/3] rounded-3xl overflow-hidden border border-zinc-200 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all duration-500 cursor-pointer hover:-translate-y-2 flex flex-col justify-end"

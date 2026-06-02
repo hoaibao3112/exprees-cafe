@@ -8,13 +8,19 @@ export class Branch {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
+  url: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ nullable: true })
   address: string;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'double precision', nullable: true })
   lat: number;
 
-  @Column({ type: 'double precision' })
+  @Column({ type: 'double precision', nullable: true })
   lng: number;
 
   @Column({ nullable: true })
@@ -31,6 +37,9 @@ export class Branch {
 
   @Column({ name: 'image_url', nullable: true })
   imageUrl: string;
+
+  @Column({ type: 'simple-array', nullable: true })
+  images: string[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
