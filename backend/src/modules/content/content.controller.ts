@@ -29,6 +29,13 @@ export class ContentController {
     return this.contentService.findAllBanners();
   }
 
+  @Public()
+  @Get('videos')
+  @ApiOperation({ summary: 'Get active video content' })
+  getVideos() {
+    return this.contentService.findAllVideos();
+  }
+
   @Post('admin/articles')
   @ApiOperation({ summary: 'Create new article (Admin)' })
   createArticle(

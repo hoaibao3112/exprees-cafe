@@ -79,7 +79,7 @@ export function Header() {
         {/* Center/Right Side: Navigation Menu for Desktop */}
         <nav className="hidden xl:flex items-center gap-7 text-sm font-medium tracking-[0.08em] uppercase text-zinc-900 font-body">
           {NAV_ITEMS.map((item, idx) => {
-            const active = isLinkActive(item) || (item.slug === 'franchise' && pathname === '/'); // Highlight nhượng quyền on landing/home as in user mockup
+            const active = isLinkActive(item);
             
             return (
               <Link 
@@ -128,7 +128,7 @@ export function Header() {
               
               <nav className="flex flex-col gap-4 text-sm font-medium tracking-[0.08em] uppercase text-zinc-800 font-body">
                 {NAV_ITEMS.map((item, idx) => {
-                  const active = isLinkActive(item) || (item.slug === 'franchise' && pathname === '/');
+                  const active = isLinkActive(item);
                   return (
                     <Link
                       key={idx}

@@ -88,8 +88,8 @@ async function adminFetch<T>(
 // ===================== AUTH =====================
 export const adminAuthApi = {
   login: (email: string, password: string) =>
-    adminFetch<{ access_token: string; user: { id: string; email: string; name: string; role: string } }>(
-      '/auth/admin/login',
+    adminFetch<{ accessToken: string; user: { id: string; email: string; name: string; role: any } }>(
+      '/auth/login',
       {
         method: 'POST',
         body: JSON.stringify({ email, password }),

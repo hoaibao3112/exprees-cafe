@@ -11,6 +11,7 @@ const getSecret = () => {
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  console.log(`[Middleware] Path: ${pathname}, Search: ${req.nextUrl.search}`);
 
   // Chỉ guard các route /admin/*
   if (!pathname.startsWith('/admin')) {
@@ -18,7 +19,8 @@ export async function middleware(req: NextRequest) {
   }
 
   // /admin/login là public — bỏ qua
-  if (pathname === '/admin/login') {
+  if (pathname === '/admin/login' || pathname.startsWith('/admin/login')) {
+    console.log(`[Middleware] Public path allowed: ${pathname}`);
     return NextResponse.next();
   }
 
@@ -56,5 +58,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*'],
 };

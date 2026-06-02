@@ -80,6 +80,10 @@ html {
   transform: none !important;
 }
 
+[data-animate="blur-in"].animate-in {
+  filter: none !important;
+}
+
 /* Variants */
 [data-animate="fade-up"]    { transform: translateY(32px); }
 [data-animate="fade-down"]  { transform: translateY(-24px); }
@@ -88,8 +92,8 @@ html {
 [data-animate="scale-up"]   { transform: scale(0.94); }
 [data-animate="blur-in"]    { 
   transform: translateY(16px); 
-  filter: blur(8px);
-  transition-property: opacity, transform, filter;
+  filter: none; /* Globally ensure all title texts are perfectly crisp and sharp from load */
+  transition-property: opacity, transform;
 }
 
 /* Stagger delays cho các list items */

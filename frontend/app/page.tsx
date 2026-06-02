@@ -20,6 +20,8 @@ import {
   Phone
 } from 'lucide-react';
 import { useFranchisePackagesQuery } from '../hooks/useFranchiseQueries';
+import { useArticlesQuery, useVideosQuery } from '../hooks/useContentQueries';
+import { useBranchesQuery } from '../hooks/useBranchQueries';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
@@ -54,20 +56,20 @@ const SLIDES = [
 
 // Mapping for dynamic franchise packages to images and display model types
 const MODEL_DETAILS: Record<string, { image: string; tag: string; title: string }> = {
-  'KIOSK': {
-    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=600',
-    tag: 'KI-ỐT DI ĐỘNG',
-    title: 'MÔ HÌNH KI-ỐT DI ĐỘNG'
-  },
   'EXPRESS': {
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=600',
+    image: '/media__1780386795847.png',
     tag: 'MÔ HÌNH QUÁN TINH GỌN',
     title: 'MÔ HÌNH QUÁN TINH GỌN'
   },
+  'KIOSK': {
+    image: '/media__1780386795859.png',
+    tag: 'MÔ HÌNH XE TAKE AWAY LINH ĐỘNG',
+    title: 'MÔ HÌNH XE TAKE AWAY LINH ĐỘNG'
+  },
   'PREMIUM': {
-    image: 'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&q=80&w=600',
-    tag: 'MÔ HÌNH BOOTH TIỆN LỢI',
-    title: 'MÔ HÌNH BOOTH TIỆN LỢI'
+    image: '/media__1780386795867.png',
+    tag: 'MÔ HÌNH KIOSK TIỆN LỢI',
+    title: 'MÔ HÌNH KIOSK TIỆN LỢI'
   }
 };
 
@@ -96,6 +98,35 @@ export default function Home() {
 
   // Query database packages
   const { data: packages, isLoading } = useFranchisePackagesQuery();
+  const { data: articles } = useArticlesQuery();
+  const { data: videos } = useVideosQuery();
+  const { data: branches } = useBranchesQuery();
+
+  // State for playing YouTube video lightbox
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+
+  // Helper to extract YouTube video ID from URL
+  const getYoutubeId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : '';
+  };
+
+  // Helper to format date into Vietnamese weekday format
+  const formatVietnameseDate = (dateStr?: string) => {
+    if (!dateStr) return 'Thứ Ba 03/02/2026';
+    try {
+      const date = new Date(dateStr);
+      const weekdays = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+      const weekday = weekdays[date.getDay()];
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${weekday} ${day}/${month}/${year}`;
+    } catch {
+      return 'Thứ Ba 03/02/2026';
+    }
+  };
 
   // Automatic slideshow rotation every 5 seconds
   useEffect(() => {
@@ -231,15 +262,14 @@ export default function Home() {
       </section>
 
       {/* Nhượng Quyền 0 Đồng Section */}
-      <section id="franchise" className="py-20 bg-gradient-to-b from-orange-50 via-white to-white relative overflow-hidden">
+      <section id="franchise" className="py-20 bg-gradient-to-br from-orange-50/70 via-white to-orange-50/50 relative overflow-hidden">
         {/* Background ambient orbs */}
-        <div className="absolute top-1/3 left-[-10%] w-[35vw] h-[35vw] rounded-full bg-orange-100/40 blur-[100px] pointer-events-none" />
-        <div className="absolute top-1/2 right-[-5%] w-[30vw] h-[30vw] rounded-full bg-amber-100/30 blur-[80px] pointer-events-none animate-pulse-slow" />
+        <div className="absolute top-1/4 left-[-15%] w-[45vw] h-[45vw] rounded-full bg-orange-100/40 blur-[130px] pointer-events-none" />
+        <div className="absolute top-1/2 right-[-10%] w-[35vw] h-[35vw] rounded-full bg-amber-100/30 blur-[100px] pointer-events-none animate-pulse-slow" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="border-l-4 border-orange-500 pl-4 mb-12" data-animate="fade-right">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-orange-500">Đối Tác Khởi Nghiệp</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight mt-1">
+          <div className="mb-14" data-animate="fade-right">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
               NHƯỢNG QUYỀN 0 ĐỒNG
             </h2>
           </div>
@@ -248,10 +278,9 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="bg-white rounded-3xl border border-zinc-150 p-4 shadow-sm animate-pulse">
-                  <div className="w-full h-48 bg-zinc-200 rounded-2xl mb-4" />
+                  <div className="w-full h-64 bg-zinc-200 rounded-2xl mb-4" />
                   <div className="h-6 bg-zinc-200 rounded w-2/3 mb-2" />
                   <div className="h-4 bg-zinc-200 rounded w-1/2 mb-4" />
-                  <div className="h-20 bg-zinc-200 rounded mb-4" />
                   <div className="h-10 bg-zinc-200 rounded-full w-full" />
                 </div>
               ))}
@@ -261,15 +290,12 @@ export default function Home() {
               <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-3" />
               <h3 className="font-bold text-lg text-zinc-700">Chưa có dữ liệu gói nhượng quyền</h3>
               <p className="text-sm text-zinc-500 mt-1">Hệ thống đang đồng bộ. Vui lòng đăng nhập trang quản trị để thêm các gói đầu tư.</p>
-              <Link href="/franchise" className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full text-xs transition-all shadow-md shadow-orange-500/20">
-                Tự khởi tạo nhượng quyền <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {packages.map((pkg, idx) => {
                 const details = MODEL_DETAILS[pkg.modelType] || {
-                  image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=600',
+                  image: '/media__1780386795847.png',
                   tag: 'MÔ HÌNH NHƯỢNG QUYỀN',
                   title: pkg.name
                 };
@@ -279,45 +305,34 @@ export default function Home() {
                     key={pkg.id} 
                     data-animate="fade-up"
                     data-delay={String((idx + 1) * 100)}
-                    className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col justify-between"
+                    className="group bg-white/70 backdrop-blur-md rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:bg-white transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col justify-between"
                   >
                     <div>
                       {/* Card Image */}
-                      <div className="relative h-56 overflow-hidden">
+                      <div className="relative aspect-[4/3] w-full overflow-hidden">
                         <img 
                           src={details.image} 
-                          alt={pkg.name} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          alt={details.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
-                        <div className="absolute top-4 left-4 bg-orange-500 text-white text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-lg tracking-wider shadow-md">
-                          {details.tag}
-                        </div>
                       </div>
 
                       {/* Card Body */}
                       <div className="p-6">
-                        <h3 className="font-extrabold text-lg text-zinc-900 group-hover:text-orange-500 transition-colors duration-350 line-clamp-1">
-                          {pkg.name}
+                        <h3 className="font-bold text-[15px] sm:text-base text-zinc-900 tracking-wide uppercase line-clamp-1 mb-2 group-hover:text-orange-500 transition-colors">
+                          {details.title}
                         </h3>
-                        <p className="text-xs text-zinc-500 mt-2 leading-relaxed line-clamp-3">
-                          {pkg.description}
-                        </p>
                       </div>
                     </div>
 
-                    {/* Card Footer */}
-                    <div className="p-6 pt-0 border-t border-zinc-100 mt-4 flex flex-col gap-4">
-                      <div className="flex items-center justify-between pt-4">
-                        <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Vốn Đầu Tư Dự Kiến:</span>
-                        <span className="text-base font-black text-orange-500">
-                          Từ {Number(pkg.investmentFrom).toLocaleString('vi-VN')} đ
-                        </span>
-                      </div>
+                    {/* Card Action Button */}
+                    <div className="px-6 pb-8 pt-0 flex flex-col">
                       <Link
                         href={`/franchise/${pkg.id}`}
-                        className="w-full py-3 bg-zinc-900 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-zinc-900/10 hover:shadow-orange-500/20 active:scale-[0.98]"
+                        className="inline-flex items-center justify-between w-full sm:w-[150px] px-6 py-3 bg-[#e9762b] hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all duration-300 shadow-md shadow-orange-500/20 active:scale-[0.98]"
                       >
-                        XEM CHI TIẾT
+                        <span>XEM THÊM</span>
+                        <span className="ml-2 font-bold">—</span>
                       </Link>
                     </div>
                   </div>
@@ -327,7 +342,175 @@ export default function Home() {
           )}
         </div>
       </section>
+      {/* Tin Tức Section */}
+      <section id="news" className="py-20 bg-white relative overflow-hidden border-t border-zinc-100">
+        {/* Background Dot pattern */}
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" 
+             style={{ 
+               backgroundImage: `radial-gradient(circle, #000 10%, transparent 11%)`,
+               backgroundSize: '16px 16px'
+             }} 
+        />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="mb-14" data-animate="fade-right">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
+              TIN TỨC
+            </h2>
+          </div>
 
+          {!articles || articles.length === 0 ? (
+            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl">
+              <Calendar className="w-12 h-12 text-orange-400 mx-auto mb-3" />
+              <h3 className="font-bold text-lg text-zinc-700">Chưa có bài viết tin tức nào</h3>
+              <p className="text-sm text-zinc-500 mt-1">Đang tải dữ liệu bài viết mới nhất từ backend...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {articles.slice(0, 3).map((article, idx) => (
+                <Link 
+                  key={article.id} 
+                  href={`/blog/${article.slug}`}
+                  data-animate="fade-up"
+                  data-delay={String((idx + 1) * 100)}
+                  className="group rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col bg-white cursor-pointer"
+                >
+                  {/* Card Image */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
+                    <img 
+                      src={article.imageUrl || '/slideshow_1.jpg'} 
+                      alt={article.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  </div>
+
+                  {/* Card Content (Solid orange background) */}
+                  <div className="p-6 bg-[#f07b22] text-white flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-[14px] sm:text-[15px] text-white leading-snug tracking-wide uppercase line-clamp-3 mb-4 min-h-[64px]">
+                        {article.title}
+                      </h3>
+                    </div>
+                    <div className="text-zinc-100 text-[11px] sm:text-xs font-medium">
+                      {formatVietnameseDate(article.publishedAt || article.createdAt)}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Video Section */}
+      <section id="videos" className="py-20 bg-zinc-50 relative overflow-hidden border-t border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="mb-14" data-animate="fade-right">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
+              VIDEO
+            </h2>
+          </div>
+
+          {!videos || videos.length === 0 ? (
+            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl">
+              <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-3" />
+              <h3 className="font-bold text-lg text-zinc-700">Chưa có video nào</h3>
+              <p className="text-sm text-zinc-500 mt-1">Đang tải danh sách video của Express Cafe...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {videos.slice(0, 3).map((video, idx) => {
+                const yId = getYoutubeId(video.youtubeUrl);
+                return (
+                  <div 
+                    key={video.id} 
+                    data-animate="fade-up"
+                    data-delay={String((idx + 1) * 100)}
+                    onClick={() => yId && setPlayingVideo(yId)}
+                    className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 cursor-pointer flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Video Thumbnail (YouTube preview overlay) */}
+                      <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
+                        <img 
+                          src={video.thumbnailUrl} 
+                          alt={video.title} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
+                        />
+                        {/* Red Play Overlay */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-16 h-12 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-black/30 group-hover:bg-red-700 group-hover:scale-110 transition-all duration-350">
+                            <svg className="w-6 h-6 text-white fill-current" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Info */}
+                      <div className="p-5">
+                        <h3 className="font-bold text-sm sm:text-base text-zinc-950 leading-snug tracking-wide line-clamp-2 mb-2 group-hover:text-orange-500 transition-colors">
+                          {video.title}
+                        </h3>
+                        <p className="text-[11px] sm:text-xs text-zinc-500 font-semibold tracking-wider uppercase">
+                          {video.channelName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Chi Nhánh Section */}
+      <section id="branches" className="py-20 bg-white relative overflow-hidden border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="mb-14" data-animate="fade-right">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
+              CHI NHÁNH
+            </h2>
+          </div>
+
+          {!branches || branches.length === 0 ? (
+            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl">
+              <MapPin className="w-12 h-12 text-orange-400 mx-auto mb-3" />
+              <h3 className="font-bold text-lg text-zinc-700">Chưa có chi nhánh hoạt động</h3>
+              <p className="text-sm text-zinc-500 mt-1">Đang tải danh sách các chi nhánh của chúng tôi...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {branches.slice(0, 4).map((branch, idx) => (
+                <Link 
+                  key={branch.id} 
+                  href={`/branches?id=${branch.id}`}
+                  data-animate="fade-up"
+                  data-delay={String((idx + 1) * 80)}
+                  className="group rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1.5 flex flex-col bg-white cursor-pointer"
+                >
+                  {/* Storefront Image */}
+                  <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
+                    <img 
+                      src={branch.imageUrl || '/slideshow_3.jpg'} 
+                      alt={branch.name} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                  </div>
+
+                  {/* Branch name footer strip */}
+                  <div className="p-4 bg-[#f07b22] text-white text-center">
+                    <h3 className="font-extrabold text-xs sm:text-[13px] text-white tracking-wider uppercase line-clamp-2">
+                      EXPRESS CAFE - {branch.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
       {/* Giới Thiệu Section */}
       <section id="about" className="py-20 bg-zinc-50 border-t border-b border-zinc-100 relative overflow-hidden">
         {/* Background ambient orbs */}
@@ -454,6 +637,28 @@ export default function Home() {
 
       {/* Main Footer (Bottom copyright) */}
       <Footer />
+
+      {/* Dynamic YouTube Video Lightbox Modal */}
+      {playingVideo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 transition-opacity duration-300">
+          <div className="relative w-full max-w-4xl aspect-video bg-zinc-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+            <button
+              onClick={() => setPlayingVideo(null)}
+              className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/40 hover:bg-black text-white flex items-center justify-center font-bold transition-all hover:scale-105"
+            >
+              ✕
+            </button>
+            <iframe
+              src={`https://www.youtube.com/embed/${playingVideo}?autoplay=1`}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+      )}
 
     </div>
   );

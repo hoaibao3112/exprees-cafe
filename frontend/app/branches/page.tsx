@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   MapPin, 
@@ -31,6 +31,20 @@ export default function BranchesPage() {
 
   // Fetch branches dynamically from NestJS backend
   const { data: branches, isLoading } = useBranchesQuery();
+
+  // Auto-select branch if ID is passed in URL query
+  useEffect(() => {
+    if (branches && branches.length > 0) {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      if (id) {
+        const match = branches.find(b => b.id === id);
+        if (match) {
+          setSelectedBranch(match);
+        }
+      }
+    }
+  }, [branches]);
 
   // Helper to categorize branches into regions for smart filtering
   const getBranchRegion = (branch: Branch): RegionFilter => {

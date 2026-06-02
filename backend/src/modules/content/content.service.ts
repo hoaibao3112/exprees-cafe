@@ -211,6 +211,43 @@ export class ContentService implements OnApplicationBootstrap {
       }
     }
     console.log('🌱 Successfully seeded blog articles and 5 premium F&B services!');
+
+    // Seed initial videos
+    const videoCount = await this.videoRepository.count();
+    if (videoCount === 0) {
+      console.log('🌱 Seeding initial videos...');
+      const seedVideos = [
+        {
+          title: 'Giải mã bí quyết chốt đơn của Express Cafe',
+          youtubeUrl: 'https://www.youtube.com/watch?v=F3P_S8Z2D7k',
+          thumbnailUrl: '/media__1780386795827.png',
+          channelName: 'AIZEN OFFICIAL',
+          sortOrder: 1,
+          isActive: true,
+          publishedAt: new Date(),
+        },
+        {
+          title: 'Express Cafe - Tài trợ các lớp CEO',
+          youtubeUrl: 'https://www.youtube.com/watch?v=kY3r1pS6Kuo',
+          thumbnailUrl: '/media__1780386810707.png',
+          channelName: 'EXPRESS CAFE OFFICIAL',
+          sortOrder: 2,
+          isActive: true,
+          publishedAt: new Date(),
+        },
+        {
+          title: 'Express Cafe Profile - Version 2025',
+          youtubeUrl: 'https://www.youtube.com/watch?v=H74rBfGkMoc',
+          thumbnailUrl: '/media__1780386740323.png',
+          channelName: 'EXPRESS CAFE OFFICIAL',
+          sortOrder: 3,
+          isActive: true,
+          publishedAt: new Date(),
+        },
+      ];
+      await this.videoRepository.save(this.videoRepository.create(seedVideos));
+      console.log('🌱 Successfully seeded 3 videos!');
+    }
   }
 
   async createArticle(dto: {
@@ -259,6 +296,13 @@ export class ContentService implements OnApplicationBootstrap {
 
   async findAllBanners(): Promise<Banner[]> {
     return this.bannerRepository.find({
+      where: { isActive: true },
+      order: { sortOrder: 'ASC' },
+    });
+  }
+
+  async findAllVideos(): Promise<Video[]> {
+    return this.videoRepository.find({
       where: { isActive: true },
       order: { sortOrder: 'ASC' },
     });

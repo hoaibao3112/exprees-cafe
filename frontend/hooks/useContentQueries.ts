@@ -55,3 +55,22 @@ export function useServicesQuery() {
     },
   });
 }
+
+export interface Video {
+  id: string;
+  title: string;
+  youtubeUrl: string;
+  thumbnailUrl: string;
+  channelName: string;
+  sortOrder: number;
+  isActive: boolean;
+  publishedAt?: string;
+  createdAt: string;
+}
+
+export function useVideosQuery() {
+  return useQuery<Video[], ApiError>({
+    queryKey: ['videos'],
+    queryFn: () => apiFetch<Video[]>('/content/videos'),
+  });
+}
