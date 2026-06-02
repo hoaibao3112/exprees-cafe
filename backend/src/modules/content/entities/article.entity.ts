@@ -28,6 +28,9 @@ export class Article {
   @Column({ default: 'PUBLISHED' }) // DRAFT, PUBLISHED
   status: string;
 
+  @Column({ name: 'image_url', nullable: true })
+  imageUrl: string;
+
   @Column({ name: 'published_at', type: 'timestamp', nullable: true })
   publishedAt: Date;
 

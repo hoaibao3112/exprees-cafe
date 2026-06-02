@@ -31,6 +31,9 @@ export class Product {
   @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 
+  @Column({ name: 'sort_order', default: 0 })
+  sortOrder: number;
+
   @ManyToOne(() => Category, (category) => category.products, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'category_id' })
   category: Category;

@@ -1,95 +1,453 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Coffee, ShieldCheck, CreditCard, ChevronRight } from 'lucide-react';
+import { 
+  Coffee, 
+  ChevronLeft, 
+  ChevronRight, 
+  ChevronDown, 
+  ChevronUp,
+  Award, 
+  TrendingUp, 
+  ShieldCheck, 
+  ArrowRight,
+  MapPin,
+  Calendar,
+  Sparkles,
+  CheckCircle2,
+  Clock,
+  Phone
+} from 'lucide-react';
+import { useFranchisePackagesQuery } from '../hooks/useFranchiseQueries';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { Header } from '../components/layout/Header';
+import { Footer } from '../components/layout/Footer';
+
+// Slideshow images configuration
+const SLIDES = [
+  { 
+    url: '/slideshow_1.jpg', 
+    alt: 'Dịch vụ cho thuê máy cà phê',
+    title: 'CHO THUÊ MÁY PHA CÀ PHÊ',
+    subtitle: 'Giải pháp chuyên nghiệp cho văn phòng, nhà hàng và chuỗi kinh doanh F&B'
+  },
+  { 
+    url: '/slideshow_2.jpg', 
+    alt: 'Nhượng quyền 0 đồng - Mô hình ki-ốt',
+    title: 'NHƯỢNG QUYỀN THƯƠNG HIỆU 0Đ',
+    subtitle: 'Hỗ trợ khởi nghiệp trọn gói, tối ưu hóa lợi nhuận, thời gian hoàn vốn cực nhanh'
+  },
+  { 
+    url: '/slideshow_3.jpg', 
+    alt: 'Thưởng thức cà phê sạch nguyên chất',
+    title: 'HƯƠNG VỊ NGUYÊN BẢN ĐÍNH THỰC',
+    subtitle: 'Nguồn cà phê sạch hữu cơ 100% Robusta & Arabica từ nông trại Đắk Lắk'
+  },
+  { 
+    url: '/slideshow_4.jpg', 
+    alt: 'Hệ thống nhượng quyền Express Cafe',
+    title: 'VẬN HÀNH SAAS THÔNG MINH',
+    subtitle: 'Quản trị chuỗi tự động từ xa với phần mềm POS & GPS hiện đại dẫn đầu xu thế'
+  }
+];
+
+// Mapping for dynamic franchise packages to images and display model types
+const MODEL_DETAILS: Record<string, { image: string; tag: string; title: string }> = {
+  'KIOSK': {
+    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=600',
+    tag: 'KI-ỐT DI ĐỘNG',
+    title: 'MÔ HÌNH KI-ỐT DI ĐỘNG'
+  },
+  'EXPRESS': {
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=600',
+    tag: 'MÔ HÌNH QUÁN TINH GỌN',
+    title: 'MÔ HÌNH QUÁN TINH GỌN'
+  },
+  'PREMIUM': {
+    image: 'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&q=80&w=600',
+    tag: 'MÔ HÌNH BOOTH TIỆN LỢI',
+    title: 'MÔ HÌNH BOOTH TIỆN LỢI'
+  }
+};
+
+interface AccordionItem {
+  id: string;
+  title: string;
+  content: string;
+}
 
 export default function Home() {
+  // Activate scroll animations
+  useScrollAnimation();
+
+  // Slideshow state
+  const [activeSlide, setActiveSlide] = useState(0);
+  
+  // Accordion state
+  const [activeAccordion, setActiveAccordion] = useState<string>('tam-nhin');
+
+  // Query database packages
+  const { data: packages, isLoading } = useFranchisePackagesQuery();
+
+  // Automatic slideshow rotation every 5 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleNextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % SLIDES.length);
+  };
+
+  const handlePrevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+  };
+
+  const accordionItems: AccordionItem[] = [
+    {
+      id: 'tam-nhin',
+      title: 'Tầm nhìn',
+      content: 'Trở thành chuỗi cà phê nhượng quyền công nghệ hàng đầu Việt Nam, mang sản phẩm cà phê hữu cơ sạch tinh khiết phục vụ hàng triệu người tiêu dùng năng động.'
+    },
+    {
+      id: 'su-menh',
+      title: 'Sứ mệnh',
+      content: 'Đem lại giá trị khởi nghiệp nhượng quyền thịnh vượng với rủi ro thấp nhất cho đối tác, đồng thời đảm bảo chất lượng cà phê đồng đều và vượt trội cho khách hàng.'
+    },
+    {
+      id: 'hoat-dong',
+      title: 'Cho thuê máy/Hoạt động',
+      content: 'Cung cấp giải pháp cho thuê máy pha cà phê chuyên nghiệp trọn gói cho văn phòng, khách sạn và quán kinh doanh với chi phí cực kỳ tiết kiệm chỉ từ 1 ly cà phê/ngày.'
+    },
+    {
+      id: 'y-nghia-thuong-hieu',
+      title: 'Ý nghĩa thương hiệu Express Cafe',
+      content: '“Express” mang ý nghĩa tốc độ, tinh gọn và đột phá công nghệ. “Cafe” là hương vị nguyên bản truyền thống Việt Nam. Sự kết hợp thể hiện mục tiêu đổi mới sáng tạo không ngừng nghỉ.'
+    },
+    {
+      id: 'gia-tri-cot-loi',
+      title: 'Giá trị cốt lõi',
+      content: 'Nguyên liệu sạch 100% - Vận hành tối giản - Công nghệ dẫn đầu (POS/GPS/CMS) - Đồng hành chia sẻ lợi ích bền vững cùng nhà đầu tư.'
+    }
+  ];
+
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-slate-900 text-zinc-100 font-sans">
+    <div className="min-h-screen flex flex-col bg-white text-zinc-800 font-sans antialiased">
       
-      {/* Background Ambient Orbs */}
-      <div className="absolute top-[-20%] left-[-20%] w-[60vw] h-[60vw] rounded-full bg-indigo-500/10 blur-[120px] animate-pulse-slow"></div>
-      <div className="absolute bottom-[-20%] right-[-20%] w-[60vw] h-[60vw] rounded-full bg-violet-600/10 blur-[120px] animate-pulse-slow"></div>
+      {/* Shared Navigation Header */}
+      <Header />
 
-      {/* Header */}
-      <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/30">
-            <Coffee className="w-6 h-6 text-white" />
+      {/* Hero Slideshow Section */}
+      <section className="relative w-full h-[400px] sm:h-[500px] md:h-[620px] bg-zinc-950 overflow-hidden group/slideshow">
+        {SLIDES.map((slide, idx) => (
+          <div
+            key={idx}
+            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${
+              idx === activeSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'
+            }`}
+          >
+            {/* Slide Image */}
+            <div 
+              className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-[8000ms] scale-105"
+              style={{ 
+                backgroundImage: `url(${slide.url})`,
+              }}
+            />
+            {/* Premium Overlay Shadow for Light Text Contrast */}
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-black/30 to-black/40 pointer-events-none" />
+            
+            {/* Content overlay container */}
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+              <div className="max-w-4xl space-y-4">
+                <span className={`inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-orange-400 backdrop-blur-md transition-all duration-700 delay-300 transform ${
+                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                }`}>
+                  <Sparkles className="w-3.5 h-3.5" /> MỸ THUẬT RANG XAY & CÔNG NGHỆ SAAS
+                </span>
+                
+                <h1 className={`text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-[0.15em] leading-tight drop-shadow-md transition-all duration-700 delay-500 transform ${
+                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                }`}>
+                  {slide.title}
+                </h1>
+                
+                <p className={`text-xs sm:text-sm md:text-base text-zinc-300 max-w-2xl mx-auto font-light leading-relaxed transition-all duration-700 delay-700 transform ${
+                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                }`}>
+                  {slide.subtitle}
+                </p>
+                
+                <div className={`pt-4 transition-all duration-700 delay-[900ms] transform ${
+                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                }`}>
+                  <Link 
+                    href="/franchise" 
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-full transition-all shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95"
+                  >
+                    Đăng Ký Tư Vấn <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
-          <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-            Express Cafe
-          </span>
+        ))}
+
+        {/* Carousel Prev/Next Buttons */}
+        <button
+          onClick={handlePrevSlide}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-zinc-800 flex items-center justify-center shadow-lg transition-all opacity-0 group-hover/slideshow:opacity-100 hover:scale-105"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <button
+          onClick={handleNextSlide}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/80 hover:bg-white text-zinc-800 flex items-center justify-center shadow-lg transition-all opacity-0 group-hover/slideshow:opacity-100 hover:scale-105"
+        >
+          <ChevronRight className="w-6 h-6" />
+        </button>
+
+        {/* Carousel Dots */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
+          {SLIDES.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setActiveSlide(idx)}
+              className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
+                idx === activeSlide ? 'bg-orange-500 w-8' : 'bg-white/60 hover:bg-white'
+              }`}
+            />
+          ))}
         </div>
-        <div className="flex gap-4 items-center">
-          <Link href="/blog" className="px-3 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">
-            Bản tin F&B
-          </Link>
-          <Link href="/reviews" className="px-3 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">
-            Đánh giá verified
-          </Link>
-          <Link href="/login" className="px-3 py-2 text-sm font-semibold text-slate-400 hover:text-white transition-colors">
-            Đăng nhập
-          </Link>
-          <Link href="/register" className="px-5 py-2 text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-full transition-all shadow-md shadow-indigo-600/20">
-            Đăng ký
-          </Link>
+      </section>
+
+      {/* Nhượng Quyền 0 Đồng Section */}
+      <section id="franchise" className="py-20 bg-gradient-to-b from-orange-50 via-white to-white relative overflow-hidden">
+        {/* Background ambient orbs */}
+        <div className="absolute top-1/3 left-[-10%] w-[35vw] h-[35vw] rounded-full bg-orange-100/40 blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 right-[-5%] w-[30vw] h-[30vw] rounded-full bg-amber-100/30 blur-[80px] pointer-events-none animate-pulse-slow" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="border-l-4 border-orange-500 pl-4 mb-12" data-animate="fade-right">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-orange-500">Đối Tác Khởi Nghiệp</span>
+            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight mt-1">
+              NHƯỢNG QUYỀN 0 ĐỒNG
+            </h2>
+          </div>
+
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-3xl border border-zinc-150 p-4 shadow-sm animate-pulse">
+                  <div className="w-full h-48 bg-zinc-200 rounded-2xl mb-4" />
+                  <div className="h-6 bg-zinc-200 rounded w-2/3 mb-2" />
+                  <div className="h-4 bg-zinc-200 rounded w-1/2 mb-4" />
+                  <div className="h-20 bg-zinc-200 rounded mb-4" />
+                  <div className="h-10 bg-zinc-200 rounded-full w-full" />
+                </div>
+              ))}
+            </div>
+          ) : !packages || packages.length === 0 ? (
+            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl" data-animate="scale-up">
+              <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-3" />
+              <h3 className="font-bold text-lg text-zinc-700">Chưa có dữ liệu gói nhượng quyền</h3>
+              <p className="text-sm text-zinc-500 mt-1">Hệ thống đang đồng bộ. Vui lòng đăng nhập trang quản trị để thêm các gói đầu tư.</p>
+              <Link href="/franchise" className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full text-xs transition-all shadow-md shadow-orange-500/20">
+                Tự khởi tạo nhượng quyền <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {packages.map((pkg, idx) => {
+                const details = MODEL_DETAILS[pkg.modelType] || {
+                  image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=600',
+                  tag: 'MÔ HÌNH NHƯỢNG QUYỀN',
+                  title: pkg.name
+                };
+
+                return (
+                  <div 
+                    key={pkg.id} 
+                    data-animate="fade-up"
+                    data-delay={String((idx + 1) * 100)}
+                    className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Card Image */}
+                      <div className="relative h-56 overflow-hidden">
+                        <img 
+                          src={details.image} 
+                          alt={pkg.name} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-4 left-4 bg-orange-500 text-white text-[10px] font-extrabold uppercase px-3 py-1.5 rounded-lg tracking-wider shadow-md">
+                          {details.tag}
+                        </div>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-6">
+                        <h3 className="font-extrabold text-lg text-zinc-900 group-hover:text-orange-500 transition-colors duration-350 line-clamp-1">
+                          {pkg.name}
+                        </h3>
+                        <p className="text-xs text-zinc-500 mt-2 leading-relaxed line-clamp-3">
+                          {pkg.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card Footer */}
+                    <div className="p-6 pt-0 border-t border-zinc-100 mt-4 flex flex-col gap-4">
+                      <div className="flex items-center justify-between pt-4">
+                        <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Vốn Đầu Tư Dự Kiến:</span>
+                        <span className="text-base font-black text-orange-500">
+                          Từ {Number(pkg.investmentFrom).toLocaleString('vi-VN')} đ
+                        </span>
+                      </div>
+                      <Link 
+                        href="/franchise" 
+                        className="w-full py-3 bg-zinc-900 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-zinc-900/10 hover:shadow-orange-500/20 active:scale-[0.98]"
+                      >
+                        XEM CHI TIẾT
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </header>
+      </section>
 
-      {/* Main Content */}
-      <main className="relative z-10 flex flex-col flex-1 items-center justify-center text-center px-6 py-20 max-w-4xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-indigo-300 mb-8 backdrop-blur-md">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          Hệ thống Quản lý & Bán hàng F&B SaaS Premium
+      {/* Giới Thiệu Section */}
+      <section id="about" className="py-20 bg-zinc-50 border-t border-b border-zinc-100 relative overflow-hidden">
+        {/* Background ambient orbs */}
+        <div className="absolute bottom-1/4 right-[-10%] w-[25vw] h-[25vw] rounded-full bg-orange-100/20 blur-[80px] pointer-events-none animate-pulse-slow" />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="border-l-4 border-orange-500 pl-4 mb-12" data-animate="fade-right">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-orange-500">Về Chúng Tôi</span>
+            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight mt-1">
+              GIỚI THIỆU
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left side Image */}
+            <div className="lg:col-span-5 relative" data-animate="fade-right" data-delay="100">
+              <div className="absolute inset-0 bg-orange-500 rounded-3xl translate-x-3 translate-y-3 z-0" />
+              <div className="relative z-10 aspect-square rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-zinc-200">
+                <img 
+                  src="/h-about_banner.jpg" 
+                  alt="Express Cafe Team" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Right side Accordion */}
+            <div className="lg:col-span-7 space-y-3" data-animate="fade-left" data-delay="200">
+              {accordionItems.map((item) => {
+                const isOpen = activeAccordion === item.id;
+                return (
+                  <div 
+                    key={item.id} 
+                    className={`border rounded-2xl transition-all duration-300 ${
+                      isOpen 
+                        ? 'border-orange-500/30 bg-white shadow-md shadow-orange-500/5' 
+                        : 'border-zinc-200/80 bg-white/70 hover:bg-white hover:border-zinc-300'
+                    }`}
+                  >
+                    <button
+                      onClick={() => setActiveAccordion(isOpen ? '' : item.id)}
+                      className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none"
+                    >
+                      <span className={`font-bold text-sm md:text-base transition-colors ${
+                        isOpen ? 'text-orange-500' : 'text-zinc-800'
+                      }`}>
+                        {item.title}
+                      </span>
+                      {isOpen ? (
+                        <ChevronDown className="w-5 h-5 text-orange-500 transition-transform duration-300 rotate-180" />
+                      ) : (
+                        <ChevronRight className="w-5 h-5 text-zinc-400 transition-transform duration-300" />
+                      )}
+                    </button>
+                    
+                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                    }`}>
+                      <div className="px-6 pb-5 pt-1 text-xs md:text-sm text-zinc-600 leading-relaxed border-t border-zinc-50">
+                        {item.content}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="pt-6">
+                <Link 
+                  href="/franchise" 
+                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all shadow-md shadow-orange-500/20 active:scale-95"
+                >
+                  XEM THÊM <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none mb-6">
-          Nâng Tầm Trải Nghiệm <br />
-          <span className="bg-gradient-to-r from-indigo-400 via-violet-300 to-indigo-300 bg-clip-text text-transparent">
-            Thưởng Thức Cà Phê
-          </span>
-        </h1>
+      {/* Dark Statistics & Story Footer */}
+      <section className="relative py-20 bg-zinc-950 text-white overflow-hidden">
+        {/* Background wood flooring styling pattern */}
+        <div className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none" 
+             style={{ backgroundImage: `url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200')` }} 
+        />
+        <div className="absolute bottom-0 right-[-10%] w-[40vw] h-[40vw] rounded-full bg-orange-500/5 blur-[150px] pointer-events-none" />
 
-        <p className="text-zinc-400 text-lg max-w-2xl mb-12 leading-relaxed">
-          Nền tảng đặt hàng trực tuyến tích hợp tích điểm đổi quà thành viên (Loyalty Points), định vị chi nhánh thông minh và quản lý nhượng quyền F&B tối ưu.
-        </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Stats list (Left) */}
+            <div className="lg:col-span-6 grid grid-cols-3 gap-6 text-center lg:text-left" data-animate="fade-up">
+              <div className="flex flex-col">
+                <span className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">40M+</span>
+                <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Ly Cà Phê Bán Ra</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">20+</span>
+                <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Sự Kiện Đồng Hành</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">9+</span>
+                <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Năm Phát Triển</span>
+              </div>
+            </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-16">
-          <Link href="/branches" className="group flex h-14 items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-500 px-8 text-base font-bold text-white transition-all shadow-xl shadow-indigo-600/30">
-            Tìm cửa hàng gần đây
-            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </Link>
-          <Link href="/franchise" className="flex h-14 items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 px-8 text-base font-bold transition-all">
-            Hợp tác Nhượng quyền
-          </Link>
-          <Link href="/promotions" className="flex h-14 items-center justify-center rounded-full border border-indigo-500/20 bg-indigo-500/5 hover:bg-indigo-500/10 px-8 text-base font-bold text-indigo-400 transition-all">
-            Xem khuyến mãi
-          </Link>
+            {/* Story Box (Right) */}
+            <div className="lg:col-span-6" data-animate="scale-up" data-delay="150">
+              <div className="p-8 border border-white/10 rounded-3xl bg-white/5 backdrop-blur-md relative overflow-hidden">
+                {/* Ambient glow */}
+                <div className="absolute top-[-20%] right-[-20%] w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+                
+                <h3 className="text-lg font-black tracking-wider text-orange-500 mb-4 uppercase">
+                  EXPRESS CAFE
+                </h3>
+                <p className="text-xs md:text-sm text-zinc-300 leading-relaxed">
+                  Express Cafe tự hào mang đến nguồn sinh khí mới, năng động và đẳng cấp trong phong cách thưởng thức cà phê hiện đại. Chúng tôi kiến tạo nên một nền tảng bán hàng và vận hành thông minh từ xa, mang lại lợi ích thực tiễn cao nhất và bền vững cho mọi đối tác nhượng quyền đồng hành trên cả nước.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        {/* Feature Highlights Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full text-left">
-          <Link href="/promotions" className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer">
-            <Coffee className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="font-bold text-base mb-2">Cổng Khuyến Mãi</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed">Áp dụng mã WELCOME100 nhận 100K hoặc EXPRESS50 nhận 10% chiết khấu giỏ hàng tức thì.</p>
-          </Link>
-          <Link href="/profile" className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer">
-            <ShieldCheck className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="font-bold text-base mb-2">Tích Điểm Thành Viên</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed">Đăng ký nhận ngay 100 điểm thưởng. Quản lý địa chỉ giao hàng và tài khoản cá nhân tiện lợi.</p>
-          </Link>
-          <Link href="/branches" className="glass-panel p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 transition-all cursor-pointer">
-            <CreditCard className="w-8 h-8 text-indigo-400 mb-4" />
-            <h3 className="font-bold text-base mb-2">GPS Tìm Chi Nhánh</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed">Tự động định vị, tính khoảng cách Haversine và hiển thị bản đồ các chi nhánh Express Cafe.</p>
-          </Link>
-        </div>
-      </main>
+      {/* Main Footer (Bottom copyright) */}
+      <Footer />
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full text-center py-8 border-t border-white/5 text-zinc-500 text-xs">
-        © 2026 Express Cafe Corporation. Mọi quyền được bảo lưu.
-      </footer>
     </div>
   );
 }

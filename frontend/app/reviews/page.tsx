@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useReviewsQuery, usePostReviewMutation } from '../../hooks/useReviewQueries';
 import { Star, MessageSquare, Award, ArrowLeft, RefreshCw, CheckCircle, ShieldAlert, Coffee, User } from 'lucide-react';
 import Link from 'next/link';
+import { Header } from '../../components/layout/Header';
+import { Footer } from '../../components/layout/Footer';
 
 export default function ReviewsPage() {
   const targetType = 'PRODUCT';
@@ -104,27 +106,7 @@ export default function ReviewsPage() {
       <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Header bar */}
-      <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <Star className="w-6 h-6 text-indigo-500 fill-indigo-500" />
-              <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-indigo-400 to-indigo-200 bg-clip-text text-transparent">
-                REVIEWS SYSTEM
-              </span>
-            </div>
-          </div>
-          <Link
-            href="/blog"
-            className="text-xs font-semibold px-4 py-2 rounded-full border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-all"
-          >
-            Trang Tin Tức
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero section */}
       <section className="text-center py-10 px-4 max-w-4xl mx-auto">
@@ -339,6 +321,10 @@ export default function ReviewsPage() {
           </div>
         </div>
       </main>
+      
+      <div className="mt-20">
+        <Footer />
+      </div>
     </div>
   );
 }

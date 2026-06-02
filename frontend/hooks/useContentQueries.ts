@@ -11,6 +11,7 @@ export interface Article {
   status: string;
   publishedAt?: string;
   createdAt: string;
+  imageUrl?: string;
 }
 
 export interface Banner {
@@ -42,5 +43,15 @@ export function useBannersQuery() {
   return useQuery<Banner[], ApiError>({
     queryKey: ['banners'],
     queryFn: () => apiFetch<Banner[]>('/content/banners'),
+  });
+}
+
+export function useServicesQuery() {
+  return useQuery<Article[], ApiError>({
+    queryKey: ['articles', 'services'],
+    queryFn: async () => {
+      const articles = await apiFetch<Article[]>('/content/articles');
+      return articles.filter(a => a.blogHandle === 'services');
+    },
   });
 }

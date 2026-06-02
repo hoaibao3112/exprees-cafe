@@ -29,6 +29,9 @@ export class Branch {
   @Column({ name: 'is_flagship', default: false })
   isFlagship: boolean;
 
+  @Column({ name: 'image_url', nullable: true })
+  imageUrl: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

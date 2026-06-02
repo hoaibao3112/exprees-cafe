@@ -23,6 +23,9 @@ import { ContentModule } from './modules/content/content.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { MediaModule } from './modules/media/media.module';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
@@ -133,7 +136,9 @@ import { MediaFile } from './modules/media/entities/media-file.entity';
     ReviewsModule,
     MediaModule,
   ],
+  controllers: [AppController],
   providers: [
+    AppService,
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,

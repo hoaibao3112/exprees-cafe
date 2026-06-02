@@ -1,0 +1,322 @@
+[
+  {
+    "title": "KHU DÂN CƯ CONIC GARDEN - BÌNH CHÁNH",
+    "link": "https://expresscafe.com.vn/products/express-cafe-khu-dan-cu-conic-garden-binh-chanh",
+    "remoteImageUrl": "https://cdn.hstatic.net/products/200000915205/9_1ef7a058d1454946b42d43ddc0cd0c9e_large.png",
+    "localImageUrl": "/scraped_data/images/branches/khu-dan-cu-conic-garden-binh-chanh.png",
+    "address": "Khu dân cư Conic Garden – Bình Chánh, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.691838580773862,
+    "lng": 106.58698812532964,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "BỆNH VIỆN ĐẠI HỌC Y DƯỢC THÀNH PHỐ HỒ CHÍ MINH (LẦU 3)",
+    "link": "https://expresscafe.com.vn/products/express-cafe-benh-vien-dai-hoc-y-duoc-thanh-pho-ho-chi-minh-lau-3",
+    "remoteImageUrl": "https://cdn.hstatic.net/products/200000915205/_nh_b_a_0bb5c2fcf1ef40c389e87ae1314cb6c3_large.png",
+    "localImageUrl": "/scraped_data/images/branches/benh-vien-dai-hoc-y-duoc-thanh-pho-ho-chi-minh-lau-3.png",
+    "address": "Bệnh viện Đại học Y Dược TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.778172662862726,
+    "lng": 106.68640944070616,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": true
+  },
+  {
+    "title": "BỆNH VIỆN ĐẠI HỌC Y DƯỢC THÀNH PHỐ HỒ CHÍ MINH (SẢNH KHU KHÁM BỆNH)",
+    "link": "https://expresscafe.com.vn/products/express-cafe-benh-vien-dai-hoc-y-duoc-thanh-pho-ho-chi-minh-sanh-khu-kham-benh",
+    "remoteImageUrl": "https://cdn.hstatic.net/products/200000915205/_nh_b_a_2727126b545d495db00abd8599d10056_large.png",
+    "localImageUrl": "/scraped_data/images/branches/benh-vien-dai-hoc-y-duoc-thanh-pho-ho-chi-minh-sanh-khu-kham-benh.png",
+    "address": "Sảnh khu khám bệnh, Bệnh viện Đại học Y Dược TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.779486210022261,
+    "lng": 106.70043123174008,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "CẦN THƠ",
+    "link": "https://expresscafe.com.vn/products/express-cafe-can-tho",
+    "remoteImageUrl": "https://cdn.hstatic.net/products/200000915205/_nh_b_a_78c1a16a72af481d97496d4488db1809_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/can-tho.jpg",
+    "address": "Khách sạn Mes",
+    "phone": "0909666792",
+    "lat": 10.029148432989176,
+    "lng": 105.77430793599885,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "BẾN VÂN ĐỒN, QUẬN 4",
+    "link": "https://expresscafe.com.vn/products/69-ben-van-don-phuong-13-quan-4",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/bvdweb_d38b0f5555b649aaa06ddd8a5ec4c78f_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/ben-van-don-quan-4.jpg",
+    "address": "69 Bến Vân Đồn, Phường 13, Quận 4, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.762448867534527,
+    "lng": 106.70968372266155,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": true
+  },
+  {
+    "title": "BỆNH VIỆN ĐẠI HỌC Y DƯỢC CẦN THƠ",
+    "link": "https://expresscafe.com.vn/products/express-cafe-benh-vien-dai-hoc-y-duoc-can-tho",
+    "remoteImageUrl": "https://cdn.hstatic.net/products/200000915205/_nh_b_a_b3363657acdb4da0b61a7a4234321ce1_large.png",
+    "localImageUrl": "/scraped_data/images/branches/benh-vien-dai-hoc-y-duoc-can-tho.png",
+    "address": "Bệnh viện Đại học Y Dược Cần Thơ",
+    "phone": "0909666792",
+    "lat": 10.026818204086986,
+    "lng": 105.7773760099321,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "LONG AN",
+    "link": "https://expresscafe.com.vn/products/express-cafe-long-an",
+    "remoteImageUrl": "https://cdn.hstatic.net/products/200000915205/_nh_b_a_f0a232b466f646b5949b1bd6cba45b0f_large.png",
+    "localImageUrl": "/scraped_data/images/branches/long-an.png",
+    "address": "Long An",
+    "phone": "0909666792",
+    "lat": 10.540782434940887,
+    "lng": 106.40700750825816,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "NGUYỄN THÁI HỌC, QUẬN 1",
+    "link": "https://expresscafe.com.vn/products/express-cafe-nguyen-thai-hoc-quan-1",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/anh_man_hinh_2024-12-09_luc_21.03.26_5547f5cd90d64ac38458a767b74c0666_large.png",
+    "localImageUrl": "/scraped_data/images/branches/nguyen-thai-hoc-quan-1.png",
+    "address": "Nguyễn Thái Học, Phường Cầu Ông Lãnh, Quận 1, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.778007155847286,
+    "lng": 106.6990677056239,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "NGUYỄN TRI PHƯƠNG - QUẬN 10",
+    "link": "https://expresscafe.com.vn/products/nguyen-tri-phuong",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/ntt1_fae0684014c1421ab91382559e005765_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/nguyen-tri-phuong-quan-10.jpg",
+    "address": "Nguyễn Tri Phương, Phường 4, Quận 10, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.771922473965526,
+    "lng": 106.69466276890016,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "HOÀNG HOA THÁM, QUẬN TÂN BÌNH",
+    "link": "https://expresscafe.com.vn/products/175-hoang-hoa-tham-phuong-13-quan-tan-binh",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/cmt8.1_a1c9bb391d434d679bfee4c1b142e509_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/hoang-hoa-tham-quan-tan-binh.jpg",
+    "address": "175 Hoàng Hoa Thám, Phường 13, Quận Tân Bình, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.793607046778869,
+    "lng": 106.64651295851519,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "CƯ XÁ VĨNH HỘI, QUẬN 4",
+    "link": "https://expresscafe.com.vn/products/quan-69-ben-van-don-phuong-13-quan-4",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/vh_a2d39653f5024301b87e26dcfe3451b6_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/cu-xa-vinh-hoi-quan-4.jpg",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.753054098979682,
+    "lng": 106.70269759165201,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "LẠC LONG QUÂN, QUẬN 11",
+    "link": "https://expresscafe.com.vn/products/176-bau-cat-phuong-14-quan-tan-binh",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/anh_man_hinh_2024-12-09_luc_21.03.22_7fcdae826d0a4dc18dc0ccc036e8a9d7_large.png",
+    "localImageUrl": "/scraped_data/images/branches/lac-long-quan-quan-11.png",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.779294296936252,
+    "lng": 106.70101631732109,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "NGUYỄN TRƯỜNG TỘ, QUẬN 4",
+    "link": "https://expresscafe.com.vn/products/20-9-nguyen-truong-to-phuong-12-quan-4",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/chua_co_ten__1000_x_1000_px___10__bd178ec35cd749e08bbe4b584d724e04_large.png",
+    "localImageUrl": "/scraped_data/images/branches/nguyen-truong-to-quan-4.png",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.758023210765687,
+    "lng": 106.7078649026387,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "CMT8, QUẬN 3",
+    "link": "https://expresscafe.com.vn/products/153-cach-mang-thang-8-phuuong-5-quan-3",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/chua_co_ten__1000_x_1000_px___11__54cf1c3ab0684115ad5ff6802cd279dd_large.png",
+    "localImageUrl": "/scraped_data/images/branches/cmt8-quan-3.png",
+    "address": "153 Cách Mạng Tháng Tám, Phường 5, Quận 3, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.77849756152857,
+    "lng": 106.68577045045667,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "LÂM VĂN BỀN, QUẬN 7",
+    "link": "https://expresscafe.com.vn/products/express-cafe-lam-van-ben-q7",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/lvb_c10b1a6634864b84b4c22ff25b58c952_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/lam-van-ben-quan-7.jpg",
+    "address": "Lâm Văn Bền, Phường Tân Quy, Quận 7, TP. Hồ Chí Minh",
+    "phone": "0909666792",
+    "lat": 10.73496487060389,
+    "lng": 106.72580578322804,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "KHU ĐÔ THỊ SALA, QUẬN 2",
+    "link": "https://expresscafe.com.vn/products/nhan-ban-tu-mo-cay-bac-ben-tre",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/chua_co_ten__1000_x_1000_px___6__185428f997844849838988414ed67fbb_large.png",
+    "localImageUrl": "/scraped_data/images/branches/khu-do-thi-sala-quan-2.png",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.775178595416621,
+    "lng": 106.73596574978008,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": true
+  },
+  {
+    "title": "BẾN TRE",
+    "link": "https://expresscafe.com.vn/products/mo-cay-bac-ben-tre",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/bt3.3_d84de0d670b64ed7a723b6140a9b8b29_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/ben-tre.jpg",
+    "address": "Đại lộ Đồng Khởi, Phú Khương, Bến Tre",
+    "phone": "0909666792",
+    "lat": 10.24625178272905,
+    "lng": 106.38342020449488,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "LÝ THƯỜNG KIỆT, QUẬN 10",
+    "link": "https://expresscafe.com.vn/products/324f-ly-thuong-kiet-quan-10",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/chua_co_ten__1000_x_1000_px___3__50d3287a3a43425e9a8a621b58cfff64_large.png",
+    "localImageUrl": "/scraped_data/images/branches/ly-thuong-kiet-quan-10.png",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.772390324094385,
+    "lng": 106.70009185062844,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "ÚT TỊCH, QUẬN TÂN BÌNH",
+    "link": "https://expresscafe.com.vn/products/express-cafe-tai-1a-ut-tich-phuong-4",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/anh_man_hinh_2024-12-09_luc_21.03.30_b492569af15244e28acfa556c42c2b4b_large.png",
+    "localImageUrl": "/scraped_data/images/branches/ut-tich-quan-tan-binh.png",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.792779477872294,
+    "lng": 106.65063425736011,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  },
+  {
+    "title": "BÀU CÁT, QUẬN TÂN BÌNH",
+    "link": "https://expresscafe.com.vn/products/express-cafe-tai-176-bau-cat-phuong-14-quan-tan-binh",
+    "remoteImageUrl": "https://product.hstatic.net/200000915205/product/bc1_8e9391fbf8ba4af28370ee1031a0f42d_large.jpg",
+    "localImageUrl": "/scraped_data/images/branches/bau-cat-quan-tan-binh.jpg",
+    "address": "&nbsp;",
+    "phone": "0909666792",
+    "lat": 10.792659695959669,
+    "lng": 106.64669568727565,
+    "openingHours": {
+      "open": "07:00",
+      "close": "22:00"
+    },
+    "status": "ACTIVE",
+    "isFlagship": false
+  }
+]

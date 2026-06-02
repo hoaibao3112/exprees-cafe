@@ -2,246 +2,413 @@
 
 import { useState } from 'react';
 import { useArticlesQuery, useBannersQuery } from '../../hooks/useContentQueries';
-import { ArrowLeft, BookOpen, Clock, Tag, RefreshCw, Calendar, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
+import { useScrollAnimation } from '../../hooks/useScrollAnimation';
+import { 
+  BookOpen, 
+  Clock, 
+  Tag, 
+  RefreshCw, 
+  Calendar, 
+  ChevronRight, 
+  ChevronLeft,
+  MessageSquare,
+  Search,
+  Sparkles,
+  ArrowRight,
+  Mail
+} from 'lucide-react';
 import Link from 'next/link';
+import { Header } from '../../components/layout/Header';
+import { Footer } from '../../components/layout/Footer';
+
+const ARTICLES_PER_PAGE = 6;
 
 export default function BlogPage() {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
+  useScrollAnimation();
+  const [activeCategory, setActiveCategory] = useState<string>('ALL');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [newsletterEmail, setNewsletterEmail] = useState<string>('');
+  const [newsletterFeedback, setNewsletterFeedback] = useState<boolean>(false);
 
+  // Fetch articles and banners dynamically from the NestJS PostgreSQL backend
   const { data: articles, isLoading: isLoadingArticles } = useArticlesQuery();
   const { data: banners, isLoading: isLoadingBanners } = useBannersQuery();
 
-  const handleNextSlide = () => {
-    if (!banners || banners.length === 0) return;
-    setActiveSlide((prev) => (prev + 1) % banners.length);
+  // Filter out F&B services to only display standard blog/news articles
+  const blogAndNewsArticles = (articles || []).filter(
+    (item) => item.blogHandle === 'news' || item.blogHandle === 'blog'
+  );
+
+  // Filter based on active sidebar category
+  const filteredArticles = blogAndNewsArticles.filter((item) => {
+    if (activeCategory === 'ALL') return true;
+    if (activeCategory === 'NEWS') return item.blogHandle === 'news';
+    if (activeCategory === 'BLOG') return item.blogHandle === 'blog';
+    return true;
+  });
+
+  // Calculate pagination variables
+  const totalArticles = filteredArticles.length;
+  const totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const paginatedArticles = filteredArticles.slice(startIndex, startIndex + ARTICLES_PER_PAGE);
+
+  // Extract recent articles (top 7 newest)
+  const recentArticles = [...blogAndNewsArticles]
+    .sort((a, b) => new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())
+    .slice(0, 7);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 350, behavior: 'smooth' });
   };
 
-  const handlePrevSlide = () => {
-    if (!banners || banners.length === 0) return;
-    setActiveSlide((prev) => (prev - 1 + banners.length) % banners.length);
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setNewsletterFeedback(true);
+    setTimeout(() => {
+      setNewsletterFeedback(false);
+      setNewsletterEmail('');
+    }, 3000);
   };
-
-  const activeBanner = banners && banners.length > 0 ? banners[activeSlide] : null;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-16">
-      {/* Background ambient blur */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-20 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+    <div className="min-h-screen bg-white text-zinc-800 font-sans flex flex-col justify-between antialiased">
+      
+      {/* 1. Header Bar */}
+      <Header />
 
-      {/* Header bar */}
-      <header className="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-slate-400 hover:text-white transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-indigo-500" />
-              <span className="font-bold text-lg tracking-wider bg-gradient-to-r from-indigo-400 to-indigo-200 bg-clip-text text-transparent">
-                EXPRESS BLOG
-              </span>
-            </div>
+      {/* 2. Hero Banner Section */}
+      <section 
+        className="relative w-full h-[180px] md:h-[220px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
+        style={{
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover'
+        }}
+      >
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
+          <h1 data-animate="blur-in" className="text-white font-heading italic text-4xl md:text-5xl uppercase tracking-wider leading-none">
+            Blog & Tin Tức
+          </h1>
+          
+          {/* Breadcrumbs */}
+          <div className="flex items-center justify-center gap-2 text-zinc-300 font-body text-xs font-light mt-4">
+            <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
+            <ChevronRight className="w-3.5 h-3.5" />
+            <span className="text-orange-500 font-bold">Blog</span>
           </div>
-          <Link
-            href="/reviews"
-            className="text-xs font-semibold px-4 py-2 rounded-full border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-all"
-          >
-            Đánh Giá Sản Phẩm
-          </Link>
         </div>
-      </header>
 
-      {/* Banner HERO Slideshow */}
-      {isLoadingBanners ? (
-        <div className="h-64 flex items-center justify-center text-slate-500 max-w-6xl mx-auto px-4 mt-6">
-          <RefreshCw className="w-6 h-6 text-indigo-500 animate-spin mr-2" />
-          <span>Đang tải slideshow quảng cáo...</span>
+        
+        {/* Decorative Wave Overlay */}
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0">
+          <svg className="relative block w-full h-8 fill-white" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" />
+          </svg>
         </div>
-      ) : activeBanner ? (
-        <section className="max-w-6xl mx-auto px-4 mt-6 relative group">
-          <div className="h-80 w-full rounded-3xl overflow-hidden relative border border-slate-800 shadow-xl">
-            <img
-              src={activeBanner.imageUrl}
-              alt={activeBanner.title}
-              className="w-full h-full object-cover transition-transform duration-500"
-            />
-            {/* Dark glassmorphic gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-8" />
-            <div className="absolute bottom-8 left-8 right-8">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
-                Chương trình nổi bật
-              </span>
-              <h2 className="text-xl md:text-3xl font-black text-white mt-3 leading-tight max-w-2xl">
-                {activeBanner.title}
-              </h2>
-              {activeBanner.linkUrl && (
-                <Link
-                  href={activeBanner.linkUrl}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 mt-4 hover:underline"
-                >
-                  <span>Khám phá ngay</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              )}
-            </div>
-          </div>
+      </section>
 
-          {/* Navigation Controls */}
-          {banners && banners.length > 1 && (
-            <>
-              <button
-                onClick={handlePrevSlide}
-                className="absolute left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/80 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-all opacity-0 group-hover:opacity-100"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleNextSlide}
-                className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-950/80 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition-all opacity-0 group-hover:opacity-100"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-              {/* Pagination Dots */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-                {banners.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveSlide(idx)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      idx === activeSlide ? 'bg-indigo-500 w-5' : 'bg-slate-700 hover:bg-slate-500'
-                    }`}
-                  />
-                ))}
+      {/* 3. Main Layout Grid */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* LEFT COLUMN: Articles Grid */}
+          <div className="lg:col-span-8 flex flex-col gap-10">
+            {isLoadingArticles ? (
+              <div className="flex flex-col items-center justify-center py-20 text-zinc-400">
+                <RefreshCw className="w-8 h-8 text-orange-500 animate-spin mb-3" />
+                <p className="text-xs font-semibold">Đang tải bản tin...</p>
               </div>
-            </>
-          )}
-        </section>
-      ) : null}
+            ) : paginatedArticles.length === 0 ? (
+              <div className="text-center py-20 border border-dashed border-zinc-200 bg-zinc-50 rounded-3xl">
+                <BookOpen className="w-12 h-12 text-zinc-300 mx-auto mb-3" />
+                <h3 className="font-bold text-zinc-700">Chưa có bài viết nào</h3>
+                <p className="text-xs text-zinc-400 mt-1">Hệ thống đang được cập nhật các nội dung bổ ích mới.</p>
+              </div>
+            ) : (
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {paginatedArticles.map((article, index) => {
+                    const localDate = article.publishedAt
+                      ? new Date(article.publishedAt).toLocaleDateString('vi-VN')
+                      : 'Gần đây';
 
-      {/* Main Articles Grid */}
-      <main className="max-w-6xl mx-auto px-4 mt-12">
-        <h2 className="text-2xl font-black tracking-tight text-slate-200 mb-6 flex items-center gap-2">
-          <BookOpen className="text-indigo-500" /> Bản Tin Ẩm Thực Express
-        </h2>
+                    return (
+                      <div 
+                        key={article.id}
+                        data-animate="fade-up"
+                        data-delay={String(((index % 6) + 1) * 100)}
+                        className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-lg hover:shadow-orange-100 flex flex-col justify-between"
+                      >
+                        <div>
+                          {/* Card Thumbnail wrapped in standard dynamic Link */}
+                          <Link href={`/blog/${article.slug}`} className="block relative aspect-[16/10] bg-zinc-100 overflow-hidden border-b border-zinc-100">
+                            <img 
+                              src={article.imageUrl || 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=500&auto=format&fit=crop'} 
+                              alt={article.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 overflow-hidden"
+                            />
+                            
+                            <span className="absolute top-4 left-4 text-[9px] font-body font-medium uppercase tracking-wider text-orange-500 bg-orange-50/95 border border-orange-200/50 px-3 py-1 rounded-lg shadow-sm">
+                              {article.blogHandle === 'news' ? 'TIN TỨC' : 'EXPERIENCE'}
+                            </span>
+                          </Link>
 
-        {isLoadingArticles ? (
-          <div className="flex flex-col items-center justify-center py-20 text-slate-500">
-            <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin mb-3" />
-            <p className="text-sm">Đang tải các bài viết chia sẻ...</p>
-          </div>
-        ) : !articles || articles.length === 0 ? (
-          <div className="text-center py-20 border border-slate-800 rounded-3xl bg-slate-900/10">
-            <BookOpen className="w-10 h-10 mx-auto text-slate-700 mb-3" />
-            <p className="text-slate-400 text-sm">Hiện chưa có bài viết nào được đăng</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setSelectedArticle(item)}
-                className="group border border-slate-800 bg-slate-900/30 rounded-3xl overflow-hidden hover:border-slate-700 transition-all cursor-pointer flex flex-col justify-between"
-              >
-                {/* Simulated Article Cover Image using harmonized colored placeholders */}
-                <div className="h-44 w-full bg-slate-800 relative overflow-hidden flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/30 to-slate-800" />
-                  <CoffeeCoverImage slug={item.slug} />
-                  <span className="absolute top-4 left-4 text-[9px] font-extrabold uppercase tracking-widest text-indigo-400 bg-indigo-500/15 border border-indigo-500/20 px-2 py-0.5 rounded-md backdrop-blur-md">
-                    {item.blogHandle === 'news' ? 'Tin tức F&B' : 'Kinh nghiệm pha'}
-                  </span>
+                          {/* Card Content Body */}
+                          <div className="p-6">
+                            {/* Date published */}
+                            <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-semibold mb-3">
+                              <Calendar className="w-3.5 h-3.5 text-zinc-400" />
+                              <span className="font-reading">{localDate}</span>
+                              <span>•</span>
+                              <Clock className="w-3.5 h-3.5 text-zinc-400" />
+                              <span className="font-reading">5 phút đọc</span>
+                            </div>
+
+                            <Link href={`/blog/${article.slug}`} className="block hover:text-orange-500">
+                              <h3 className="font-body font-semibold text-lg leading-snug text-zinc-950 group-hover:text-orange-500 transition-colors duration-300 line-clamp-2">
+                                {article.title}
+                              </h3>
+                            </Link>
+                            
+                            {/* Simple text excerpt */}
+                            <p className="font-reading font-light text-zinc-500 text-sm leading-relaxed mt-3 line-clamp-3">
+                              {article.contentHtml 
+                                ? article.contentHtml.replace(/<[^>]*>/g, '').slice(0, 140) + '...'
+                                : 'Tìm hiểu những chia sẻ hữu ích, thông tin chuyển giao mô hình xe cà phê và công thức pha chế...'
+                              }
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Card CTA Button */}
+                        <div className="p-6 pt-0">
+                          <Link
+                            href={`/blog/${article.slug}`}
+                            className="block w-full py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] transition-all duration-200 text-white font-body font-semibold text-xs tracking-[0.15em] hover:tracking-[0.2em] hover:text-orange-600 uppercase rounded-2xl shadow-md shadow-orange-500/10 text-center"
+                          >
+                            ĐỌC TIẾP
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-bold text-slate-200 group-hover:text-indigo-400 transition-colors text-sm line-clamp-2 leading-relaxed">
-                      {item.title}
-                    </h3>
-                  </div>
+                {/* Pagination Controls Block */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-2.5 mt-12 border-t border-zinc-100 pt-8">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="w-9 h-9 rounded-xl border border-zinc-200 bg-white text-zinc-600 flex items-center justify-center hover:bg-zinc-50 disabled:opacity-50 transition-all cursor-pointer active:scale-95"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
 
-                  <div className="mt-6 pt-4 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                      <span>
-                        {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('vi-VN') : 'Mới đây'}
+                    {Array.from({ length: totalPages }).map((_, i) => {
+                      const page = i + 1;
+                      const active = page === currentPage;
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`w-9 h-9 rounded-xl text-xs font-black transition-all cursor-pointer active:scale-95 flex items-center justify-center ${
+                            active 
+                              ? 'bg-orange-500 text-white shadow-md' 
+                              : 'border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="w-9 h-9 rounded-xl border border-zinc-200 bg-white text-zinc-600 flex items-center justify-center hover:bg-zinc-50 disabled:opacity-50 transition-all cursor-pointer active:scale-95"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT COLUMN: Sidebar Section */}
+          <div className="lg:col-span-4 space-y-10" data-animate="fade-up" data-delay="100">
+            
+            {/* Box 1: Recent Posts List */}
+            <div className="p-6 bg-zinc-50 border border-zinc-150 rounded-3xl space-y-6">
+              <h3 className="font-body font-semibold tracking-widest uppercase text-xs text-zinc-400 pb-3 border-b border-zinc-200">
+                Bài viết mới nhất
+              </h3>
+
+              <div className="flex flex-col gap-4">
+                {isLoadingArticles ? (
+                  <div className="py-6 text-center text-zinc-400 text-xs">Đang tải danh sách bài...</div>
+                ) : recentArticles.length === 0 ? (
+                  <div className="py-6 text-center text-zinc-400 text-xs">Chưa có bài viết mới.</div>
+                ) : (
+                  recentArticles.map((article, idx) => (
+                    <Link 
+                      key={article.id}
+                      href={`/blog/${article.slug}`}
+                      className="group flex gap-3.5 items-start"
+                    >
+                      {/* Number tag */}
+                      <span className="w-6 h-6 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 font-body font-semibold text-[10px] shrink-0 mt-0.5 group-hover:bg-orange-500 group-hover:text-white transition-all duration-300">
+                        {idx + 1}
                       </span>
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-slate-500" />
-                      <span>5 phút đọc</span>
-                    </span>
-                  </div>
-                </div>
+                      
+                      {/* Title link */}
+                      <div className="space-y-1">
+                        <h4 className="font-body font-semibold text-xs text-zinc-900 group-hover:text-orange-500 transition-colors duration-300 leading-snug line-clamp-2">
+                          {article.title}
+                        </h4>
+                        <span className="block font-reading font-light text-[9px] text-zinc-400 uppercase tracking-wider">
+                          {article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('vi-VN') : 'Mới đây'}
+                        </span>
+                      </div>
+                    </Link>
+                  ))
+                )}
               </div>
-            ))}
+            </div>
+
+            {/* Box 2: Blog Categories and Quick Navigation Links */}
+            <div className="p-6 bg-zinc-50 border border-zinc-150 rounded-3xl space-y-6">
+              <h3 className="font-body font-semibold tracking-widest uppercase text-xs text-zinc-400 pb-3 border-b border-zinc-200">
+                Danh mục Blog
+              </h3>
+
+              <nav className="flex flex-col gap-2">
+                {/* Category filters */}
+                <button 
+                  onClick={() => { setActiveCategory('ALL'); setCurrentPage(1); }}
+                  data-active={activeCategory === 'ALL'}
+                  className={`w-full py-2.5 px-4 rounded-xl text-left font-body font-medium text-xs tracking-widest uppercase transition-all duration-200 data-[active=true]:scale-105 data-[active=true]:shadow-sm ${
+                    activeCategory === 'ALL' 
+                      ? 'bg-orange-500 text-white shadow-md' 
+                      : 'bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150'
+                  }`}
+                >
+                  Tất cả bài viết ({blogAndNewsArticles.length})
+                </button>
+
+                <button 
+                  onClick={() => { setActiveCategory('NEWS'); setCurrentPage(1); }}
+                  data-active={activeCategory === 'NEWS'}
+                  className={`w-full py-2.5 px-4 rounded-xl text-left font-body font-medium text-xs tracking-widest uppercase transition-all duration-200 data-[active=true]:scale-105 data-[active=true]:shadow-sm ${
+                    activeCategory === 'NEWS' 
+                      ? 'bg-orange-500 text-white shadow-md' 
+                      : 'bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150'
+                  }`}
+                >
+                  Tin tức F&B ({blogAndNewsArticles.filter(a => a.blogHandle === 'news').length})
+                </button>
+
+                <button 
+                  onClick={() => { setActiveCategory('BLOG'); setCurrentPage(1); }}
+                  data-active={activeCategory === 'BLOG'}
+                  className={`w-full py-2.5 px-4 rounded-xl text-left font-body font-medium text-xs tracking-widest uppercase transition-all duration-200 data-[active=true]:scale-105 data-[active=true]:shadow-sm ${
+                    activeCategory === 'BLOG' 
+                      ? 'bg-orange-500 text-white shadow-md' 
+                      : 'bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150'
+                  }`}
+                >
+                  Kinh nghiệm/Blogs ({blogAndNewsArticles.filter(a => a.blogHandle === 'blog').length})
+                </button>
+
+                {/* Separator */}
+                <div className="h-[1px] bg-zinc-200 my-2" />
+
+                {/* Smart links navigation redirects matching sidebar items in mockup */}
+                <Link 
+                  href="/services" 
+                  className="w-full py-2.5 px-4 rounded-xl text-left bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150 flex items-center justify-between font-reading font-light text-sm"
+                >
+                  <span>Dịch vụ liên kết F&B</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </Link>
+
+                <Link 
+                  href="/franchise" 
+                  className="w-full py-2.5 px-4 rounded-xl text-left bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150 flex items-center justify-between font-reading font-light text-sm"
+                >
+                  <span>Hợp tác Nhượng Quyền</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </Link>
+
+                <Link 
+                  href="/branches" 
+                  className="w-full py-2.5 px-4 rounded-xl text-left bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150 flex items-center justify-between font-reading font-light text-sm"
+                >
+                  <span>Hệ thống Chi Nhánh</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </Link>
+
+                <Link 
+                  href="/contact" 
+                  className="w-full py-2.5 px-4 rounded-xl text-left bg-white hover:bg-zinc-100/50 text-zinc-700 border border-zinc-150 flex items-center justify-between font-reading font-light text-sm"
+                >
+                  <span>Thông tin Liên Hệ</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                </Link>
+              </nav>
+            </div>
+
           </div>
-        )}
+        </div>
       </main>
 
-      {/* Article Detail Slide-in overlay modal */}
-      {selectedArticle && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl relative">
-            <button
-              onClick={() => setSelectedArticle(null)}
-              className="absolute top-4 right-4 bg-slate-950/80 border border-slate-800 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-all text-xs"
-            >
-              ✕
-            </button>
-
-            <div className="p-6 md:p-8">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-full border border-indigo-500/20">
-                {selectedArticle.blogHandle === 'news' ? 'Bản tin F&B' : 'Chia sẻ công thức'}
-              </span>
-              <h2 className="text-lg md:text-2xl font-black text-slate-200 mt-4 leading-relaxed">
-                {selectedArticle.title}
-              </h2>
-              <div className="mt-3 flex items-center gap-4 text-xs text-slate-500 font-medium">
-                <span>Người viết: Admin Express</span>
-                <span>•</span>
-                <span>
-                  Ngày đăng: {selectedArticle.publishedAt ? new Date(selectedArticle.publishedAt).toLocaleDateString('vi-VN') : 'Gần đây'}
-                </span>
-              </div>
-
-              <div
-                className="mt-8 prose prose-invert max-w-none text-xs text-slate-400 leading-relaxed border-t border-slate-800 pt-6 space-y-4"
-                dangerouslySetInnerHTML={{ __html: selectedArticle.contentHtml }}
-              />
-
-              <div className="mt-8 pt-6 border-t border-slate-800 flex justify-end">
-                <button
-                  onClick={() => setSelectedArticle(null)}
-                  className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs transition-all"
-                >
-                  Đóng bài viết
-                </button>
-              </div>
-            </div>
+      {/* 4. Pre-Footer: Newsletter Subscriptions Box */}
+      <section data-animate="scale-up" className="bg-zinc-50 border-t border-b border-zinc-150 py-12">
+        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
+          <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 mx-auto">
+            <Mail className="w-6 h-6" />
           </div>
-        </div>
-      )}
-    </div>
-  );
-}
+          
+          <div className="space-y-2">
+            <h3 className="font-heading italic text-2xl text-zinc-950">Đăng ký nhận bản tin</h3>
+            <p className="font-reading font-light text-zinc-500 text-sm max-w-lg mx-auto leading-relaxed">
+              Nhận các tin tức F&B mới nhất, công thức pha chế độc quyền và các chương trình ưu đãi nhượng quyền sớm nhất từ Express Cafe.
+            </p>
+          </div>
 
-// Simple beautiful themed mock visual representation backgrounds for F&B articles
-function CoffeeCoverImage({ slug }: { slug: string }) {
-  if (slug.includes('phin')) {
-    return (
-      <img
-        src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=400&auto=format&fit=crop"
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        alt="Phin Coffee"
-      />
-    );
-  }
-  return (
-    <img
-      src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=400&auto=format&fit=crop"
-      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-      alt="Specialty Coffee"
-    />
+          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-md mx-auto">
+            <input 
+              type="email"
+              required
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              placeholder="Nhập địa chỉ email của bạn..."
+              className="flex-1 px-4 py-2.5 bg-white border border-zinc-200 rounded-2xl font-reading font-light text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-1 focus:border-orange-400 transition-all duration-200 placeholder-zinc-400"
+            />
+            <button
+              type="submit"
+              disabled={newsletterFeedback}
+              className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white font-body font-semibold text-xs uppercase tracking-wider rounded-2xl shadow-md transition-all duration-200 active:scale-95 shrink-0"
+            >
+              {newsletterFeedback ? 'ĐÃ ĐĂNG KÝ ✓' : 'ĐĂNG KÝ'}
+            </button>
+          </form>
+          {newsletterFeedback && (
+            <p className="font-body font-semibold text-xs text-emerald-600 animate-pulse">
+              Đăng ký nhận bản tin thành công! Cảm ơn bạn đã quan tâm.
+            </p>
+          )}
+        </div>
+      </section>
+
+      {/* 5. Footer */}
+      <Footer />
+
+    </div>
   );
 }

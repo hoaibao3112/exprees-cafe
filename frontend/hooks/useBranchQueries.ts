@@ -12,6 +12,7 @@ export interface Branch {
   status: string;
   isFlagship: boolean;
   distanceKm?: number;
+  imageUrl?: string;
 }
 
 export function useBranchesQuery(status?: string) {

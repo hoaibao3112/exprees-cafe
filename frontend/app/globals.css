@@ -7,7 +7,10 @@
   --color-dark-bg: #09090b;
   --color-dark-card: rgba(18, 18, 24, 0.7);
   --color-dark-border: rgba(255, 255, 255, 0.08);
-  --font-sans: 'Outfit', 'Be Vietnam Pro', sans-serif;
+  --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: Georgia, 'Times New Roman', serif;
+  --font-body: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-reading: 'Segoe UI', Arial, sans-serif;
   --radius: 0.75rem;
 }
 
@@ -30,6 +33,78 @@ body {
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+}
+
+/* Smooth scroll toàn trang */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom selection color — đậm chất cafe */
+::selection {
+  background-color: #FED7AA; /* orange-200 */
+  color: #7C2D12; /* orange-950 */
+}
+
+/* Prose typography override cho blog */
+.prose h2, .prose h3 {
+  font-family: 'Lora', serif;
+  font-weight: 600;
+}
+.prose blockquote {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  border-left-color: #F97316;
+  color: #9A3412;
+}
+.prose a {
+  color: #EA580C;
+  text-decoration-color: #FED7AA;
+  transition: text-decoration-color 0.2s;
+}
+.prose a:hover {
+  text-decoration-color: #EA580C;
+}
+
+/* Base state — ẩn trước khi animate */
+[data-animate] {
+  opacity: 0;
+  transition-duration: 0.7s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-property: opacity, transform;
+}
+
+/* Triggered state */
+[data-animate].animate-in {
+  opacity: 1;
+  transform: none !important;
+}
+
+/* Variants */
+[data-animate="fade-up"]    { transform: translateY(32px); }
+[data-animate="fade-down"]  { transform: translateY(-24px); }
+[data-animate="fade-left"]  { transform: translateX(32px); }
+[data-animate="fade-right"] { transform: translateX(-32px); }
+[data-animate="scale-up"]   { transform: scale(0.94); }
+[data-animate="blur-in"]    { 
+  transform: translateY(16px); 
+  filter: blur(8px);
+  transition-property: opacity, transform, filter;
+}
+
+/* Stagger delays cho các list items */
+[data-delay="100"] { transition-delay: 0.1s; }
+[data-delay="200"] { transition-delay: 0.2s; }
+[data-delay="300"] { transition-delay: 0.3s; }
+[data-delay="400"] { transition-delay: 0.4s; }
+[data-delay="500"] { transition-delay: 0.5s; }
+
+/* Navbar scroll effect */
+.navbar-scrolled {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Glassmorphism Premium Utility */
