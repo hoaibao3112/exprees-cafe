@@ -16,6 +16,13 @@ export class FranchiseController {
     return this.franchiseService.findAllPackages(true);
   }
 
+  @Public()
+  @Get('packages/:id')
+  @ApiOperation({ summary: 'Get package details by ID' })
+  findOnePackage(@Param('id') id: string) {
+    return this.franchiseService.findPackageById(id);
+  }
+
   @Post('admin/packages')
   @ApiOperation({ summary: 'Create new investment package (Admin)' })
   createPackage(

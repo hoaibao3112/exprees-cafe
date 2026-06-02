@@ -45,7 +45,7 @@ export function useAuthQueries() {
     onSuccess: (data) => {
       setSession(data.user, data.accessToken);
       queryClient.setQueryData(['me'], data.user);
-      router.push('/profile');
+      router.push('/');
     },
   });
 

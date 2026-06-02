@@ -81,6 +81,13 @@ export default function Home() {
   // Activate scroll animations
   useScrollAnimation();
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.history.scrollRestoration = 'manual';
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }, []);
+
   // Slideshow state
   const [activeSlide, setActiveSlide] = useState(0);
   
@@ -306,8 +313,8 @@ export default function Home() {
                           Từ {Number(pkg.investmentFrom).toLocaleString('vi-VN')} đ
                         </span>
                       </div>
-                      <Link 
-                        href="/franchise" 
+                      <Link
+                        href={`/franchise/${pkg.id}`}
                         className="w-full py-3 bg-zinc-900 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-zinc-900/10 hover:shadow-orange-500/20 active:scale-[0.98]"
                       >
                         XEM CHI TIẾT

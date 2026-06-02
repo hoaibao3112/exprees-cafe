@@ -7,8 +7,8 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Coffee } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { label: 'GIỚI THIỆU', href: '/#about', slug: 'about' },
-  { label: 'NHƯỢNG QUYỀN', href: '/#franchise', slug: 'franchise' },
+  { label: 'GIỚI THIỆU', href: '/about', slug: 'about' },
+  { label: 'NHƯỢNG QUYỀN', href: '/franchise', slug: 'franchise' },
   { label: 'CHI NHÁNH', href: '/branches', slug: 'branches' },
   { label: 'DỊCH VỤ', href: '/services', slug: 'services' },
   { label: 'MENU', href: '/promotions', slug: 'promotions' },
@@ -52,9 +52,6 @@ export function Header() {
 
   // Determine if a menu link is currently active based on path
   const isLinkActive = (item: typeof NAV_ITEMS[0]) => {
-    if (item.href.startsWith('/#')) {
-      return false; // dynamic hash items can be scrolled
-    }
     return pathname.startsWith(item.href);
   };
 

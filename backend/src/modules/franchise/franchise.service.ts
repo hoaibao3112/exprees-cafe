@@ -23,6 +23,12 @@ export class FranchiseService implements OnApplicationBootstrap {
           modelType: 'KIOSK',
           investmentFrom: 250000000,
           description: 'Phù hợp với các vị trí vỉa hè, xe đẩy công nghệ, mặt bằng nhỏ từ 10m2 - 15m2. Tập trung bán mang đi (Take-away) và giao hàng nhanh.',
+          images: [
+            'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=800',
+          ],
           isActive: true,
         },
         {
@@ -30,6 +36,12 @@ export class FranchiseService implements OnApplicationBootstrap {
           modelType: 'EXPRESS',
           investmentFrom: 600000000,
           description: 'Mô hình cửa hàng tiêu chuẩn diện tích 50m2 - 80m2. Không gian kính sang trọng, tích hợp phục vụ tại chỗ sang xịn mịn và mang đi tiện lợi.',
+          images: [
+            'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=800',
+          ],
           isActive: true,
         },
         {
@@ -37,6 +49,12 @@ export class FranchiseService implements OnApplicationBootstrap {
           modelType: 'PREMIUM',
           investmentFrom: 1500000000,
           description: 'Cửa hàng trải nghiệm cao cấp diện tích từ 150m2 trở lên ở ngã tư sầm uất hoặc trung tâm thương mại. Thiết kế đẳng cấp, thu hút giới trẻ.',
+          images: [
+            'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&q=80&w=800',
+          ],
           isActive: true,
         },
       ];

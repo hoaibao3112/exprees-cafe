@@ -147,12 +147,12 @@ export const Footer: FC = () => {
             </h3>
             <ul className="flex flex-col gap-3 font-reading font-light text-sm">
               <li>
-                <Link href="/#about" className="text-zinc-500 hover:text-orange-500 transition-colors flex items-center gap-1.5">
+                <Link href="/about" className="text-zinc-500 hover:text-orange-500 transition-colors flex items-center gap-1.5">
                   <span className="text-zinc-300">—</span> Giới thiệu
                 </Link>
               </li>
               <li>
-                <Link href="/#franchise" className="text-zinc-500 hover:text-orange-500 transition-colors flex items-center gap-1.5">
+                <Link href="/franchise" className="text-zinc-500 hover:text-orange-500 transition-colors flex items-center gap-1.5">
                   <span className="text-zinc-300">—</span> Nhượng quyền
                 </Link>
               </li>
@@ -182,7 +182,7 @@ export const Footer: FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/#contact" className="text-zinc-500 hover:text-orange-500 transition-colors flex items-center gap-1.5">
+                <Link href="/contact" className="text-zinc-500 hover:text-orange-500 transition-colors flex items-center gap-1.5">
                   <span className="text-zinc-300">—</span> Liên hệ
                 </Link>
               </li>
@@ -217,7 +217,7 @@ export const Footer: FC = () => {
             
             {/* Consultation CTA Button */}
             <Link 
-              href="/#contact" 
+              href="/contact" 
               className="mt-2 inline-flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-body font-semibold text-xs uppercase tracking-wider rounded-full transition-all duration-300 shadow-md shadow-orange-500/10 hover:shadow-orange-600/30 active:scale-[0.98] w-fit"
             >
               Đăng ký tư vấn ngay

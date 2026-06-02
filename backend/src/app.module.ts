@@ -9,7 +9,7 @@ import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import redisConfig from './config/redis.config';
 
-import { RedisModule } from './common/redis/redis.module';
+// import { RedisModule } from './common/redis/redis.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { ProductsModule } from './modules/products/products.module';
@@ -30,7 +30,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
-import { RateLimitGuard } from './common/guards/rate-limit.guard';
+// import { RateLimitGuard } from './common/guards/rate-limit.guard'; // Temporarily disabled - Redis server not running
 
 import { User } from './modules/users/entities/user.entity';
 import { Role } from './modules/users/entities/role.entity';
@@ -55,6 +55,7 @@ import { FranchisePackage } from './modules/franchise/entities/franchise-package
 import { FranchiseApplication } from './modules/franchise/entities/franchise-application.entity';
 import { Article } from './modules/content/entities/article.entity';
 import { Banner } from './modules/content/entities/banner.entity';
+import { Video } from './modules/content/entities/video.entity';
 import { Review } from './modules/reviews/entities/review.entity';
 import { MediaFile } from './modules/media/entities/media-file.entity';
 
@@ -116,13 +117,14 @@ import { MediaFile } from './modules/media/entities/media-file.entity';
           FranchiseApplication,
           Article,
           Banner,
+          Video,
           Review,
           MediaFile,
         ],
         synchronize: true, // Safe for local sandboxed development
       }),
     }),
-    RedisModule,
+    // RedisModule, // Temporarily disabled - Redis server not running
     AuthModule,
     UsersModule,
     ProductsModule,
@@ -155,10 +157,10 @@ import { MediaFile } from './modules/media/entities/media-file.entity';
       provide: APP_GUARD,
       useClass: RolesGuard, // Roles checked globally, decorated with @Roles()
     },
-    {
-      provide: APP_GUARD,
-      useClass: RateLimitGuard, // Redis rate limiting checked globally
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: RateLimitGuard, // Redis rate limiting checked globally
+    // },
   ],
 })
 export class AppModule {}

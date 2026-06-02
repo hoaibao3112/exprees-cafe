@@ -130,9 +130,9 @@ export default function FranchisePage() {
             </div>
           ) : (
             (packages || []).map((pkg, idx) => (
-              <div
+              <Link
                 key={pkg.id}
-                onClick={() => handleSelectPackage(pkg.id)}
+                href={`/franchise/${pkg.id}`}
                 className={`p-6 rounded-[28px] border transition-all duration-500 cursor-pointer relative overflow-hidden flex flex-col justify-between hover:scale-[1.01] ${
                   selectedPkgId === pkg.id
                     ? 'border-orange-500 bg-orange-950/20 shadow-xl shadow-orange-500/10'
@@ -160,7 +160,7 @@ export default function FranchisePage() {
                     Từ {Number(pkg.investmentFrom).toLocaleString('vi-VN')} đ
                   </span>
                 </div>
-              </div>
+              </Link>
             ))
           )}
         </div>

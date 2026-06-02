@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './entities/article.entity';
 import { Banner } from './entities/banner.entity';
+import { Video } from './entities/video.entity';
 
 @Injectable()
 export class ContentService implements OnApplicationBootstrap {
@@ -11,6 +12,8 @@ export class ContentService implements OnApplicationBootstrap {
     private readonly articleRepository: Repository<Article>,
     @InjectRepository(Banner)
     private readonly bannerRepository: Repository<Banner>,
+    @InjectRepository(Video)
+    private readonly videoRepository: Repository<Video>,
   ) {}
 
   async onApplicationBootstrap() {

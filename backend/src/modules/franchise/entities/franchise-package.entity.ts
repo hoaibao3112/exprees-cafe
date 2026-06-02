@@ -18,6 +18,9 @@ export class FranchisePackage {
   @Column({ type: 'text', nullable: true })
   description: string;
 
+  @Column({ type: 'simple-array', nullable: true })
+  images: string[];
+
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 

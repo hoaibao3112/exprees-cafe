@@ -11,6 +11,7 @@ import {
   Clock, 
   ChevronRight,
   Send,
+  RefreshCw,
   CheckCircle2,
   Sparkles,
   MessageSquare

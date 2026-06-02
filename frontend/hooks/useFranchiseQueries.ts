@@ -7,6 +7,7 @@ export interface FranchisePackage {
   modelType: string;
   investmentFrom: number;
   description: string;
+  images?: string[];
   isActive: boolean;
 }
 
@@ -34,6 +35,14 @@ export function useFranchisePackagesQuery() {
   return useQuery<FranchisePackage[], ApiError>({
     queryKey: ['franchise-packages'],
     queryFn: () => apiFetch<FranchisePackage[]>('/franchise/packages'),
+  });
+}
+
+export function useFranchisePackageByIdQuery(id: string) {
+  return useQuery<FranchisePackage, ApiError>({
+    queryKey: ['franchise-package', id],
+    queryFn: () => apiFetch<FranchisePackage>(`/franchise/packages/${id}`),
+    enabled: !!id,
   });
 }
 

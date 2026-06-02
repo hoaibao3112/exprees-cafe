@@ -67,7 +67,7 @@ async function bootstrap() {
   // Graceful Shutdown
   app.enableShutdownHooks();
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001;
   await app.listen(port);
   console.log(`\n🚀 Express Cafe API running on: http://localhost:${port}/api/v1`);
   console.log(`📄 Swagger documentation available at: http://localhost:${port}/docs\n`);
