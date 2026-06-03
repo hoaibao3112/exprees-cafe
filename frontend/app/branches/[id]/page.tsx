@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
+import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { ArrowLeft, ChevronLeft, ChevronRight, MapPin, Phone, Clock, Map, Coffee, CheckCircle2 } from 'lucide-react';
 
 import { resolveUploadUrl, apiFetch } from '../../../lib/api';
 
 export default function BranchDetailPage(props: { params: Promise<{ id: string }> }) {
+  useScrollAnimation();
   const resolvedParams = React.use(props.params);
   const { id } = resolvedParams as { id: string };
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

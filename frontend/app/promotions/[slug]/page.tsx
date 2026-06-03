@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
+import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { useProductDetailQuery } from '../../../hooks/useProductsQueries';
 import { resolveUploadUrl } from '../../../lib/api';
 
@@ -28,6 +29,7 @@ function formatPrice(value: number | null) {
 }
 
 export default function ProductDetailPage(props: PageProps) {
+  useScrollAnimation();
   const resolvedParams = React.use(props.params);
   const { slug } = resolvedParams as { slug: string };
   const { data: product, isLoading, error } = useProductDetailQuery(slug);

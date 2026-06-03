@@ -89,7 +89,7 @@ export const Footer: FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
           
           {/* Column 1: GIỚI THIỆU */}
-          <div className="md:col-span-5 flex flex-col gap-6" data-animate="fade-up" data-delay="100">
+          <div className="md:col-span-5 flex flex-col gap-6">
             <h3 className="font-body font-semibold tracking-widest uppercase text-xs text-zinc-400 border-b-2 border-orange-500 w-fit pb-1">
               Giới thiệu
             </h3>
@@ -141,7 +141,7 @@ export const Footer: FC = () => {
           </div>
 
           {/* Column 2: VỀ CHÚNG TÔI */}
-          <div className="md:col-span-3 flex flex-col gap-6" data-animate="fade-up" data-delay="200">
+          <div className="md:col-span-3 flex flex-col gap-6">
             <h3 className="font-body font-semibold tracking-widest uppercase text-xs text-zinc-400 border-b-2 border-orange-500 w-fit pb-1">
               Về chúng tôi
             </h3>
@@ -190,7 +190,7 @@ export const Footer: FC = () => {
           </div>
 
           {/* Column 3: CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ AIZEN WORLD */}
-          <div className="md:col-span-4 flex flex-col gap-6" data-animate="fade-up" data-delay="300">
+          <div className="md:col-span-4 flex flex-col gap-6">
             <h3 className="font-heading font-semibold text-base text-zinc-900 uppercase border-b-2 border-orange-500 w-fit pb-1 leading-tight">
               CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ AIZEN WORLD
             </h3>

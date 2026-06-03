@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
+import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { resolveUploadUrl, apiFetch } from '../../../lib/api';
 import { ArrowLeft, ChevronLeft, ChevronRight, Coffee, CheckCircle2, MessageSquare, X } from 'lucide-react';
 
 export default function ServiceDetailPage(props: { params: Promise<{ id: string }> }) {
+  useScrollAnimation();
   const resolvedParams = React.use(props.params);
   const id = resolvedParams.id;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

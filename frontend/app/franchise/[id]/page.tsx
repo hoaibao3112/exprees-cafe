@@ -6,9 +6,11 @@ import { useFranchisePackageByIdQuery } from '../../../hooks/useFranchiseQueries
 import { resolveUploadUrl } from '../../../lib/api';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
+import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { ArrowRight, CheckCircle, ArrowLeft, Coffee, Gift, Monitor, Store, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
 export default function FranchiseDetailPage(props: { params: Promise<{ id: string }> }) {
+  useScrollAnimation();
   const resolvedParams = React.use(props.params);
   const { id } = resolvedParams;
 

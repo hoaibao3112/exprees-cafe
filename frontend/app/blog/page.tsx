@@ -368,45 +368,6 @@ export default function BlogPage() {
         </div>
       </main>
 
-      {/* 4. Pre-Footer: Newsletter Subscriptions Box */}
-      <section data-animate="scale-up" className="bg-zinc-50 border-t border-b border-zinc-150 py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-          <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 mx-auto">
-            <Mail className="w-6 h-6" />
-          </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-heading italic text-2xl text-zinc-950">Đăng ký nhận bản tin</h3>
-            <p className="font-reading font-light text-zinc-500 text-sm max-w-lg mx-auto leading-relaxed">
-              Nhận các tin tức F&B mới nhất, công thức pha chế độc quyền và các chương trình ưu đãi nhượng quyền sớm nhất từ Express Cafe.
-            </p>
-          </div>
-
-          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-md mx-auto">
-            <input 
-              type="email"
-              required
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Nhập địa chỉ email của bạn..."
-              className="flex-1 px-4 py-2.5 bg-white border border-zinc-200 rounded-2xl font-reading font-light text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-1 focus:border-orange-400 transition-all duration-200 placeholder-zinc-400"
-            />
-            <button
-              type="submit"
-              disabled={newsletterFeedback}
-              className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white font-body font-semibold text-xs uppercase tracking-wider rounded-2xl shadow-md transition-all duration-200 active:scale-95 shrink-0"
-            >
-              {newsletterFeedback ? 'ĐÃ ĐĂNG KÝ ✓' : 'ĐĂNG KÝ'}
-            </button>
-          </form>
-          {newsletterFeedback && (
-            <p className="font-body font-semibold text-xs text-emerald-600 animate-pulse">
-              Đăng ký nhận bản tin thành công! Cảm ơn bạn đã quan tâm.
-            </p>
-          )}
-        </div>
-      </section>
-
       {/* 5. Footer */}
       <Footer />
 

@@ -10,8 +10,7 @@ import {
   ChevronLeft,
   RefreshCw, 
   BookOpen,
-  ArrowLeft,
-  Mail
+  ArrowLeft
 } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from '../../../components/layout/Header';
@@ -27,8 +26,7 @@ export default function ArticleDetailPage(props: PageProps) {
   const resolvedParams = React.use(props.params);
   const { slug } = resolvedParams as { slug: string };
 
-  const [newsletterEmail, setNewsletterEmail] = React.useState<string>('');
-  const [newsletterFeedback, setNewsletterFeedback] = React.useState<boolean>(false);
+
 
   // Fetch article detail from database by slug
   const { data: article, isLoading: isLoadingArticle, error } = useArticleBySlugQuery(slug);
@@ -45,15 +43,7 @@ export default function ArticleDetailPage(props: PageProps) {
     .sort((a, b) => new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())
     .slice(0, 7);
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newsletterEmail) return;
-    setNewsletterFeedback(true);
-    setTimeout(() => {
-      setNewsletterFeedback(false);
-      setNewsletterEmail('');
-    }, 3000);
-  };
+
 
   if (isLoadingArticle) {
     return (
@@ -291,46 +281,6 @@ export default function ArticleDetailPage(props: PageProps) {
           </div>
         </div>
       </main>
-
-      {/* 4. Pre-Footer: Newsletter Subscriptions Box */}
-      <section className="bg-zinc-50 border-t border-b border-zinc-150 py-12">
-        <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-          <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-500 mx-auto">
-            <Mail className="w-6 h-6" />
-          </div>
-          
-          <div className="space-y-2">
-            <h3 className="font-black text-xl text-zinc-950">Đăng ký nhận bản tin</h3>
-            <p className="text-xs text-zinc-500 max-w-lg mx-auto leading-relaxed">
-              Nhận các tin tức F&B mới nhất, công thức pha chế độc quyền và các chương trình ưu đãi nhượng quyền sớm nhất từ Express Cafe.
-            </p>
-          </div>
-
-          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-md mx-auto">
-            <input 
-              type="email"
-              required
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Nhập địa chỉ email của bạn..."
-              className="flex-1 px-4 py-2.5 bg-white border border-zinc-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-medium placeholder-zinc-400"
-            />
-            <button
-              type="submit"
-              disabled={newsletterFeedback}
-              className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-md transition-all active:scale-95 shrink-0"
-            >
-              {newsletterFeedback ? 'ĐÃ ĐĂNG KÝ ✓' : 'ĐĂNG KÝ'}
-            </button>
-          </form>
-
-          {newsletterFeedback && (
-            <p className="text-[10px] text-emerald-600 font-bold animate-pulse">
-              Đăng ký nhận bản tin thành công! Cảm ơn bạn đã quan tâm.
-            </p>
-          )}
-        </div>
-      </section>
 
       {/* 5. Footer */}
       <Footer />
