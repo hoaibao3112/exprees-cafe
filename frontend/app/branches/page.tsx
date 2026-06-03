@@ -18,6 +18,7 @@ import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { resolveUploadUrl, apiFetch } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 type RegionFilter = 'ALL' | 'CENTER' | 'EAST' | 'OTHERS';
 
@@ -205,9 +206,11 @@ export default function BranchesPage() {
                 <div>
                   {/* Card Banner Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
-                    <img 
+                    <OptimizedImage 
                       src={branch.images && branch.images.length > 0 ? resolveUploadUrl(branch.images[0]) : (resolveUploadUrl(branch.imageUrl) || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop')} 
                       alt={branch.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>

@@ -17,6 +17,7 @@ import { Footer } from '../../components/layout/Footer';
 import { MenuCategory, useMenuQuery } from '../../hooks/useProductsQueries';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { resolveUploadUrl } from '../../lib/api';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 const BANNER_IMAGE = '/slideshow_4.jpg';
 
@@ -262,13 +263,13 @@ export default function PromotionsPage() {
                               className="group overflow-hidden rounded-[24px] border border-orange-100 bg-white shadow-[0_12px_30px_rgba(210,120,30,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_18px_45px_rgba(210,120,30,0.15)] hover:border-orange-300"
                             >
                               <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100">
-                                <img
+                                <OptimizedImage
                                   src={product.imageUrl ? resolveUploadUrl(product.imageUrl) : '/slideshow_2.jpg'}
                                   alt={product.name}
-                                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                  onError={(e) => {
-                                    (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
-                                  }}
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                  fallbackSrc="/slideshow_2.jpg"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-transparent" />
                                 {product.isFeatured && (

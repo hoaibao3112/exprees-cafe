@@ -8,6 +8,7 @@ import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { ArrowLeft, ChevronLeft, ChevronRight, MapPin, Phone, Clock, Map, Coffee, CheckCircle2 } from 'lucide-react';
 
 import { resolveUploadUrl, apiFetch } from '../../../lib/api';
+import { OptimizedImage } from '../../../components/ui/OptimizedImage';
 
 export default function BranchDetailPage(props: { params: Promise<{ id: string }> }) {
   useScrollAnimation();
@@ -106,10 +107,13 @@ export default function BranchDetailPage(props: { params: Promise<{ id: string }
             {/* Image Gallery */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <div className="relative h-[400px]">
-                <img
+                <OptimizedImage
                   src={branchImages[currentImageIndex]}
                   alt={`${branch.name} - Image ${currentImageIndex + 1}`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="w-full h-full object-cover transition-all duration-300"
+                  priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
@@ -162,9 +166,11 @@ export default function BranchDetailPage(props: { params: Promise<{ id: string }
                           : 'opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img
+                      <OptimizedImage
                         src={img}
                         alt={`Thumbnail ${idx + 1}`}
+                        fill
+                        sizes="80px"
                         className="w-full h-full object-cover"
                       />
                     </button>

@@ -18,6 +18,7 @@ import { Footer } from '../../../components/layout/Footer';
 import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { useProductDetailQuery } from '../../../hooks/useProductsQueries';
 import { resolveUploadUrl } from '../../../lib/api';
+import { OptimizedImage } from '../../../components/ui/OptimizedImage';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -149,18 +150,18 @@ export default function ProductDetailPage(props: PageProps) {
             </div>
 
             <div className="rounded-[28px] border border-white/10 bg-white/10 p-5 backdrop-blur-md shadow-2xl shadow-black/10">
-              <div className="overflow-hidden rounded-[22px] bg-black/15">
+              <div className="relative overflow-hidden rounded-[22px] bg-black/15 h-[320px]">
                 {activeImage ? (
-                  <img
+                  <OptimizedImage
                     src={activeImage.url}
                     alt={product.name}
-                    className="h-[320px] w-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
-                    }}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                    priority
                   />
                 ) : (
-                  <div className="flex h-[320px] items-center justify-center text-white/60">
+                  <div className="flex h-full items-center justify-center text-white/60">
                     <ImageIcon className="h-14 w-14" />
                   </div>
                 )}
@@ -172,19 +173,18 @@ export default function ProductDetailPage(props: PageProps) {
                     <button
                       key={image.id}
                       onClick={() => setActiveImageIndex(index)}
-                      className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl border transition-all ${
+                      className={`relative h-16 w-20 shrink-0 overflow-hidden rounded-xl border transition-all ${
                         activeImageIndex === index
                           ? 'border-orange-300 ring-2 ring-orange-300/50'
                           : 'border-white/15 opacity-80'
                       }`}
                     >
-                      <img
+                      <OptimizedImage
                         src={image.url}
                         alt={`${product.name} ${index + 1}`}
-                        className="h-full w-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
-                        }}
+                        fill
+                        sizes="80px"
+                        className="object-cover"
                       />
                     </button>
                   ))}
@@ -213,19 +213,18 @@ export default function ProductDetailPage(props: PageProps) {
                     <button
                       key={image.id}
                       onClick={() => setActiveImageIndex(index)}
-                      className={`overflow-hidden rounded-[20px] border transition-all ${
+                      className={`relative h-36 overflow-hidden rounded-[20px] border transition-all ${
                         activeImageIndex === index
                           ? 'border-orange-400 ring-2 ring-orange-300/40'
                           : 'border-orange-100'
                       }`}
                     >
-                      <img
+                      <OptimizedImage
                         src={image.url}
                         alt={product.name}
-                        className="h-36 w-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
-                        }}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 150px"
+                        className="object-cover"
                       />
                     </button>
                   ))}

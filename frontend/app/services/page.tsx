@@ -11,6 +11,7 @@ import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { resolveUploadUrl, apiFetch } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 export default function ServicesPage() {
   // Activate scroll animations
@@ -113,10 +114,12 @@ export default function ServicesPage() {
                 <div>
                   {/* Card Banner Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
-                    <img 
+                    <OptimizedImage 
                       src={service.images && service.images.length > 0 ? resolveUploadUrl(service.images[0]) : (resolveUploadUrl(service.imageUrl) || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop')} 
                       alt={service.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
                   </div>

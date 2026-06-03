@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { resolveUploadUrl } from '../../../lib/api';
+import { OptimizedImage } from '../../../components/ui/OptimizedImage';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -129,10 +130,13 @@ export default function ArticleDetailPage(props: PageProps) {
             
             {/* Featured Image */}
             <div data-animate="scale-up" data-delay="200" className="relative aspect-[16/9] w-full rounded-3xl overflow-hidden shadow-md border border-zinc-150 bg-zinc-50">
-              <img 
+              <OptimizedImage 
                 src={article.imageUrl ? resolveUploadUrl(article.imageUrl) : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800&auto=format&fit=crop'} 
                 alt={article.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 800px"
                 className="w-full h-full object-cover"
+                priority
               />
             </div>
 

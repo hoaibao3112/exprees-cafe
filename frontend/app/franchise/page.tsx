@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { resolveUploadUrl } from '../../lib/api';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 const MODEL_DETAILS: Record<string, { image: string; title: string }> = {
   'EXPRESS': {
@@ -117,10 +118,12 @@ export default function FranchisePage() {
                   className="group relative aspect-[4/3] rounded-3xl overflow-hidden border border-zinc-200 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all duration-500 cursor-pointer hover:-translate-y-2 flex flex-col justify-end"
                 >
                   {/* Image */}
-                  <img 
+                  <OptimizedImage 
                     src={details.image} 
                     alt={details.title}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   
                   {/* Semi-transparent dark strip at the bottom */}

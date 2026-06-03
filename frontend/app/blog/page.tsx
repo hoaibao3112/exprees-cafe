@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { resolveUploadUrl } from '../../lib/api';
+import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 const ARTICLES_PER_PAGE = 6;
 
@@ -147,11 +148,13 @@ export default function BlogPage() {
                         <div>
                           {/* Card Thumbnail wrapped in standard dynamic Link */}
                           <Link href={`/blog/${article.slug}`} className="block relative aspect-[16/10] bg-zinc-100 overflow-hidden border-b border-zinc-100">
-                            <img 
-                              src={article.imageUrl ? resolveUploadUrl(article.imageUrl) : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=500&auto=format&fit=crop'} 
-                              alt={article.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 overflow-hidden"
-                            />
+                             <OptimizedImage 
+                               src={article.imageUrl ? resolveUploadUrl(article.imageUrl) : 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=500&auto=format&fit=crop'} 
+                               alt={article.title}
+                               fill
+                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 overflow-hidden"
+                             />
                             
                             <span className="absolute top-4 left-4 text-[9px] font-body font-medium uppercase tracking-wider text-orange-500 bg-orange-50/95 border border-orange-200/50 px-3 py-1 rounded-lg shadow-sm">
                               {article.blogHandle === 'news' ? 'TIN TỨC' : 'EXPERIENCE'}

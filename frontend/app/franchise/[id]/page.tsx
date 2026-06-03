@@ -8,6 +8,7 @@ import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { ArrowRight, CheckCircle, ArrowLeft, Coffee, Gift, Monitor, Store, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { OptimizedImage } from '../../../components/ui/OptimizedImage';
 
 export default function FranchiseDetailPage(props: { params: Promise<{ id: string }> }) {
   useScrollAnimation();
@@ -92,10 +93,13 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
             {/* Image Gallery */}
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <div className="relative h-[400px]">
-                <img
+                <OptimizedImage
                   src={packageImages[currentImageIndex]}
                   alt={`${pkg.name} - Image ${currentImageIndex + 1}`}
-                  className="w-full h-full object-cover transition-all duration-300"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-all duration-300"
+                  priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
@@ -154,10 +158,12 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
                           : 'opacity-60 hover:opacity-100'
                       }`}
                     >
-                      <img
+                      <OptimizedImage
                         src={img}
                         alt={`Thumbnail ${idx + 1}`}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="80px"
+                        className="object-cover"
                       />
                     </button>
                   ))}
