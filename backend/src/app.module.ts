@@ -23,6 +23,7 @@ import { ContentModule } from './modules/content/content.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { MediaModule } from './modules/media/media.module';
 import { ServicesModule } from './modules/services/services.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -141,6 +142,7 @@ import { Service } from './modules/services/entities/service.entity';
     ReviewsModule,
     MediaModule,
     ServicesModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
