@@ -11,7 +11,7 @@ const CONTENT_SERVICE_PATH = path.join(__dirname, '..', 'backend', 'src', 'modul
 const BACKEND_UPLOADS_DIR = path.join(__dirname, '..', 'backend', 'uploads', 'scraped_data');
 const IMAGES_SOURCE_DIR = path.join(__dirname, 'images');
 
-const HOST = 'http://localhost:3000';
+const HOST = '';
 
 // Helper to copy directory recursively
 function copyDirRecursive(src, dest) {
