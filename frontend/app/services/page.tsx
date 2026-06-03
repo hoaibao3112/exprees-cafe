@@ -114,7 +114,7 @@ export default function ServicesPage() {
                   {/* Card Banner Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
                     <img 
-                      src={service.images && service.images.length > 0 ? resolveUploadUrl(service.images[0]) : (service.imageUrl || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop')} 
+                      src={service.images && service.images.length > 0 ? resolveUploadUrl(service.images[0]) : (resolveUploadUrl(service.imageUrl) || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop')} 
                       alt={service.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />

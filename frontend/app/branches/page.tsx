@@ -206,7 +206,7 @@ export default function BranchesPage() {
                   {/* Card Banner Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
                     <img 
-                      src={branch.images && branch.images.length > 0 ? resolveUploadUrl(branch.images[0]) : (branch.imageUrl || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop')} 
+                      src={branch.images && branch.images.length > 0 ? resolveUploadUrl(branch.images[0]) : (resolveUploadUrl(branch.imageUrl) || 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop')} 
                       alt={branch.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />

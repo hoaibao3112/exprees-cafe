@@ -31,14 +31,20 @@ import { resolveUploadUrl } from '../lib/api';
 // Helper to resolve local assets or backend uploads
 const resolveLocalOrUpload = (url?: string | null) => {
   if (!url) return '';
-  if (url.startsWith('uploads/') || url.startsWith('/uploads/')) {
-    const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+  
+  let normalizedUrl = url;
+  if (url.startsWith('http://localhost:3000/')) {
+    normalizedUrl = url.substring('http://localhost:3000/'.length);
+  }
+
+  if (normalizedUrl.startsWith('uploads/') || normalizedUrl.startsWith('/uploads/')) {
+    const cleanPath = normalizedUrl.startsWith('/') ? normalizedUrl.slice(1) : normalizedUrl;
     return resolveUploadUrl(cleanPath);
   }
-  if (url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://')) {
-    return url;
+  if (normalizedUrl.startsWith('/') || normalizedUrl.startsWith('http://') || normalizedUrl.startsWith('https://')) {
+    return normalizedUrl;
   }
-  return resolveUploadUrl(url);
+  return resolveUploadUrl(normalizedUrl);
 };
 
 // Slideshow images configuration

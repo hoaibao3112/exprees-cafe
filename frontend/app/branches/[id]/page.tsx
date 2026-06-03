@@ -72,7 +72,9 @@ export default function BranchDetailPage(props: { params: Promise<{ id: string }
 
   const branchImages = branch.images && branch.images.length > 0 
     ? branch.images.map((img: string) => resolveUploadUrl(img)) 
-    : ['https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800'];
+    : (branch.imageUrl 
+        ? [resolveUploadUrl(branch.imageUrl)] 
+        : ['https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800']);
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) => (prev === 0 ? branchImages.length - 1 : prev - 1));

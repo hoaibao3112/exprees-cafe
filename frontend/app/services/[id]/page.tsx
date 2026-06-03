@@ -72,7 +72,9 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
 
   const serviceImages = service.images && service.images.length > 0 
     ? service.images.map((img: string) => resolveUploadUrl(img)) 
-    : ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800'];
+    : (service.imageUrl 
+        ? [resolveUploadUrl(service.imageUrl)] 
+        : ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800']);
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) => (prev === 0 ? serviceImages.length - 1 : prev - 1));
