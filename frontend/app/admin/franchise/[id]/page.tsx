@@ -3,10 +3,10 @@
 import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Award, ArrowLeft, Save, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { Award, ArrowLeft, Save } from 'lucide-react';
 import { useFranchisePackageByIdQuery, useUpdateFranchisePackageMutation } from '@/hooks/useFranchiseQueries';
 import { TableSkeleton } from '@/components/admin/Skeleton';
-import { resolveUploadUrl } from '@/lib/api';
+import { MultiImageUploader } from '@/components/admin/ImageUploader';
 
 interface EditFranchisePackagePageProps {
   params: Promise<{ id: string }>;
@@ -200,47 +200,14 @@ export default function AdminEditFranchisePackagePage({ params }: EditFranchiseP
             />
           </div>
 
-          {/* Dynamic Image Paths */}
-          <div className="space-y-4 border-t border-slate-100 pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Hình ảnh mô phỏng (Đa ảnh)</h3>
-                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Tải lên tối đa 4 đường dẫn ảnh slideshow (ví dụ: uploads/franchise_packages/file.png)</p>
-              </div>
-              
-              <button
-                type="button"
-                onClick={handleAddImageField}
-                disabled={images.length >= 4}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 text-slate-600 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-sm select-none"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                Thêm ảnh
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {images.map((img, idx) => (
-                <div key={idx} className="flex gap-2 items-center">
-                  <div className="font-bold text-slate-400 text-xs w-6 text-center">#{idx + 1}</div>
-                  <input
-                    type="text"
-                    placeholder="Nhập đường dẫn ảnh (uploads/...) hoặc link URL..."
-                    value={img}
-                    onChange={(e) => handleImageChange(idx, e.target.value)}
-                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-medium"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImageField(idx)}
-                    className="p-2 border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-xl transition-all cursor-pointer shrink-0"
-                    title="Xóa dòng này"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
+          {/* Dynamic Image Paths – with upload from computer */}
+          <div className="border-t border-slate-100 pt-6">
+            <MultiImageUploader
+              label="Hình ảnh mô phỏng (Đa ảnh)"
+              images={images.filter((img) => img.trim() !== '')}
+              onChange={(updated) => setImages(updated.length > 0 ? updated : [''])}
+              maxImages={4}
+            />
           </div>
         </div>
 
@@ -266,28 +233,7 @@ export default function AdminEditFranchisePackagePage({ params }: EditFranchiseP
             </div>
           </div>
 
-          {/* Primary Preview */}
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-4">
-            <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">Hình ảnh hiển thị đầu</h3>
-            
-            {images[0]?.trim() ? (
-              <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm">
-                <img
-                  src={resolveUploadUrl(images[0])}
-                  alt="Primary Image Preview"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1453614512568-c4024d13c247?q=80&w=300&auto=format&fit=crop';
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="aspect-[4/3] w-full rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-350 py-10">
-                <ImageIcon className="w-8 h-8 mb-2" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Chưa có ảnh</span>
-              </div>
-            )}
-          </div>
+
 
           {/* Action buttons */}
           <div className="flex gap-4">

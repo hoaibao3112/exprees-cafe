@@ -6,13 +6,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { ArrowLeft, Save, Eye, EyeOff, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Save, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { z } from 'zod';
 import { adminArticlesApi } from '@/lib/admin-api';
 import { toast } from '@/components/admin/Toast';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { CardSkeleton } from '@/components/admin/Skeleton';
-import { resolveUploadUrl } from '@/lib/api';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 import type { Article } from '@/types/admin.types';
 
 // Helper slugify tiếng Việt chuẩn
@@ -42,13 +42,27 @@ const articleSchema = z.object({
 
 type ArticleFormValues = z.infer<typeof articleSchema>;
 
+// Light-theme field wrapper
+function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-widest">{label}</label>
+      {children}
+      {error && <p className="text-rose-500 text-xs font-semibold mt-0.5">{error}</p>}
+    </div>
+  );
+}
+
+const inputCls =
+  'w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm font-medium';
+
 export default function AdminEditArticlePage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
   const qc = useQueryClient();
   const { user } = useAdminAuth();
-  
+
   const [isSlugManual, setIsSlugManual] = useState(true);
   const [previewMode, setPreviewMode] = useState<boolean>(false);
 
@@ -93,7 +107,7 @@ export default function AdminEditArticlePage() {
   }, [article, reset]);
 
   const titleValue = watch('title');
-  const imageUrlValue = watch('imageUrl');
+  const imageUrlValue = watch('imageUrl') ?? '';
   const contentValue = watch('content');
 
   // Tự động generate slug từ tiêu đề (chỉ khi không sửa tay)
@@ -110,7 +124,7 @@ export default function AdminEditArticlePage() {
         slug: values.slug,
         blogHandle: values.blogHandle,
         imageUrl: values.imageUrl || undefined,
-        contentHtml: values.content, // Map content sang contentHtml cho backend
+        contentHtml: values.content,
         status: values.status,
         authorId: user?.id || 'system',
       };
@@ -142,7 +156,7 @@ export default function AdminEditArticlePage() {
   if (error) {
     return (
       <div className="max-w-5xl mx-auto py-16 text-center space-y-4">
-        <p className="text-red-400 font-semibold">Lỗi tải dữ liệu bài viết</p>
+        <p className="text-rose-500 font-semibold">Lỗi tải dữ liệu bài viết</p>
         <Link
           href="/admin/articles"
           className="inline-block px-5 py-2.5 bg-orange-500 rounded-xl text-white font-medium hover:bg-orange-400 transition-colors"
@@ -156,92 +170,76 @@ export default function AdminEditArticlePage() {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-white/6 pb-5">
+      <div className="flex items-center justify-between border-b border-slate-200 pb-5">
         <div className="flex items-center gap-3">
           <Link
             href="/admin/articles"
-            className="p-2 rounded-xl bg-white/5 border border-white/6 hover:bg-white/10 hover:text-white text-gray-400 transition-all"
+            className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-800 transition-all shadow-sm"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h2 className="text-xl font-bold text-white">Chỉnh sửa bài viết</h2>
-            <p className="text-gray-500 text-xs mt-0.5">Thay đổi nội dung hoặc cấu hình bài viết</p>
+            <h2 className="text-xl font-bold text-slate-800">Chỉnh sửa bài viết</h2>
+            <p className="text-slate-400 text-xs mt-0.5">Thay đổi nội dung hoặc cấu hình bài viết</p>
           </div>
         </div>
-        <div className="flex gap-2.5">
-          <button
-            type="button"
-            onClick={() => setPreviewMode(!previewMode)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/8 text-gray-300 hover:text-white hover:bg-white/10 text-sm font-semibold transition-all"
-          >
-            {previewMode ? (
-              <>
-                <EyeOff className="w-4 h-4" /> Soạn thảo
-              </>
-            ) : (
-              <>
-                <Eye className="w-4 h-4" /> Xem trước
-              </>
-            )}
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setPreviewMode(!previewMode)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-800 hover:bg-slate-50 text-sm font-semibold transition-all shadow-sm"
+        >
+          {previewMode ? (
+            <><EyeOff className="w-4 h-4" /> Soạn thảo</>
+          ) : (
+            <><Eye className="w-4 h-4" /> Xem trước</>
+          )}
+        </button>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Editor Pane */}
         <div className="lg:col-span-2 space-y-5">
-          <div className="bg-[#13131f] border border-white/6 rounded-2xl p-6 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-5 shadow-sm">
             {/* Title */}
-            <div className="space-y-2">
-              <label className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Tiêu đề bài viết</label>
+            <Field label="Tiêu đề bài viết" error={errors.title?.message}>
               <input
                 {...register('title')}
                 placeholder="Nhập tiêu đề hấp dẫn..."
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/30 transition-all font-medium text-base"
+                className={inputCls + ' text-base font-semibold'}
               />
-              {errors.title && (
-                <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
-              )}
-            </div>
+            </Field>
 
             {/* Slug */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Đường dẫn tĩnh (Slug)</label>
+            <Field label="Đường dẫn tĩnh (Slug)" error={errors.slug?.message}>
+              <div className="flex items-center gap-2 mb-1">
                 <button
                   type="button"
                   onClick={() => setIsSlugManual(!isSlugManual)}
-                  className="text-orange-400 text-xs font-semibold hover:text-orange-300 flex items-center gap-1 transition-colors"
+                  className="ml-auto text-orange-500 text-[10px] font-bold hover:text-orange-600 flex items-center gap-1 transition-colors"
                 >
                   <Sparkles className="w-3 h-3" />
                   {isSlugManual ? 'Tự động tạo theo tiêu đề' : 'Tự chỉnh sửa tay'}
                 </button>
               </div>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-sm">/blog/</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">/blog/</span>
                 <input
                   {...register('slug')}
                   disabled={!isSlugManual}
                   placeholder="tieu-de-bai-viet"
-                  className="w-full pl-[56px] pr-4 py-2.5 rounded-xl bg-white/5 border border-white/8 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/30 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className={`${inputCls} pl-[56px] disabled:opacity-50 disabled:cursor-not-allowed`}
                 />
               </div>
-              {errors.slug && (
-                <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>
-              )}
-            </div>
+            </Field>
 
-            {/* Content Field */}
-            <div className="space-y-2">
-              <label className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Nội dung bài viết (HTML / Text)</label>
-              
+            {/* Content */}
+            <Field label="Nội dung bài viết (HTML / Text)" error={errors.content?.message}>
               {previewMode ? (
-                <div className="min-h-[350px] max-h-[600px] overflow-y-auto px-4 py-3.5 rounded-xl bg-white/3 border border-white/6 text-gray-200 prose prose-invert max-w-none prose-orange">
+                <div className="min-h-[350px] max-h-[600px] overflow-y-auto px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 prose max-w-none">
                   {contentValue ? (
                     <div dangerouslySetInnerHTML={{ __html: contentValue }} />
                   ) : (
-                    <p className="text-gray-600 text-sm italic">Chưa có nội dung để xem trước.</p>
+                    <p className="text-slate-400 text-sm italic">Chưa có nội dung để xem trước.</p>
                   )}
                 </div>
               ) : (
@@ -250,106 +248,78 @@ export default function AdminEditArticlePage() {
                     {...register('content')}
                     placeholder="Viết nội dung bài viết bằng mã HTML hoặc văn bản thường tại đây..."
                     rows={15}
-                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/30 transition-all font-mono text-sm leading-relaxed"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all font-mono text-sm leading-relaxed"
                   />
-                  <div className="flex items-center justify-between text-gray-600 text-xs">
-                    <span>Hỗ trợ thẻ HTML chuẩn như &lt;p&gt;, &lt;h1&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;img&gt;...</span>
+                  <div className="flex items-center justify-between text-slate-400 text-xs">
+                    <span>Hỗ trợ thẻ HTML: &lt;p&gt;, &lt;h1&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;img&gt;...</span>
                     <span>Tối thiểu 10 ký tự</span>
                   </div>
                 </div>
               )}
-              {errors.content && (
-                <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>
-              )}
-            </div>
+            </Field>
           </div>
         </div>
 
         {/* Sidebar Settings Pane */}
         <div className="space-y-5">
-          <div className="bg-[#13131f] border border-white/6 rounded-2xl p-5 space-y-5">
-            <h3 className="text-white font-bold text-sm pb-3 border-b border-white/6 flex items-center gap-2">
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-5 shadow-sm">
+            <h3 className="text-slate-800 font-bold text-sm pb-3 border-b border-slate-100 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-orange-400" />
               Thiết lập bài viết
             </h3>
 
-            {/* Category selection */}
-            <div className="space-y-2">
-              <label className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Danh mục hiển thị</label>
+            {/* Category */}
+            <Field label="Danh mục hiển thị" error={errors.blogHandle?.message}>
               <select
                 {...register('blogHandle')}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/8 text-gray-300 text-sm focus:outline-none focus:border-orange-500/50 appearance-none cursor-pointer"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-blue-500 appearance-none cursor-pointer"
               >
                 <option value="news">Tin tức</option>
                 <option value="blog">Blog</option>
                 <option value="services">Dịch vụ F&B</option>
               </select>
-              {errors.blogHandle && (
-                <p className="text-red-500 text-xs mt-1">{errors.blogHandle.message}</p>
-              )}
-            </div>
+            </Field>
 
-            {/* Status selection */}
-            <div className="space-y-2">
-              <label className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Trạng thái phát hành</label>
+            {/* Status */}
+            <Field label="Trạng thái phát hành">
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setValue('status', 'DRAFT')}
                   className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all ${
                     watch('status') === 'DRAFT'
-                      ? 'bg-yellow-500/15 border-yellow-500/50 text-yellow-400 shadow-md shadow-yellow-500/5'
-                      : 'bg-white/3 border-white/5 text-gray-500 hover:text-white'
+                      ? 'bg-yellow-50 border-yellow-400 text-yellow-600 shadow-sm'
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  Bản nháp (Draft)
+                  Bản nháp
                 </button>
                 <button
                   type="button"
                   onClick={() => setValue('status', 'PUBLISHED')}
                   className={`px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all ${
                     watch('status') === 'PUBLISHED'
-                      ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400 shadow-md shadow-emerald-500/5'
-                      : 'bg-white/3 border-white/5 text-gray-500 hover:text-white'
+                      ? 'bg-emerald-50 border-emerald-400 text-emerald-600 shadow-sm'
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  Công bố (Publish)
+                  Công bố
                 </button>
               </div>
-            </div>
+            </Field>
 
-            {/* Image URL input & Live Preview */}
-            <div className="space-y-3">
-              <label className="text-gray-400 text-xs font-semibold uppercase tracking-wider block">Ảnh đại diện bài viết</label>
-              <input
-                {...register('imageUrl')}
-                placeholder="Nhập link ảnh (URL)..."
-                className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/8 text-white placeholder:text-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/30 transition-all text-sm"
-              />
-              {imageUrlValue ? (
-                <div className="relative aspect-video rounded-xl border border-white/6 overflow-hidden bg-white/3 group">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={resolveUploadUrl(imageUrlValue)}
-                    alt="Preview"
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLElement).style.display = 'none';
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center p-6 border border-dashed border-white/8 rounded-xl bg-white/2 text-gray-600">
-                  <ImageIcon className="w-8 h-8 opacity-30 mb-2" />
-                  <span className="text-xs">Chưa có ảnh đại diện</span>
-                </div>
-              )}
-              {errors.imageUrl && (
-                <p className="text-red-500 text-xs mt-1">{errors.imageUrl.message}</p>
-              )}
-            </div>
+            {/* Image Upload */}
+            <ImageUploader
+              label="Ảnh đại diện bài viết"
+              value={imageUrlValue}
+              onChange={(url) => setValue('imageUrl', url, { shouldValidate: true })}
+              aspect="aspect-video"
+            />
+            {errors.imageUrl && (
+              <p className="text-rose-500 text-xs font-semibold -mt-3">{errors.imageUrl.message}</p>
+            )}
 
-            {/* Action buttons */}
+            {/* Actions */}
             <div className="pt-2 space-y-2">
               <button
                 type="submit"
@@ -365,7 +335,7 @@ export default function AdminEditArticlePage() {
               </button>
               <Link
                 href="/admin/articles"
-                className="w-full flex items-center justify-center px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-gray-400 hover:text-white hover:bg-white/10 text-sm font-semibold transition-all"
+                className="w-full flex items-center justify-center px-4 py-3 rounded-xl bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-800 hover:bg-slate-200 text-sm font-semibold transition-all"
               >
                 Hủy bỏ
               </Link>
