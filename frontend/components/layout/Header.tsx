@@ -70,7 +70,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 group transition-transform duration-300 active:scale-95">
           <div className="relative w-[150px] h-[45px] sm:w-[170px] sm:h-[50px]">
             <Image
-              src="/logo.png"
+              src="/logo.png?v=2"
               alt="Express Cafe Logo"
               fill
               className="object-contain"
