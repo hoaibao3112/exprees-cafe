@@ -130,7 +130,7 @@ export default function PromotionsPage() {
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500/10 text-orange-500">
                     <ShoppingBag className="h-7 w-7" />
                   </div>
-                  <h2 className="mt-4 text-sm font-bold uppercase tracking-[0.2em] text-orange-500">Danh mục</h2>
+                  <h2 className="mt-4 text-sm font-bold uppercase tracking-wider text-orange-500">Danh mục</h2>
                   <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
                     {totalProducts} sản phẩm từ backend, {categories.length} nhóm danh mục.
                   </p>
@@ -151,7 +151,7 @@ export default function PromotionsPage() {
                         <button
                           key={category.id}
                           onClick={() => scrollToCategory(category)}
-                          className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.18em] transition-all ${
+                          className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider transition-all ${
                             active
                               ? 'border-orange-400 bg-orange-500 text-white shadow-md shadow-orange-500/15'
                               : 'border-orange-100 bg-white text-zinc-600 hover:border-orange-200 hover:bg-orange-50'
@@ -173,7 +173,7 @@ export default function PromotionsPage() {
 
                 <Link
                   href="/contact"
-                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-900 px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white transition-all hover:bg-orange-500"
+                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-zinc-900 px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-white transition-all hover:bg-orange-500"
                 >
                   <MapPin className="h-4 w-4" />
                   Đặt hàng / Liên hệ
@@ -246,7 +246,7 @@ export default function PromotionsPage() {
                       >
                         <div className="mb-4 flex items-center justify-center gap-3">
                           <div className="h-px w-10 bg-orange-200" />
-                          <h3 className="text-lg font-black uppercase tracking-[0.2em] text-orange-500 md:text-xl">
+                          <h3 className="text-lg font-black uppercase tracking-wider text-orange-500 md:text-xl">
                             {category.name}
                           </h3>
                           <div className="h-px w-10 bg-orange-200" />

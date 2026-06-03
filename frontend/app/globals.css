@@ -7,10 +7,10 @@
   --color-dark-bg: #09090b;
   --color-dark-card: rgba(18, 18, 24, 0.7);
   --color-dark-border: rgba(255, 255, 255, 0.08);
-  --font-sans: var(--font-sans), 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --font-heading: var(--font-heading), Georgia, 'Times New Roman', serif;
-  --font-body: var(--font-sans), 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  --font-reading: var(--font-sans), 'Segoe UI', Arial, sans-serif;
+  --font-sans: var(--font-be-vietnam-pro), 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: var(--font-lora), Georgia, 'Times New Roman', serif;
+  --font-body: var(--font-be-vietnam-pro), 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --font-reading: var(--font-be-vietnam-pro), 'Segoe UI', Arial, sans-serif;
   --radius: 0.75rem;
 }
 
@@ -48,11 +48,11 @@ html {
 
 /* Prose typography override cho blog */
 .prose h2, .prose h3 {
-  font-family: var(--font-heading), 'Lora', serif;
+  font-family: var(--font-heading), 'Lora', serif !important;
   font-weight: 600;
 }
 .prose blockquote {
-  font-family: var(--font-heading), 'Lora', serif;
+  font-family: var(--font-heading), 'Lora', serif !important;
   font-style: italic;
   border-left-color: #F97316;
   color: #9A3412;
@@ -61,9 +61,13 @@ html {
   color: #EA580C;
   text-decoration-color: #FED7AA;
   transition: text-decoration-color 0.2s;
+  font-family: inherit !important;
 }
 .prose a:hover {
   text-decoration-color: #EA580C;
+}
+.prose p, .prose span, .prose li {
+  font-family: inherit !important;
 }
 
 /* Base state — ẩn trước khi animate */

@@ -6,14 +6,14 @@ import Providers from './providers';
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['vietnamese', 'latin'],
   weight: ['300', '400', '500', '600', '700', '800'],
-  variable: '--font-sans',
+  variable: '--font-be-vietnam-pro',
   display: 'swap',
 });
 
 const lora = Lora({
   subsets: ['vietnamese', 'latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-heading',
+  variable: '--font-lora',
   display: 'swap',
 });
 
