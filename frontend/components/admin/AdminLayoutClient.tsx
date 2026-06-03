@@ -37,7 +37,7 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
   // Nếu là trang đăng nhập thì chỉ hiển thị nội dung trang đăng nhập, không kèm Sidebar/Header
   if (pathname === '/admin/login') {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center">
+      <div className="min-h-screen w-full">
         {children}
         <ToastContainer />
       </div>

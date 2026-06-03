@@ -96,6 +96,9 @@ import { Service } from './modules/services/entities/service.entity';
         username: config.get<string>('database.username'),
         password: config.get<string>('database.password'),
         database: config.get<string>('database.database'),
+        ssl: config.get<string>('NODE_ENV') === 'production'
+          ? { rejectUnauthorized: false }
+          : undefined,
         entities: [
           User,
           Role,

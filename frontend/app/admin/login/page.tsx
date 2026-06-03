@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Eye, EyeOff, Coffee, Lock, Mail, AlertCircle } from 'lucide-react';
+import Image from 'next/image';
+import { Eye, EyeOff, Lock, Mail, AlertCircle, Sparkles } from 'lucide-react';
 import { adminAuthApi } from '@/lib/admin-api';
 
 const loginSchema = z.object({
@@ -13,6 +14,13 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Mật khẩu tối thiểu 6 ký tự'),
 });
 type LoginInput = z.infer<typeof loginSchema>;
+
+const BRAND_SHOWCASE = [
+  { src: '/slideshow_1.jpg', label: 'Cho thuê máy pha cà phê' },
+  { src: '/slideshow_2.jpg', label: 'Nhượng quyền thương hiệu' },
+  { src: '/slideshow_3.jpg', label: 'Cà phê nguyên chất' },
+  { src: '/slideshow_4.jpg', label: 'Vận hành SaaS thông minh' },
+] as const;
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -48,28 +56,33 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#f1f5f9] via-[#e2e8f0] to-[#f1f5f9] flex items-center justify-center md:grid md:grid-cols-12 relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-40 right-20 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl" />
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 flex md:grid md:grid-cols-12 relative overflow-hidden">
+      {/* Background decorations — left side */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 md:w-7/12">
+        <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-orange-500/8 blur-3xl" />
+        <div className="absolute -bottom-40 left-20 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl" />
       </div>
 
-      {/* Left Column: Login Card (Spans 7 cols on large screens, centered) */}
-      <div className="col-span-7 flex items-center justify-center p-6 z-10 w-full">
+      {/* Left: Login form */}
+      <div className="md:col-span-7 flex items-center justify-center p-6 z-10 w-full min-h-screen">
         <div className="w-full max-w-[440px] bg-white border border-slate-200/80 rounded-3xl shadow-xl overflow-hidden transition-all duration-300">
-          
-          {/* Logo & Brand Header */}
           <div className="p-8 text-center border-b border-slate-100">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#0047cc] shadow-md shadow-blue-500/20 mb-4">
-              <Coffee className="w-7 h-7 text-white" />
+            <div className="relative w-[200px] h-[56px] mx-auto mb-4">
+              <Image
+                src="/logo.png"
+                alt="Express Cafe"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
-            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Express Cafe Admin</h1>
-            <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mt-1.5">CỔNG AN NINH DOANH NGHIỆP</p>
+            <h1 className="text-xl font-bold text-slate-800 tracking-tight">Admin Panel</h1>
+            <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mt-1.5">
+              Cổng an ninh doanh nghiệp
+            </p>
           </div>
 
           <div className="p-8">
-            {/* Server Error Alert */}
             {serverError && (
               <div className="flex items-start gap-3 px-4 py-3 rounded-xl bg-rose-50 border border-rose-100 mb-6">
                 <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
@@ -78,7 +91,6 @@ export default function AdminLoginPage() {
             )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Email Address Input */}
               <div>
                 <label className="block text-slate-700 text-sm font-semibold mb-2">Địa chỉ Email</label>
                 <div className="relative">
@@ -88,8 +100,8 @@ export default function AdminLoginPage() {
                     type="email"
                     placeholder="admin@expresscafe.com"
                     autoComplete="email"
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-slate-50 text-slate-800 placeholder:text-slate-400 text-sm transition-all outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/10 ${
-                      errors.email ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200/80 focus:border-blue-500'
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-slate-50 text-slate-800 placeholder:text-slate-400 text-sm transition-all outline-none focus:bg-white focus:ring-4 focus:ring-orange-500/10 ${
+                      errors.email ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200/80 focus:border-orange-500'
                     }`}
                   />
                 </div>
@@ -101,11 +113,10 @@ export default function AdminLoginPage() {
                 )}
               </div>
 
-              {/* Password Input */}
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-slate-700 text-sm font-semibold">Mật khẩu</label>
-                  <a href="#" className="text-xs text-blue-600 hover:text-blue-700 hover:underline font-semibold">
+                  <a href="#" className="text-xs text-orange-600 hover:text-orange-700 hover:underline font-semibold">
                     Quên mật khẩu?
                   </a>
                 </div>
@@ -116,8 +127,8 @@ export default function AdminLoginPage() {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     autoComplete="current-password"
-                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-slate-50 text-slate-800 placeholder:text-slate-400 text-sm transition-all outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/10 ${
-                      errors.password ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200/80 focus:border-blue-500'
+                    className={`w-full pl-10 pr-12 py-3 rounded-xl border bg-slate-50 text-slate-800 placeholder:text-slate-400 text-sm transition-all outline-none focus:bg-white focus:ring-4 focus:ring-orange-500/10 ${
+                      errors.password ? 'border-rose-300 focus:border-rose-500' : 'border-slate-200/80 focus:border-orange-500'
                     }`}
                   />
                   <button
@@ -136,23 +147,21 @@ export default function AdminLoginPage() {
                 )}
               </div>
 
-              {/* Keep me signed in */}
               <div className="flex items-center">
                 <input
                   type="checkbox"
                   id="keep-signed-in"
-                  className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500/20"
+                  className="w-4 h-4 rounded border-slate-300 text-orange-600 focus:ring-orange-500/20"
                 />
                 <label htmlFor="keep-signed-in" className="ml-2 text-slate-500 text-sm font-medium select-none cursor-pointer">
                   Duy trì đăng nhập
                 </label>
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 rounded-xl bg-[#0047cc] hover:bg-blue-700 text-white font-bold text-sm transition-all duration-200 shadow-md shadow-blue-500/10 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <>
@@ -169,59 +178,88 @@ export default function AdminLoginPage() {
             </form>
           </div>
 
-          {/* Footer of Card */}
           <div className="bg-slate-50/80 border-t border-slate-100 p-6 text-center space-y-2">
             <p className="text-slate-400 text-xs font-semibold tracking-wider">CHỈ DÀNH CHO NHÂN VIÊN ĐƯỢC ỦY QUYỀN</p>
             <div className="flex items-center justify-center gap-2 text-xs text-slate-500 font-semibold">
-              <a href="#" className="hover:text-blue-600 transition-colors">Chính Sách Bảo Mật</a>
+              <a href="#" className="hover:text-orange-600 transition-colors">Chính Sách Bảo Mật</a>
               <span className="text-slate-300">•</span>
-              <a href="#" className="hover:text-blue-600 transition-colors">Trạng Thái Hệ Thống</a>
+              <a href="#" className="hover:text-orange-600 transition-colors">Trạng Thái Hệ Thống</a>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* Right Column: Coffee Cup premium graphic (Spans 5 cols on large screens, hidden on mobile) */}
-      <div className="hidden md:block col-span-5 h-full relative overflow-hidden bg-[#c3cddb]">
-        {/* Swirling steam vector backgrounds or minimal mock-up layout */}
-        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#c9d3e0] to-[#b8c3d1] p-12">
-          
-          {/* Main Visual container simulating the beautiful cup screen */}
-          <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl bg-slate-300/40 shadow-inner overflow-hidden flex flex-col justify-end p-8 border border-white/10 group">
-            
-            {/* Swirling smoke mock using CSS */}
-            <div className="absolute inset-0 z-0 bg-cover bg-center mix-blend-overlay opacity-20 filter blur-xs"
-              style={{ backgroundImage: 'radial-gradient(circle, white 10%, transparent 60%)' }} />
-            
-            {/* Absolute coffee cup mockup overlay using custom CSS & standard visuals */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-12">
-              <div className="relative w-64 h-64 flex flex-col items-center justify-center animate-pulse-slow">
-                {/* Simulated cup */}
-                <div className="w-40 h-28 bg-white/95 rounded-b-[40px] rounded-t-lg shadow-xl relative border border-white/20">
-                  {/* Handle */}
-                  <div className="absolute right-[-24px] top-4 w-8 h-16 border-4 border-white/95 rounded-r-3xl border-l-0 shadow-md" />
-                  {/* Plate */}
-                  <div className="absolute bottom-[-10px] left-[-30px] w-[220px] h-4 bg-white/95 rounded-full border border-white/20 shadow-md" />
-                </div>
-                {/* Rising steam */}
-                <div className="absolute top-2 w-28 h-20 opacity-30 flex justify-around">
-                  <div className="w-1.5 h-16 bg-gradient-to-t from-white to-transparent rounded-full animate-bounce delay-100" />
-                  <div className="w-1.5 h-20 bg-gradient-to-t from-white to-transparent rounded-full animate-bounce delay-300" />
-                  <div className="w-1.5 h-14 bg-gradient-to-t from-white to-transparent rounded-full animate-bounce" />
-                </div>
-              </div>
-            </div>
+      {/* Right: Brand showcase */}
+      <div className="hidden md:flex md:col-span-5 relative min-h-screen overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-900 via-amber-950 to-orange-950" />
+        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-400/40 via-transparent to-transparent" />
+        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-orange-500/20 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-amber-600/15 blur-3xl" />
 
-            <div className="z-10 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-white shadow-lg">
-              <h3 className="text-xl font-bold tracking-tight">Express Cafe</h3>
-              <p className="text-white/80 text-xs mt-2 leading-relaxed">
-                Hương vị cà phê truyền thống đậm đà hòa quyện cùng công nghệ quản trị hiện đại, mang đến sự hoàn hảo trong từng điểm chạm dịch vụ.
-              </p>
+        <div className="relative z-10 flex flex-col h-full w-full p-10 lg:p-12">
+          {/* Logo chính */}
+          <div className="flex flex-col items-center pt-2">
+            <div className="relative w-full max-w-[280px] h-[72px] bg-white rounded-2xl shadow-2xl shadow-black/20 px-6 py-3 flex items-center justify-center ring-1 ring-white/80">
+              <Image
+                src="/logo.png"
+                alt="Express Cafe Logo"
+                fill
+                className="object-contain p-1"
+                priority
+              />
             </div>
-            
+            <p className="mt-4 text-amber-100/90 text-sm font-medium tracking-wide text-center">
+              Mỹ thuật Rang Xay &amp; Công nghệ SAAS
+            </p>
           </div>
-          
+
+          {/* Lưới ảnh thương hiệu */}
+          <div className="flex-1 flex items-center justify-center py-8">
+            <div className="grid grid-cols-2 gap-3 w-full max-w-[380px]">
+              {BRAND_SHOWCASE.map((item, i) => (
+                <div
+                  key={item.src}
+                  className={`group relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl shadow-black/30 ring-1 ring-white/10 ${
+                    i % 2 === 0 ? 'translate-y-2' : '-translate-y-2'
+                  }`}
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.label}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 200px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                  <p className="absolute bottom-2.5 left-2.5 right-2.5 text-[10px] font-bold text-white leading-tight drop-shadow-sm">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Thẻ mô tả */}
+          <div className="rounded-2xl bg-white/10 backdrop-blur-xl border border-white/15 p-6 shadow-2xl">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <h3 className="text-lg font-bold text-white tracking-tight">Express Cafe</h3>
+            </div>
+            <p className="text-amber-50/85 text-sm leading-relaxed">
+              Hương vị cà phê truyền thống đậm đà hòa quyện cùng công nghệ quản trị hiện đại,
+              mang đến sự hoàn hảo trong từng điểm chạm dịch vụ.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {['Nhượng quyền', 'Chi nhánh', 'Dịch vụ', 'Tin tức'].map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/10 text-amber-100/90 border border-white/10"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
