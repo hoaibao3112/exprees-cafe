@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { adminArticlesApi } from '@/lib/admin-api';
 import { toast } from '@/components/admin/Toast';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { resolveUploadUrl } from '@/lib/api';
 
 // Helper slugify tiếng Việt chuẩn
 function slugify(text: string): string {
@@ -281,7 +282,7 @@ export default function AdminNewArticlePage() {
                 <div className="relative aspect-video rounded-xl border border-white/6 overflow-hidden bg-white/3 group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={imageUrlValue}
+                    src={resolveUploadUrl(imageUrlValue)}
                     alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {

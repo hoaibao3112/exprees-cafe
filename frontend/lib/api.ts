@@ -21,7 +21,16 @@ export function resolveUploadUrl(path?: string | null) {
   }
 
   const fallbackDev = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
-  const base = (process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '')) || fallbackDev;
+  let base = (process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '')) || fallbackDev;
+
+  // Bulletproof client-side local fallback when base is empty or relative
+  if (!base || base.startsWith('/')) {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      base = 'http://localhost:3000';
+    } else if (process.env.NODE_ENV === 'development') {
+      base = 'http://localhost:3000';
+    }
+  }
 
   // Ensure no duplicate slashes when joining
   return `${base.replace(/\/$/, '')}/${normalizedPath.replace(/^\//, '')}`;

@@ -16,6 +16,7 @@ import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { MenuCategory, useMenuQuery } from '../../hooks/useProductsQueries';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
+import { resolveUploadUrl } from '../../lib/api';
 
 const BANNER_IMAGE = '/slideshow_4.jpg';
 
@@ -262,7 +263,7 @@ export default function PromotionsPage() {
                             >
                               <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100">
                                 <img
-                                  src={product.imageUrl || '/slideshow_2.jpg'}
+                                  src={product.imageUrl ? resolveUploadUrl(product.imageUrl) : '/slideshow_2.jpg'}
                                   alt={product.name}
                                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />

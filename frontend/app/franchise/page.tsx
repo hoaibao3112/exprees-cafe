@@ -6,6 +6,7 @@ import { Coffee, Award, ShieldCheck, TrendingUp, Building, Sparkles } from 'luci
 import Link from 'next/link';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
+import { resolveUploadUrl } from '../../lib/api';
 
 const MODEL_DETAILS: Record<string, { image: string; title: string }> = {
   'EXPRESS': {
@@ -103,7 +104,7 @@ export default function FranchisePage() {
           ) : (
             (packages || []).map((pkg, idx) => {
               const details = {
-                image: (pkg.images && pkg.images.length > 0) ? pkg.images[0] : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png'),
+                image: (pkg.images && pkg.images.length > 0) ? resolveUploadUrl(pkg.images[0]) : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png'),
                 title: pkg.name,
               };
 

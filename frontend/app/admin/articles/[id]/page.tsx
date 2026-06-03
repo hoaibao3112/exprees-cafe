@@ -12,6 +12,7 @@ import { adminArticlesApi } from '@/lib/admin-api';
 import { toast } from '@/components/admin/Toast';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { CardSkeleton } from '@/components/admin/Skeleton';
+import { resolveUploadUrl } from '@/lib/api';
 import type { Article } from '@/types/admin.types';
 
 // Helper slugify tiếng Việt chuẩn
@@ -329,7 +330,7 @@ export default function AdminEditArticlePage() {
                 <div className="relative aspect-video rounded-xl border border-white/6 overflow-hidden bg-white/3 group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={imageUrlValue}
+                    src={resolveUploadUrl(imageUrlValue)}
                     alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {

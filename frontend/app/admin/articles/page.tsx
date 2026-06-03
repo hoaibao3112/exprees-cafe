@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+import { resolveUploadUrl } from '@/lib/api';
 import {
   Plus, Search, Pencil, Trash2, Eye, EyeOff,
   ChevronLeft, ChevronRight, Filter, HelpCircle, Lightbulb
@@ -138,7 +139,7 @@ export default function AdminArticlesPage() {
           avatar: idx % 3 === 0 ? 'JD' : idx % 3 === 1 ? 'MR' : 'SL'
         },
         dateStr: formatDate(art.createdAt),
-        imageUrl: art.imageUrl || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=150&auto=format&fit=crop'
+        imageUrl: art.imageUrl ? resolveUploadUrl(art.imageUrl) : 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=150&auto=format&fit=crop'
       }))
     : fallbackArticles;
 

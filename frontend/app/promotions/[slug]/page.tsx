@@ -16,6 +16,7 @@ import {
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { useProductDetailQuery } from '../../../hooks/useProductsQueries';
+import { resolveUploadUrl } from '../../../lib/api';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -37,9 +38,9 @@ export default function ProductDetailPage(props: PageProps) {
   }, [slug]);
 
   const images = product?.images?.length
-    ? product.images
+    ? product.images.map((img: any) => ({ ...img, url: resolveUploadUrl(img.url) }))
     : product?.imageUrl
-      ? [{ id: product.id, url: product.imageUrl, sortOrder: 0, isPrimary: true }]
+      ? [{ id: product.id, url: resolveUploadUrl(product.imageUrl), sortOrder: 0, isPrimary: true }]
       : [];
 
   const activeImage = images[activeImageIndex] ?? images[0];
