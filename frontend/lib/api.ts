@@ -8,16 +8,23 @@ export const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.repla
 // Falls back to localhost:3000 in development when no explicit BACKEND URL is provided.
 export function resolveUploadUrl(path?: string | null) {
   if (!path) return '';
+
+  // Normalize absolute URLs pointing to localhost:3000 to resolve dynamically
+  let normalizedPath = path;
+  if (path.startsWith('http://localhost:3000/')) {
+    normalizedPath = path.substring('http://localhost:3000/'.length);
+  }
+
   // If already absolute (http(s) or protocol-relative), return as-is
-  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('//')) {
-    return path;
+  if (normalizedPath.startsWith('http://') || normalizedPath.startsWith('https://') || normalizedPath.startsWith('//')) {
+    return normalizedPath;
   }
 
   const fallbackDev = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
   const base = (process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '')) || fallbackDev;
 
   // Ensure no duplicate slashes when joining
-  return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
+  return `${base.replace(/\/$/, '')}/${normalizedPath.replace(/^\//, '')}`;
 }
 
 export class ApiError extends Error {
