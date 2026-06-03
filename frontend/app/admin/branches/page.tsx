@@ -9,6 +9,7 @@ import { TableSkeleton } from '@/components/admin/Skeleton';
 import { ConfirmDialog } from '@/components/admin/ConfirmDialog';
 import { toast } from '@/components/admin/Toast';
 import type { Branch } from '@/types/admin.types';
+import { resolveUploadUrl } from '@/lib/api';
 
 export default function AdminBranchesPage() {
   const qc = useQueryClient();
@@ -246,7 +247,7 @@ export default function AdminBranchesPage() {
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm shrink-0 border border-slate-200/60 relative bg-slate-100">
                               <img
-                                src={branch.imageUrl || 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=150&auto=format&fit=crop'}
+                                src={resolveUploadUrl(branch.imageUrl) || 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=150&auto=format&fit=crop'}
                                 alt={branch.name}
                                 className="w-full h-full object-cover"
                               />
@@ -471,7 +472,7 @@ export default function AdminBranchesPage() {
               <label className="text-slate-700 text-xs font-bold uppercase tracking-wider block">Ảnh mặt tiền cửa hàng (Storefront Image)</label>
               <div className="border border-slate-200/80 rounded-2xl overflow-hidden aspect-[16/9] relative bg-slate-100 flex items-center justify-center shadow-inner">
                 {formImageUrl ? (
-                  <img src={formImageUrl} alt="Storefront Preview" className="w-full h-full object-cover" />
+                  <img src={resolveUploadUrl(formImageUrl)} alt="Storefront Preview" className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-center p-4">
                     <Info className="w-6 h-6 mx-auto mb-1.5 text-slate-400" />

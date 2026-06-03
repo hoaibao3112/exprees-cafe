@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { ArrowLeft, Save, MapPin, ImageIcon, Sparkles } from 'lucide-react';
 import { z } from 'zod';
 import { adminBranchesApi } from '@/lib/admin-api';
+import { resolveUploadUrl } from '@/lib/api';
 import { toast } from '@/components/admin/Toast';
 import { CardSkeleton } from '@/components/admin/Skeleton';
 
@@ -330,7 +331,7 @@ export default function AdminEditBranchPage() {
                 <div className="relative aspect-video rounded-xl border border-white/6 overflow-hidden bg-white/3">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={imageUrlValue}
+                    src={resolveUploadUrl(imageUrlValue)}
                     alt="Preview"
                     className="w-full h-full object-cover"
                     onError={(e) => {

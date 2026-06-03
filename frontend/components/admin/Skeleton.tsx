@@ -29,7 +29,7 @@ export function TableSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: nu
           style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
         >
           {Array.from({ length: cols }).map((_, col) => (
-            <Skeleton key={col} className="h-4" style={{ width: `${60 + Math.random() * 30}%` } as React.CSSProperties} />
+            <Skeleton key={col} className="h-4" style={{ width: `${60 + ((row * 7 + col * 13) % 31)}%` } as React.CSSProperties} />
           ))}
         </div>
       ))}
