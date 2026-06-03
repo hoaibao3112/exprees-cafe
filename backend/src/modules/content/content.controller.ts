@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, Patch, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ContentService } from './content.service';
 import { Public } from '../../common/decorators/public.decorator';
@@ -68,5 +68,44 @@ export class ContentController {
     },
   ) {
     return this.contentService.createBanner(dto);
+  }
+
+  @Post('admin/videos')
+  @ApiOperation({ summary: 'Create new video (Admin)' })
+  createVideo(
+    @Body()
+    dto: {
+      title: string;
+      youtubeUrl: string;
+      thumbnailUrl: string;
+      channelName: string;
+      sortOrder?: number;
+      isActive?: boolean;
+    },
+  ) {
+    return this.contentService.createVideo(dto);
+  }
+
+  @Patch('admin/videos/:id')
+  @ApiOperation({ summary: 'Update video details (Admin)' })
+  updateVideo(
+    @Param('id') id: string,
+    @Body()
+    dto: {
+      title?: string;
+      youtubeUrl?: string;
+      thumbnailUrl?: string;
+      channelName?: string;
+      sortOrder?: number;
+      isActive?: boolean;
+    },
+  ) {
+    return this.contentService.updateVideo(id, dto);
+  }
+
+  @Delete('admin/videos/:id')
+  @ApiOperation({ summary: 'Delete video (Admin)' })
+  deleteVideo(@Param('id') id: string) {
+    return this.contentService.deleteVideo(id);
   }
 }

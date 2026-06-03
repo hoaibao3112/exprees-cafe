@@ -140,4 +140,25 @@ export class FranchiseService implements OnApplicationBootstrap {
     }
     return this.applicationRepository.save(app);
   }
+
+  async updatePackage(
+    id: string,
+    dto: {
+      name?: string;
+      modelType?: string;
+      investmentFrom?: number;
+      description?: string;
+      images?: string[];
+      isActive?: boolean;
+    },
+  ): Promise<FranchisePackage> {
+    const pkg = await this.findPackageById(id);
+    Object.assign(pkg, dto);
+    return this.packageRepository.save(pkg);
+  }
+
+  async deletePackage(id: string): Promise<void> {
+    const pkg = await this.findPackageById(id);
+    await this.packageRepository.remove(pkg);
+  }
 }

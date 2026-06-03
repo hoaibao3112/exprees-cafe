@@ -175,6 +175,11 @@ export interface SiteSettings {
   primaryColor: string;
   secondaryColor: string;
   darkMode: boolean;
+
+  // SEO
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
 }
 
 // ===================== PAGINATION =====================

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import {
   LayoutDashboard, FileText, MapPin, Image as ImageIcon, Mail,
   Settings, LogOut, Coffee, ChevronLeft, ChevronRight,
-  Menu, X, Search, Bell
+  Menu, X, Search, Bell, Award, Play
 } from 'lucide-react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { ToastContainer } from '@/components/admin/Toast';
@@ -16,7 +16,9 @@ const NAV_ITEMS = [
   { href: '/admin/articles', label: 'Bài viết', icon: FileText },
   { href: '/admin/branches', label: 'Chi nhánh', icon: MapPin },
   { href: '/admin/services', label: 'Dịch vụ', icon: Coffee },
+  { href: '/admin/franchise', label: 'Nhượng quyền', icon: Award },
   { href: '/admin/banners', label: 'Banner', icon: ImageIcon },
+  { href: '/admin/videos', label: 'Video', icon: Play },
   { href: '/admin/contacts', label: 'Liên hệ', icon: Mail },
   { href: '/admin/settings', label: 'Cài đặt', icon: Settings },
 ];

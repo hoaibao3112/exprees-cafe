@@ -204,6 +204,18 @@ export const adminSettingsApi = {
     }),
 };
 
+// ===================== MEDIA / UPLOAD =====================
+export const adminMediaApi = {
+  upload: (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return adminFetch<{ id: string; cdnUrl: string }>('/media/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  },
+};
+
 // ===================== SERVICES =====================
 export const adminServicesApi = {
   getAll: () => adminFetch<any[]>('/services'),
@@ -220,4 +232,40 @@ export const adminServicesApi = {
     }),
   delete: (id: string) =>
     adminFetch<void>(`/services/${id}`, { method: 'DELETE' }),
+};
+
+// ===================== FRANCHISE PACKAGES =====================
+export const adminFranchiseApi = {
+  getAll: () => adminFetch<any[]>('/franchise/packages'),
+  getById: (id: string) => adminFetch<any>(`/franchise/packages/${id}`),
+  create: (data: any) =>
+    adminFetch<any>('/franchise/admin/packages', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: any) =>
+    adminFetch<any>(`/franchise/admin/packages/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    adminFetch<void>(`/franchise/admin/packages/${id}`, { method: 'DELETE' }),
+};
+
+// ===================== HOMEPAGE VIDEOS =====================
+export const adminVideosApi = {
+  getAll: () => adminFetch<any[]>('/content/videos'),
+  getById: (id: string) => adminFetch<any>(`/content/videos/${id}`), // not strictly needed but good for consistency
+  create: (data: any) =>
+    adminFetch<any>('/content/admin/videos', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: any) =>
+    adminFetch<any>(`/content/admin/videos/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    adminFetch<void>(`/content/admin/videos/${id}`, { method: 'DELETE' }),
 };

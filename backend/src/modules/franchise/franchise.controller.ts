@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Req, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { FranchiseService } from './franchise.service';
 import { Public } from '../../common/decorators/public.decorator';
@@ -72,5 +72,28 @@ export class FranchiseController {
     },
   ) {
     return this.franchiseService.updateApplicationStatus(id, dto.status, dto.notes);
+  }
+
+  @Patch('admin/packages/:id')
+  @ApiOperation({ summary: 'Update investment package details (Admin)' })
+  updatePackage(
+    @Param('id') id: string,
+    @Body()
+    dto: {
+      name?: string;
+      modelType?: string;
+      investmentFrom?: number;
+      description?: string;
+      images?: string[];
+      isActive?: boolean;
+    },
+  ) {
+    return this.franchiseService.updatePackage(id, dto);
+  }
+
+  @Delete('admin/packages/:id')
+  @ApiOperation({ summary: 'Delete investment package (Admin)' })
+  deletePackage(@Param('id') id: string) {
+    return this.franchiseService.deletePackage(id);
   }
 }

@@ -213,41 +213,50 @@ export class ContentService implements OnApplicationBootstrap {
     console.log('🌱 Successfully seeded blog articles and 5 premium F&B services!');
 
     // Seed initial videos
-    const videoCount = await this.videoRepository.count();
-    if (videoCount === 0) {
-      console.log('🌱 Seeding initial videos...');
-      const seedVideos = [
-        {
-          title: 'Giải mã bí quyết chốt đơn của Express Cafe',
-          youtubeUrl: 'https://www.youtube.com/watch?v=F3P_S8Z2D7k',
-          thumbnailUrl: '/media__1780386795827.png',
-          channelName: 'AIZEN OFFICIAL',
-          sortOrder: 1,
-          isActive: true,
-          publishedAt: new Date(),
-        },
-        {
-          title: 'Express Cafe - Tài trợ các lớp CEO',
-          youtubeUrl: 'https://www.youtube.com/watch?v=kY3r1pS6Kuo',
-          thumbnailUrl: '/media__1780386810707.png',
-          channelName: 'EXPRESS CAFE OFFICIAL',
-          sortOrder: 2,
-          isActive: true,
-          publishedAt: new Date(),
-        },
-        {
-          title: 'Express Cafe Profile - Version 2025',
-          youtubeUrl: 'https://www.youtube.com/watch?v=H74rBfGkMoc',
-          thumbnailUrl: '/media__1780386740323.png',
-          channelName: 'EXPRESS CAFE OFFICIAL',
-          sortOrder: 3,
-          isActive: true,
-          publishedAt: new Date(),
-        },
-      ];
-      await this.videoRepository.save(this.videoRepository.create(seedVideos));
-      console.log('🌱 Successfully seeded 3 videos!');
+    console.log('🌱 Checking / Seeding videos...');
+    const seedVideos = [
+      {
+        title: 'Giải mã bí quyết chốt đơn của Express Cafe',
+        youtubeUrl: 'https://www.youtube.com/watch?v=F3P_S8Z2D7k',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
+        channelName: 'AIZEN OFFICIAL',
+        sortOrder: 1,
+        isActive: true,
+        publishedAt: new Date(),
+      },
+      {
+        title: 'Express Cafe - Tài trợ các lớp CEO',
+        youtubeUrl: 'https://www.youtube.com/watch?v=kY3r1pS6Kuo',
+        thumbnailUrl: '/media__1780386810707.png',
+        channelName: 'EXPRESS CAFE OFFICIAL',
+        sortOrder: 2,
+        isActive: true,
+        publishedAt: new Date(),
+      },
+      {
+        title: 'Express Cafe Profile - Version 2025',
+        youtubeUrl: 'https://www.youtube.com/watch?v=H74rBfGkMoc',
+        thumbnailUrl: '/media__1780386740323.png',
+        channelName: 'EXPRESS CAFE OFFICIAL',
+        sortOrder: 3,
+        isActive: true,
+        publishedAt: new Date(),
+      },
+    ];
+
+    for (const seed of seedVideos) {
+      const existing = await this.videoRepository.findOne({ where: { title: seed.title } });
+      if (existing) {
+        existing.thumbnailUrl = seed.thumbnailUrl;
+        existing.youtubeUrl = seed.youtubeUrl;
+        existing.channelName = seed.channelName;
+        existing.sortOrder = seed.sortOrder;
+        await this.videoRepository.save(existing);
+      } else {
+        await this.videoRepository.save(this.videoRepository.create(seed));
+      }
     }
+    console.log('🌱 Successfully seeded/updated 3 videos!');
   }
 
   async createArticle(dto: {
@@ -306,5 +315,49 @@ export class ContentService implements OnApplicationBootstrap {
       where: { isActive: true },
       order: { sortOrder: 'ASC' },
     });
+  }
+
+  async findVideoById(id: string): Promise<Video> {
+    const video = await this.videoRepository.findOne({ where: { id } });
+    if (!video) {
+      throw new NotFoundException(`Video with ID ${id} not found`);
+    }
+    return video;
+  }
+
+  async createVideo(dto: {
+    title: string;
+    youtubeUrl: string;
+    thumbnailUrl: string;
+    channelName: string;
+    sortOrder?: number;
+    isActive?: boolean;
+  }): Promise<Video> {
+    const video = this.videoRepository.create({
+      ...dto,
+      publishedAt: new Date(),
+    });
+    return this.videoRepository.save(video);
+  }
+
+  async updateVideo(
+    id: string,
+    dto: {
+      title?: string;
+      youtubeUrl?: string;
+      thumbnailUrl?: string;
+      channelName?: string;
+      sortOrder?: number;
+      isActive?: boolean;
+    },
+  ): Promise<Video> {
+    const video = await this.findVideoById(id);
+    Object.assign(video, dto);
+    return this.videoRepository.save(video);
+  }
+
+  async deleteVideo(id: string): Promise<void> {
+    const video = await this.findVideoById(id);
+    await this.videoRepository.remove(video);
   }
 }

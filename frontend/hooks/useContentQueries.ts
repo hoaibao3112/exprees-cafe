@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, ApiError } from '../lib/api';
+import { adminVideosApi } from '../lib/admin-api';
 
 export interface Article {
   id: string;
@@ -72,5 +73,35 @@ export function useVideosQuery() {
   return useQuery<Video[], ApiError>({
     queryKey: ['videos'],
     queryFn: () => apiFetch<Video[]>('/content/videos'),
+  });
+}
+
+export function useCreateVideoMutation() {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, any>({
+    mutationFn: (data) => adminVideosApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['videos'] });
+    },
+  });
+}
+
+export function useUpdateVideoMutation() {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, { id: string; data: any }>({
+    mutationFn: ({ id, data }) => adminVideosApi.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['videos'] });
+    },
+  });
+}
+
+export function useDeleteVideoMutation() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminVideosApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['videos'] });
+    },
   });
 }

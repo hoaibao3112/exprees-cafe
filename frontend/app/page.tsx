@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Coffee, 
-  ChevronLeft, 
-  ChevronRight, 
-  ChevronDown, 
+import {
+  Coffee,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
   ChevronUp,
-  Award, 
-  TrendingUp, 
-  ShieldCheck, 
+  Award,
+  TrendingUp,
+  ShieldCheck,
   ArrowRight,
   MapPin,
   Calendar,
@@ -26,29 +26,43 @@ import { useBranchesQuery } from '../hooks/useBranchQueries';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
+import { resolveUploadUrl } from '../lib/api';
+
+// Helper to resolve local assets or backend uploads
+const resolveLocalOrUpload = (url?: string | null) => {
+  if (!url) return '';
+  if (url.startsWith('uploads/') || url.startsWith('/uploads/')) {
+    const cleanPath = url.startsWith('/') ? url.slice(1) : url;
+    return resolveUploadUrl(cleanPath);
+  }
+  if (url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  return resolveUploadUrl(url);
+};
 
 // Slideshow images configuration
 const SLIDES = [
-  { 
-    url: '/slideshow_1.jpg', 
+  {
+    url: '/slideshow_1.jpg',
     alt: 'Dịch vụ cho thuê máy cà phê',
     title: 'CHO THUÊ MÁY PHA CÀ PHÊ',
     subtitle: 'Giải pháp chuyên nghiệp cho văn phòng, nhà hàng và chuỗi kinh doanh F&B'
   },
-  { 
-    url: '/slideshow_2.jpg', 
+  {
+    url: '/slideshow_2.jpg',
     alt: 'Nhượng quyền 0 đồng - Mô hình ki-ốt',
     title: 'NHƯỢNG QUYỀN THƯƠNG HIỆU 0Đ',
     subtitle: 'Hỗ trợ khởi nghiệp trọn gói, tối ưu hóa lợi nhuận, thời gian hoàn vốn cực nhanh'
   },
-  { 
-    url: '/slideshow_3.jpg', 
+  {
+    url: '/slideshow_3.jpg',
     alt: 'Thưởng thức cà phê sạch nguyên chất',
     title: 'HƯƠNG VỊ NGUYÊN BẢN ĐÍNH THỰC',
     subtitle: 'Nguồn cà phê sạch hữu cơ 100% Robusta & Arabica từ nông trại Đắk Lắk'
   },
-  { 
-    url: '/slideshow_4.jpg', 
+  {
+    url: '/slideshow_4.jpg',
     alt: 'Hệ thống nhượng quyền Express Cafe',
     title: 'VẬN HÀNH SAAS THÔNG MINH',
     subtitle: 'Quản trị chuỗi tự động từ xa với phần mềm POS & GPS hiện đại dẫn đầu xu thế'
@@ -93,7 +107,7 @@ export default function Home() {
 
   // Slideshow state
   const [activeSlide, setActiveSlide] = useState(0);
-  
+
   // Accordion state
   const [activeAccordion, setActiveAccordion] = useState<string>('tam-nhin');
 
@@ -175,7 +189,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-zinc-800 font-sans antialiased">
-      
+
       {/* Shared Navigation Header */}
       <Header />
 
@@ -184,9 +198,8 @@ export default function Home() {
         {SLIDES.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${
-              idx === activeSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'
-            }`}
+            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${idx === activeSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'
+              }`}
           >
             {/* Slide Image */}
             <div className="absolute inset-0 w-full h-full transition-transform duration-[8000ms] scale-105">
@@ -201,34 +214,30 @@ export default function Home() {
             </div>
             {/* Premium Overlay Shadow for Light Text Contrast */}
             <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-black/30 to-black/40 pointer-events-none" />
-            
-            {/* Content overlay container */}
-            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
-              <div className="max-w-4xl space-y-4">
-                <span className={`inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-orange-400 backdrop-blur-md transition-all duration-700 delay-300 transform ${
-                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                }`}>
+
+            {/* Content overlay container - Top-aligned smaller text layout */}
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-start text-center px-4 pt-12 sm:pt-16 md:pt-24">
+              <div className="max-w-3xl space-y-3">
+                <span className={`inline-flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/5 px-3 py-1.5 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-orange-400/50 backdrop-blur-md transition-all duration-700 delay-300 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                  }`}>
                   <Sparkles className="w-3.5 h-3.5" /> MỸ THUẬT RANG XAY & CÔNG NGHỆ SAAS
                 </span>
-                
-                <h1 className={`text-3xl sm:text-5xl md:text-6xl font-black text-white uppercase tracking-[0.15em] leading-tight drop-shadow-md transition-all duration-700 delay-500 transform ${
-                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                }`}>
+
+                <h1 className={`text-lg sm:text-2xl md:text-3.5xl font-black text-white/90 uppercase tracking-[0.12em] leading-tight drop-shadow-md transition-all duration-700 delay-500 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                  }`}>
                   {slide.title}
                 </h1>
-                
-                <p className={`text-xs sm:text-sm md:text-base text-zinc-300 max-w-2xl mx-auto font-light leading-relaxed transition-all duration-700 delay-700 transform ${
-                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                }`}>
+
+                <p className={`text-[10px] sm:text-xs md:text-sm text-zinc-300/80 max-w-xl mx-auto font-light leading-relaxed transition-all duration-700 delay-700 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                  }`}>
                   {slide.subtitle}
                 </p>
-                
-                <div className={`pt-4 transition-all duration-700 delay-[900ms] transform ${
-                  idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                }`}>
-                  <Link 
-                    href="/franchise/register" 
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-full transition-all shadow-lg shadow-orange-500/25 hover:scale-105 active:scale-95"
+
+                <div className={`pt-2 transition-all duration-700 delay-[900ms] transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                  }`}>
+                  <Link
+                    href="/franchise/register"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-wider rounded-full transition-all shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95"
                   >
                     Đăng Ký Tư Vấn <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -258,9 +267,8 @@ export default function Home() {
             <button
               key={idx}
               onClick={() => setActiveSlide(idx)}
-              className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
-                idx === activeSlide ? 'bg-orange-500 w-8' : 'bg-white/60 hover:bg-white'
-              }`}
+              className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${idx === activeSlide ? 'bg-orange-500 w-8' : 'bg-white/60 hover:bg-white'
+                }`}
             />
           ))}
         </div>
@@ -271,7 +279,7 @@ export default function Home() {
         {/* Background ambient orbs */}
         <div className="absolute top-1/4 left-[-15%] w-[45vw] h-[45vw] rounded-full bg-orange-100/40 blur-[130px] pointer-events-none" />
         <div className="absolute top-1/2 right-[-10%] w-[35vw] h-[35vw] rounded-full bg-amber-100/30 blur-[100px] pointer-events-none animate-pulse-slow" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="mb-14" data-animate="fade-right">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
@@ -300,14 +308,14 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {packages.map((pkg, idx) => {
                 const details = {
-                  image: (pkg.images && pkg.images.length > 0) ? pkg.images[0] : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png'),
+                  image: resolveLocalOrUpload((pkg.images && pkg.images.length > 0) ? pkg.images[0] : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png')),
                   tag: MODEL_DETAILS[pkg.modelType]?.tag || 'MÔ HÌNH NHƯỢNG QUYỀN',
                   title: pkg.name,
                 };
 
                 return (
-                  <div 
-                    key={pkg.id} 
+                  <div
+                    key={pkg.id}
                     data-animate="fade-up"
                     data-delay={String((idx + 1) * 100)}
                     className="group bg-white/70 backdrop-blur-md rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:bg-white transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col justify-between"
@@ -315,9 +323,9 @@ export default function Home() {
                     <div>
                       {/* Card Image */}
                       <div className="relative aspect-[4/3] w-full overflow-hidden">
-                        <Image 
-                          src={details.image} 
-                          alt={details.title} 
+                        <Image
+                          src={details.image}
+                          alt={details.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -352,13 +360,13 @@ export default function Home() {
       {/* Tin Tức Section */}
       <section id="news" className="py-20 bg-white relative overflow-hidden border-t border-zinc-100">
         {/* Background Dot pattern */}
-        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" 
-             style={{ 
-               backgroundImage: `radial-gradient(circle, #000 10%, transparent 11%)`,
-               backgroundSize: '16px 16px'
-             }} 
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage: `radial-gradient(circle, #000 10%, transparent 11%)`,
+            backgroundSize: '16px 16px'
+          }}
         />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="mb-14" data-animate="fade-right">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
@@ -375,8 +383,8 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {articles.slice(0, 3).map((article, idx) => (
-                <Link 
-                  key={article.id} 
+                <Link
+                  key={article.id}
                   href={`/blog/${article.slug}`}
                   data-animate="fade-up"
                   data-delay={String((idx + 1) * 100)}
@@ -384,9 +392,9 @@ export default function Home() {
                 >
                   {/* Card Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
-                    <Image 
-                      src={article.imageUrl || '/slideshow_1.jpg'} 
-                      alt={article.title} 
+                    <Image
+                      src={resolveLocalOrUpload(article.imageUrl || '/slideshow_1.jpg')}
+                      alt={article.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -431,8 +439,8 @@ export default function Home() {
               {videos.slice(0, 3).map((video, idx) => {
                 const yId = getYoutubeId(video.youtubeUrl);
                 return (
-                  <div 
-                    key={video.id} 
+                  <div
+                    key={video.id}
                     data-animate="fade-up"
                     data-delay={String((idx + 1) * 100)}
                     onClick={() => yId && setPlayingVideo(yId)}
@@ -441,9 +449,9 @@ export default function Home() {
                     <div>
                       {/* Video Thumbnail (YouTube preview overlay) */}
                       <div className="relative aspect-[16/9] w-full overflow-hidden bg-black">
-                        <Image 
-                          src={video.thumbnailUrl} 
-                          alt={video.title} 
+                        <Image
+                          src={resolveLocalOrUpload(video.thumbnailUrl)}
+                          alt={video.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
@@ -494,8 +502,8 @@ export default function Home() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {branches.slice(0, 4).map((branch, idx) => (
-                <Link 
-                  key={branch.id} 
+                <Link
+                  key={branch.id}
                   href={`/branches?id=${branch.id}`}
                   data-animate="fade-up"
                   data-delay={String((idx + 1) * 80)}
@@ -503,9 +511,9 @@ export default function Home() {
                 >
                   {/* Storefront Image */}
                   <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
-                    <Image 
-                      src={branch.imageUrl || '/slideshow_3.jpg'} 
-                      alt={branch.name} 
+                    <Image
+                      src={resolveLocalOrUpload(branch.imageUrl || '/slideshow_3.jpg')}
+                      alt={branch.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -528,7 +536,7 @@ export default function Home() {
       <section id="about" className="py-20 bg-zinc-50 border-t border-b border-zinc-100 relative overflow-hidden">
         {/* Background ambient orbs */}
         <div className="absolute bottom-1/4 right-[-10%] w-[25vw] h-[25vw] rounded-full bg-orange-100/20 blur-[80px] pointer-events-none animate-pulse-slow" />
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="border-l-4 border-orange-500 pl-4 mb-12" data-animate="fade-right">
             <span className="text-xs font-extrabold uppercase tracking-widest text-orange-500">Về Chúng Tôi</span>
@@ -542,9 +550,9 @@ export default function Home() {
             <div className="lg:col-span-5 relative" data-animate="fade-right" data-delay="100">
               <div className="absolute inset-0 bg-orange-500 rounded-3xl translate-x-3 translate-y-3 z-0" />
               <div className="relative z-10 aspect-square rounded-3xl overflow-hidden shadow-lg border-4 border-white bg-zinc-200">
-                <Image 
-                  src="/h-about_banner.jpg" 
-                  alt="Express Cafe Team" 
+                <Image
+                  src="/h-about_banner.jpg"
+                  alt="Express Cafe Team"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
@@ -557,21 +565,19 @@ export default function Home() {
               {accordionItems.map((item) => {
                 const isOpen = activeAccordion === item.id;
                 return (
-                  <div 
-                    key={item.id} 
-                    className={`border rounded-2xl transition-all duration-300 ${
-                      isOpen 
-                        ? 'border-orange-500/30 bg-white shadow-md shadow-orange-500/5' 
-                        : 'border-zinc-200/80 bg-white/70 hover:bg-white hover:border-zinc-300'
-                    }`}
+                  <div
+                    key={item.id}
+                    className={`border rounded-2xl transition-all duration-300 ${isOpen
+                      ? 'border-orange-500/30 bg-white shadow-md shadow-orange-500/5'
+                      : 'border-zinc-200/80 bg-white/70 hover:bg-white hover:border-zinc-300'
+                      }`}
                   >
                     <button
                       onClick={() => setActiveAccordion(isOpen ? '' : item.id)}
                       className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none"
                     >
-                      <span className={`font-bold text-sm md:text-base transition-colors ${
-                        isOpen ? 'text-orange-500' : 'text-zinc-800'
-                      }`}>
+                      <span className={`font-bold text-sm md:text-base transition-colors ${isOpen ? 'text-orange-500' : 'text-zinc-800'
+                        }`}>
                         {item.title}
                       </span>
                       {isOpen ? (
@@ -580,10 +586,9 @@ export default function Home() {
                         <ChevronRight className="w-5 h-5 text-zinc-400 transition-transform duration-300" />
                       )}
                     </button>
-                    
-                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                    }`}>
+
+                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                      }`}>
                       <div className="px-6 pb-5 pt-1 text-xs md:text-sm text-zinc-600 leading-relaxed border-t border-zinc-50">
                         {item.content}
                       </div>
@@ -593,8 +598,8 @@ export default function Home() {
               })}
 
               <div className="pt-6">
-                <Link 
-                  href="/franchise" 
+                <Link
+                  href="/franchise"
                   className="inline-flex items-center gap-2 px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all shadow-md shadow-orange-500/20 active:scale-95"
                 >
                   XEM THÊM <ArrowRight className="w-4 h-4" />
@@ -608,14 +613,14 @@ export default function Home() {
       {/* Dark Statistics & Story Footer */}
       <section className="relative py-20 bg-zinc-950 text-white overflow-hidden">
         {/* Background wood flooring styling pattern */}
-        <div className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none" 
-             style={{ backgroundImage: `url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200')` }} 
+        <div className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
+          style={{ backgroundImage: `url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200')` }}
         />
         <div className="absolute bottom-0 right-[-10%] w-[40vw] h-[40vw] rounded-full bg-orange-500/5 blur-[150px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Stats list (Left) */}
             <div className="lg:col-span-6 grid grid-cols-3 gap-6 text-center lg:text-left" data-animate="fade-up">
               <div className="flex flex-col">
@@ -637,7 +642,7 @@ export default function Home() {
               <div className="p-8 border border-white/10 rounded-3xl bg-white/5 backdrop-blur-md relative overflow-hidden">
                 {/* Ambient glow */}
                 <div className="absolute top-[-20%] right-[-20%] w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
-                
+
                 <h3 className="text-lg font-black tracking-wider text-orange-500 mb-4 uppercase">
                   EXPRESS CAFE
                 </h3>

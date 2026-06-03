@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch, ApiError } from '../lib/api';
+import { adminFranchiseApi } from '../lib/admin-api';
 
 export interface FranchisePackage {
   id: string;
@@ -56,6 +57,37 @@ export function useApplyFranchiseMutation() {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['franchise-applications'] });
+    },
+  });
+}
+
+export function useCreateFranchisePackageMutation() {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, any>({
+    mutationFn: (data) => adminFranchiseApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['franchise-packages'] });
+    },
+  });
+}
+
+export function useUpdateFranchisePackageMutation() {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, { id: string; data: any }>({
+    mutationFn: ({ id, data }) => adminFranchiseApi.update(id, data),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ['franchise-packages'] });
+      queryClient.invalidateQueries({ queryKey: ['franchise-package', id] });
+    },
+  });
+}
+
+export function useDeleteFranchisePackageMutation() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminFranchiseApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['franchise-packages'] });
     },
   });
 }

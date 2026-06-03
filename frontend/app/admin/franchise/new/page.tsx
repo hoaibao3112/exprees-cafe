@@ -1,0 +1,273 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Award, ArrowLeft, Save, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
+import { useCreateFranchisePackageMutation } from '@/hooks/useFranchiseQueries';
+import { resolveUploadUrl } from '@/lib/api';
+
+export default function AdminNewFranchisePackagePage() {
+  const router = useRouter();
+  const createMutation = useCreateFranchisePackageMutation();
+
+  const [name, setName] = useState('');
+  const [modelType, setModelType] = useState('KIOSK');
+  const [investmentFrom, setInvestmentFrom] = useState<number>(250000000);
+  const [description, setDescription] = useState('');
+  const [isActive, setIsActive] = useState(true);
+  
+  // Dynamic images list supporting multiple image uploads/inputs
+  const [images, setImages] = useState<string[]>(['']);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const handleAddImageField = () => {
+    if (images.length < 5) {
+      setImages([...images, '']);
+    }
+  };
+
+  const handleRemoveImageField = (index: number) => {
+    const updated = images.filter((_, i) => i !== index);
+    setImages(updated.length > 0 ? updated : ['']);
+  };
+
+  const handleImageChange = (index: number, val: string) => {
+    const updated = [...images];
+    updated[index] = val;
+    setImages(updated);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitError(null);
+
+    if (!name.trim()) {
+      setSubmitError('Tên gói đầu tư không được để trống.');
+      return;
+    }
+
+    if (isNaN(investmentFrom) || investmentFrom < 0) {
+      setSubmitError('Vốn đầu tư tối thiểu phải là số lớn hơn hoặc bằng 0.');
+      return;
+    }
+
+    // Clean up empty image strings
+    const cleanImages = images.filter((img) => img.trim() !== '');
+
+    try {
+      await createMutation.mutateAsync({
+        name,
+        modelType,
+        investmentFrom: Number(investmentFrom),
+        description,
+        images: cleanImages,
+        isActive,
+      });
+      router.push('/admin/franchise');
+    } catch (err: any) {
+      setSubmitError(err?.message || 'Có lỗi xảy ra khi tạo gói đầu tư.');
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-4xl mx-auto">
+      {/* 1. Header Breadcrumbs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/60 pb-5">
+        <div className="space-y-1.5">
+          <Link
+            href="/admin/franchise"
+            className="inline-flex items-center gap-1 text-slate-450 hover:text-blue-600 transition-colors text-xs font-bold uppercase tracking-wider"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Quay lại danh sách
+          </Link>
+          <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight">Thêm Gói Nhượng Quyền Mới</h2>
+        </div>
+      </div>
+
+      {/* 2. Main Form Container */}
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* Left Column: Form details */}
+        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
+          {submitError && (
+            <div className="p-4 bg-rose-50 border border-rose-100 text-rose-500 rounded-2xl text-xs font-semibold leading-relaxed">
+              {submitError}
+            </div>
+          )}
+
+          {/* Package Name */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
+              Tên gói nhượng quyền *
+            </label>
+            <input
+              type="text"
+              placeholder="VD: Gói KIOSK - Tối ưu mặt tiền phố..."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-bold placeholder:text-slate-400"
+            />
+          </div>
+
+          {/* Investment limit & Model Type row */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Model Type */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
+                Mô hình nhượng quyền
+              </label>
+              <select
+                value={modelType}
+                onChange={(e) => setModelType(e.target.value)}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-semibold"
+              >
+                <option value="KIOSK">KIOSK (Take away)</option>
+                <option value="EXPRESS">EXPRESS (Cửa hàng chuẩn)</option>
+                <option value="PREMIUM">PREMIUM (Cửa hàng cao cấp)</option>
+              </select>
+            </div>
+
+            {/* Investment From */}
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
+                Vốn đầu tư ban đầu (VND) *
+              </label>
+              <input
+                type="number"
+                placeholder="VD: 250000000"
+                value={investmentFrom || ''}
+                onChange={(e) => setInvestmentFrom(parseInt(e.target.value) || 0)}
+                required
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-bold"
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="space-y-1.5">
+            <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
+              Mô tả chi tiết gói đầu tư
+            </label>
+            <textarea
+              rows={6}
+              placeholder="Nhập giới thiệu chi tiết mô hình, diện tích đề xuất và các ưu đãi nhượng quyền..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-medium leading-relaxed placeholder:text-slate-400"
+            />
+          </div>
+
+          {/* Dynamic Image Paths */}
+          <div className="space-y-4 border-t border-slate-100 pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Hình ảnh mô phỏng (Đa ảnh)</h3>
+                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Tải lên tối đa 4 đường dẫn ảnh slideshow (ví dụ: uploads/franchise_packages/file.png)</p>
+              </div>
+              
+              <button
+                type="button"
+                onClick={handleAddImageField}
+                disabled={images.length >= 4}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:opacity-50 text-slate-600 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-sm select-none"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Thêm ảnh
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {images.map((img, idx) => (
+                <div key={idx} className="flex gap-2 items-center">
+                  <div className="font-bold text-slate-400 text-xs w-6 text-center">#{idx + 1}</div>
+                  <input
+                    type="text"
+                    placeholder="Nhập đường dẫn ảnh (uploads/...) hoặc link URL..."
+                    value={img}
+                    onChange={(e) => handleImageChange(idx, e.target.value)}
+                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-medium"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImageField(idx)}
+                    className="p-2 border border-slate-200 hover:border-rose-200 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-xl transition-all cursor-pointer shrink-0"
+                    title="Xóa dòng này"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Configs & Preview */}
+        <div className="lg:col-span-4 space-y-6">
+          
+          {/* Status Settings */}
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-4">
+            <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">Cấu hình</h3>
+            
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">
+                Trạng thái hoạt động
+              </label>
+              <select
+                value={isActive ? 'true' : 'false'}
+                onChange={(e) => setIsActive(e.target.value === 'true')}
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-xs text-slate-700 font-semibold"
+              >
+                <option value="true">Hiển thị công khai (Active)</option>
+                <option value="false">Tạm ẩn hoạt động (Inactive)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Primary Preview */}
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm space-y-4">
+            <h3 className="text-xs font-extrabold text-slate-800 uppercase tracking-widest border-b border-slate-100 pb-3">Hình ảnh hiển thị đầu</h3>
+            
+            {images[0]?.trim() ? (
+              <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm">
+                <img
+                  src={resolveUploadUrl(images[0])}
+                  alt="Primary Image Preview"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1453614512568-c4024d13c247?q=80&w=300&auto=format&fit=crop';
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="aspect-[4/3] w-full rounded-2xl bg-slate-50 border border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-350 py-10">
+                <ImageIcon className="w-8 h-8 mb-2" />
+                <span className="text-[10px] font-bold uppercase tracking-wider">Chưa có ảnh</span>
+              </div>
+            )}
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-4">
+            <Link
+              href="/admin/franchise"
+              className="flex-1 py-3.5 border border-slate-200 hover:bg-slate-50 text-slate-500 font-bold text-xs uppercase tracking-wider text-center rounded-2xl transition-all"
+            >
+              Hủy bỏ
+            </Link>
+            
+            <button
+              type="submit"
+              disabled={createMutation.isPending}
+              className="flex-1 flex items-center justify-center gap-2 py-3.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-md shadow-blue-500/10 active:scale-[0.98] cursor-pointer"
+            >
+              <Save className="w-4 h-4" />
+              LƯU LẠI
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}
