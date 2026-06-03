@@ -6,7 +6,7 @@ import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { resolveUploadUrl, apiFetch } from '../../../lib/api';
-import { ArrowLeft, ChevronLeft, ChevronRight, Coffee, CheckCircle2, MessageSquare, X } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Coffee, CheckCircle2, MessageSquare, X, Phone } from 'lucide-react';
 
 export default function ServiceDetailPage(props: { params: Promise<{ id: string }> }) {
   useScrollAnimation();
@@ -201,52 +201,56 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
             <h2 className="text-2xl font-black text-zinc-900 mb-6">Quyền lợi & Hỗ trợ</h2>
 
             {/* Benefits List */}
-            <div className="bg-zinc-900 rounded-3xl p-6 text-white">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-orange-400" />
+            <div data-animate="fade-up" data-delay="100" className="bg-gradient-to-br from-orange-50/60 to-white border border-orange-100 rounded-3xl p-6 shadow-md shadow-orange-500/5">
+              <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-zinc-900">
+                <CheckCircle2 className="w-5 h-5 text-orange-500" />
                 Các quyền lợi
               </h3>
-              <ul className="space-y-3 text-sm text-zinc-300">
+              <ul className="space-y-3 text-sm text-zinc-650">
                 <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Hỗ trợ tư vấn chuyên nghiệp 24/7</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Giá cả cạnh tranh và minh bạch</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Chất lượng dịch vụ đảm bảo</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Bảo hành và hỗ trợ sau dịch vụ</span>
                 </li>
               </ul>
             </div>
 
-            {/* Contact Form - Larksuite Redirection */}
-            <div className="p-6 bg-gradient-to-br from-orange-50 to-white border border-orange-100 rounded-3xl flex flex-col gap-4 shadow-md text-center items-center py-8">
-              <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white mb-2 shadow-lg shadow-orange-500/20">
-                <MessageSquare className="w-6 h-6" />
+            {/* Hotline & Consultation Card */}
+            <div data-animate="fade-up" data-delay="200" className="p-6 bg-gradient-to-br from-orange-500 to-orange-600 border border-orange-600 rounded-3xl flex flex-col gap-4 shadow-xl text-center items-center py-8 text-white relative overflow-hidden group">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500" />
+              <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-orange-600 mb-2 shadow-lg shadow-black/10">
+                <Phone className="w-5 h-5 fill-current animate-pulse" />
               </div>
-              <h3 className="font-extrabold text-base text-zinc-900 uppercase tracking-wide">
-                Đăng Ký Tư Vấn Dịch Vụ
+              <h3 className="font-extrabold text-base uppercase tracking-wider text-white">
+                Hotline Tư Vấn Trực Tiếp
               </h3>
-              <p className="text-xs text-zinc-500 leading-relaxed max-w-xs font-light">
-                Quý khách vui lòng cung cấp thông tin liên hệ và yêu cầu tư vấn thông qua biểu mẫu khảo sát Lark của chúng tôi.
+              <p className="text-xs text-orange-100 leading-relaxed max-w-xs font-light">
+                Quý đối tác cần tư vấn nhanh về các dịch vụ liên kết, vui lòng gọi điện trực tiếp để nhận hỗ trợ 24/7 từ Express Cafe.
               </p>
-              
-              <a
-                href="https://c439f6n0z9h.sg.larksuite.com/share/base/form/shrlgCqbXhTIu8D7489D9Unc2Bc"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-4 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all cursor-pointer text-center active:scale-[0.98] shadow-md shadow-orange-500/25 flex items-center justify-center gap-2"
+              <a 
+                href="tel:0362077399"
+                className="text-2xl font-black text-white hover:text-orange-200 transition-colors tracking-wide block mt-1"
               >
-                Mở biểu mẫu đăng ký Lark
-                <ArrowLeft className="w-4 h-4 rotate-180" />
+                0362 077 399
               </a>
+              <Link
+                href="/contact"
+                className="w-full py-4 bg-zinc-900 hover:bg-zinc-950 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all cursor-pointer text-center active:scale-[0.98] shadow-md flex items-center justify-center gap-2"
+              >
+                Gửi yêu cầu tư vấn online
+                <ArrowLeft className="w-4 h-4 rotate-180" />
+              </Link>
             </div>
           </div>
         </div>
