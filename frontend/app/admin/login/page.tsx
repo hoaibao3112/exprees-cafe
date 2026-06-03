@@ -69,7 +69,7 @@ function AdminLoginForm() {
           <div className="p-8 text-center border-b border-slate-100">
             <div className="relative w-[200px] h-[56px] mx-auto mb-4">
               <Image
-                src="/logo.png?v=2"
+                src="/logo.png?v=3"
                 alt="Express Cafe"
                 fill
                 className="object-contain"
@@ -201,7 +201,7 @@ function AdminLoginForm() {
           <div className="flex flex-col items-center pt-2">
             <div className="relative w-full max-w-[280px] h-[72px] bg-white rounded-2xl shadow-2xl shadow-black/20 px-6 py-3 flex items-center justify-center ring-1 ring-white/80">
               <Image
-                src="/logo.png?v=2"
+                src="/logo.png?v=3"
                 alt="Express Cafe Logo"
                 fill
                 className="object-contain p-1"
