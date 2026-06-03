@@ -7,9 +7,8 @@ import { Footer } from '../../../components/layout/Footer';
 import { resolveUploadUrl, apiFetch } from '../../../lib/api';
 import { ArrowLeft, ChevronLeft, ChevronRight, Coffee, CheckCircle2, MessageSquare, X } from 'lucide-react';
 
-export default function ServiceDetailPage(props: { params: { id: string } }) {
-  // In client components Next may pass `params` as a Promise — unwrap with React.use()
-  const resolvedParams = React.use(props.params as any) as { id: string };
+export default function ServiceDetailPage(props: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(props.params);
   const id = resolvedParams.id;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);

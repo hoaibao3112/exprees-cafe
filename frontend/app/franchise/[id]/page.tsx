@@ -8,9 +8,8 @@ import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { ArrowRight, CheckCircle, ArrowLeft, Coffee, Gift, Monitor, Store, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-export default function FranchiseDetailPage(props: { params: { id: string } }) {
-  // Next may pass `params` as a Promise in client components — unwrap with React.use()
-  const resolvedParams = React.use(props.params as any) as { id: string };
+export default function FranchiseDetailPage(props: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(props.params);
   const { id } = resolvedParams;
 
   const { data: pkg, isLoading, error } = useFranchisePackageByIdQuery(id);
