@@ -266,6 +266,9 @@ export default function PromotionsPage() {
                                   src={product.imageUrl ? resolveUploadUrl(product.imageUrl) : '/slideshow_2.jpg'}
                                   alt={product.name}
                                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
+                                  }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-transparent" />
                                 {product.isFeatured && (

@@ -43,7 +43,7 @@ export default function ProductDetailPage(props: PageProps) {
     ? product.images.map((img: any) => ({ ...img, url: resolveUploadUrl(img.url) }))
     : product?.imageUrl
       ? [{ id: product.id, url: resolveUploadUrl(product.imageUrl), sortOrder: 0, isPrimary: true }]
-      : [];
+      : [{ id: 'fallback', url: '/slideshow_2.jpg', sortOrder: 0, isPrimary: true }];
 
   const activeImage = images[activeImageIndex] ?? images[0];
 
@@ -155,6 +155,9 @@ export default function ProductDetailPage(props: PageProps) {
                     src={activeImage.url}
                     alt={product.name}
                     className="h-[320px] w-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
+                    }}
                   />
                 ) : (
                   <div className="flex h-[320px] items-center justify-center text-white/60">
@@ -175,7 +178,14 @@ export default function ProductDetailPage(props: PageProps) {
                           : 'border-white/15 opacity-80'
                       }`}
                     >
-                      <img src={image.url} alt={`${product.name} ${index + 1}`} className="h-full w-full object-cover" />
+                      <img
+                        src={image.url}
+                        alt={`${product.name} ${index + 1}`}
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
+                        }}
+                      />
                     </button>
                   ))}
                 </div>
@@ -197,36 +207,6 @@ export default function ProductDetailPage(props: PageProps) {
               </div>
 
               <div className="rounded-[32px] border border-orange-100 bg-white p-6 shadow-[0_18px_45px_rgba(210,120,30,0.06)] md:p-7">
-                <h2 className="text-lg font-black uppercase tracking-[0.16em] text-orange-500">Tùy chọn giá</h2>
-                <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  {product.variants.map((variant) => (
-                    <div
-                      key={variant.id}
-                      className="rounded-[22px] border border-orange-100 bg-orange-50/40 p-4"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h3 className="text-sm font-bold text-zinc-900">{variant.name}</h3>
-                          <p className="mt-1 text-[11px] text-zinc-500">SKU: {variant.sku}</p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
-                            {variant.isActive ? 'Đang bán' : 'Ẩn'}
-                          </div>
-                          <div className="mt-1 text-sm font-black text-orange-500">
-                            {formatPrice(variant.price)}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="mt-3 text-[11px] text-zinc-500">
-                        Tồn kho: {variant.stockQuantity}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[32px] border border-orange-100 bg-white p-6 shadow-[0_18px_45px_rgba(210,120,30,0.06)] md:p-7">
                 <h2 className="text-lg font-black uppercase tracking-[0.16em] text-orange-500">Hình ảnh</h2>
                 <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
                   {images.map((image, index) => (
@@ -239,7 +219,14 @@ export default function ProductDetailPage(props: PageProps) {
                           : 'border-orange-100'
                       }`}
                     >
-                      <img src={image.url} alt={product.name} className="h-36 w-full object-cover" />
+                      <img
+                        src={image.url}
+                        alt={product.name}
+                        className="h-36 w-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/slideshow_2.jpg';
+                        }}
+                      />
                     </button>
                   ))}
                 </div>
@@ -268,12 +255,6 @@ export default function ProductDetailPage(props: PageProps) {
                   </div>
                 </div>
 
-                <Link
-                  href="/contact"
-                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-white transition-all hover:bg-orange-600"
-                >
-                  Đặt hàng / Tư vấn
-                </Link>
               </div>
 
               <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-[0_18px_45px_rgba(210,120,30,0.06)]">
