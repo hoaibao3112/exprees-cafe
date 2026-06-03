@@ -87,6 +87,25 @@ export class AdminService {
     };
   }
 
+  async submitContact(dto: Record<string, unknown>) {
+    const nameStr = typeof dto.name === 'string' ? dto.name : 'Anonymous';
+    const emailStr = typeof dto.email === 'string' ? dto.email : '';
+    const phoneStr = typeof dto.phone === 'string' ? dto.phone : '';
+    const messageStr = typeof dto.content === 'string' ? dto.content : '';
+
+    const newContact = {
+      id: String(this.contacts.length + 1),
+      name: nameStr,
+      email: emailStr,
+      phone: phoneStr,
+      message: messageStr,
+      isRead: false,
+      createdAt: new Date().toISOString(),
+    };
+    this.contacts.unshift(newContact);
+    return newContact;
+  }
+
   async markContactRead(id: string) {
     const contact = this.contacts.find(c => c.id === id);
     if (!contact) {

@@ -147,24 +147,8 @@ export default function AdminDashboardPage() {
     staleTime: 30_000,
   });
 
-  // Mock static data aligned with exact screenshot specs to present a high-fidelity look
-  const recentArticlesMock = [
-    { id: '1', title: 'Kỹ thuật rang Espresso hoàn hảo độc quyền', blogHandle: 'techniques', status: 'PUBLISHED', createdAt: '2026-05-24T11:00:00Z', author: 'Jane Doe' },
-    { id: '2', title: 'Khai trương chi nhánh mới: Riverside Bến Vân Đồn', blogHandle: 'news', status: 'PUBLISHED', createdAt: '2026-05-23T09:15:00Z', author: 'Marcus Ross' },
-    { id: '3', title: 'Nháp thực đơn thức uống mùa đông mới 2026', blogHandle: 'marketing', status: 'DRAFT', createdAt: '2026-05-22T08:00:00Z', author: 'Sarah Lee' },
-    { id: '4', title: 'Chiến dịch chuyển đổi sử dụng bao bì tái chế', blogHandle: 'sustainability', status: 'PUBLISHED', createdAt: '2026-05-20T10:00:00Z', author: 'Jane Doe' },
-    { id: '5', title: 'Chương trình đào tạo chuẩn Barista chuyên nghiệp', blogHandle: 'education', status: 'DRAFT', createdAt: '2026-05-18T14:00:00Z', author: 'Sarah Lee' },
-  ];
-
-  const recentContactsMock = [
-    { id: '1', name: 'Sarah Jenkins', time: '2 phút trước', subject: 'Yêu cầu nhượng quyền - Hà Nội', message: 'Tôi có mặt bằng kinh doanh tại trung tâm quận Hoàn Kiếm, rất mong muốn được tìm hiểu...', avatarText: 'SJ' },
-    { id: '2', name: 'Michael Chen', time: '45 phút trước', subject: 'Yêu cầu sự kiện doanh nghiệp', message: 'Chúng tôi muốn đặt tiệc trà/cà phê cho buổi hội nghị công nghệ khoảng 200 khách...', avatarText: 'MC' },
-    { id: '3', name: 'Emma Thompson', time: '3 giờ trước', subject: 'Góp ý về chất lượng dịch vụ', message: 'Không gian quán tại Bến Vân Đồn rất đẹp và nhân viên cực kỳ thân thiện, tôi đã có...', avatarText: 'ET' },
-    { id: '4', name: 'David Wilson', time: 'Hôm qua', subject: 'Hợp tác cung cấp hạt cà phê', message: 'Đại diện hợp tác xã cà phê Arabica Cầu Đất, chúng tôi xin cung cấp mẫu thử nguyên chất...', avatarText: 'DW' },
-  ];
-
-  const articlesToShow = data?.recentArticles?.length ? data.recentArticles : recentArticlesMock;
-  const contactsToShow = data?.recentContacts?.length ? data.recentContacts : [];
+  const articlesToShow = data?.recentArticles || [];
+  const contactsToShow = data?.recentContacts || [];
 
   return (
     <div className="space-y-8">
@@ -190,7 +174,7 @@ export default function AdminDashboardPage() {
           <>
             <StatCard 
               label="TỔNG BÀI VIẾT" 
-              value={data?.totalArticles ?? '1,284'} 
+              value={data?.totalArticles ?? 0} 
               icon={FileText} 
               color="bg-blue-600/10 text-[#0047cc]" 
               href="/admin/articles" 
@@ -199,7 +183,7 @@ export default function AdminDashboardPage() {
             />
             <StatCard 
               label="TỔNG CHI NHÁNH" 
-              value={data?.totalBranches ?? '42'} 
+              value={data?.totalBranches ?? 0} 
               icon={MapPin} 
               color="bg-emerald-600/10 text-emerald-600" 
               href="/admin/branches" 
@@ -208,7 +192,7 @@ export default function AdminDashboardPage() {
             />
             <StatCard 
               label="BANNER HOẠT ĐỘNG" 
-              value={data?.activeBanners ?? '18'} 
+              value={data?.activeBanners ?? 0} 
               icon={ImageIcon} 
               color="bg-purple-600/10 text-purple-600" 
               href="/admin/banners" 
@@ -217,7 +201,7 @@ export default function AdminDashboardPage() {
             />
             <StatCard 
               label="LIÊN HỆ MỚI" 
-              value={data?.unreadContacts ?? '156'} 
+              value={data?.unreadContacts ?? 0} 
               icon={Mail} 
               color="bg-blue-600/10 text-[#0047cc]" 
               href="/admin/contacts" 
@@ -305,7 +289,11 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                 ))
-              ) : (contactsToShow.length ? contactsToShow : recentContactsMock).map((contact: any) => (
+              ) : contactsToShow.length === 0 ? (
+                <div className="px-6 py-12 text-center text-slate-400 text-xs font-semibold">
+                  Chưa có liên hệ mới nào được ghi nhận.
+                </div>
+              ) : contactsToShow.map((contact: any) => (
                 <Link
                   key={contact.id}
                   href="/admin/contacts"

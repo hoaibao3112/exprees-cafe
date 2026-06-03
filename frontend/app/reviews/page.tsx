@@ -67,37 +67,12 @@ export default function ReviewsPage() {
   };
 
   const stats = reviewData?.stats || {
-    averageRating: 4.8,
-    totalCount: 5,
-    starDistribution: { 1: 0, 2: 0, 3: 0, 4: 1, 5: 4 },
+    averageRating: 0,
+    totalCount: 0,
+    starDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
   };
 
-  const reviewsList = reviewData?.reviews || [
-    {
-      id: '1',
-      rating: 5,
-      comment: 'Cà phê cực kỳ ngon, thơm vị socola nguyên bản, hậu vị ngọt thanh lịch rất lâu sau khi uống. Sẽ tiếp tục mua thêm hạt này!',
-      isVerifiedPurchase: true,
-      createdAt: new Date().toISOString(),
-      user: { name: 'Nguyễn Văn A' },
-    },
-    {
-      id: '2',
-      rating: 5,
-      comment: 'Chất lượng đóng gói hạt Express rất chuyên nghiệp, có van một chiều thoát khí chuẩn Specialty. Pha espresso đậm đà thơm ngát.',
-      isVerifiedPurchase: true,
-      createdAt: new Date(Date.now() - 86400000).toISOString(),
-      user: { name: 'Lê Hoàng Nam' },
-    },
-    {
-      id: '3',
-      rating: 4,
-      comment: 'Hạt Arabica rang vừa chuẩn, pha phin hay pha máy đều thơm. Vị chua thanh nhẹ hợp gu mình.',
-      isVerifiedPurchase: true,
-      createdAt: new Date(Date.now() - 172800000).toISOString(),
-      user: { name: 'Phạm Minh Trí' },
-    },
-  ];
+  const reviewsList = reviewData?.reviews || [];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-16">
@@ -201,49 +176,55 @@ export default function ReviewsPage() {
 
           {/* List reviews */}
           <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-            {reviewsList.map((review: any) => (
-              <div
-                key={review.id}
-                className="p-5 border border-slate-800 bg-slate-900/30 rounded-2xl backdrop-blur-sm relative"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-slate-400">
-                      <User className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-slate-200 text-xs">{review.user?.name || 'Khách hàng ẩn danh'}</h4>
-                      <div className="flex gap-0.5 mt-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            className={`w-3 h-3 ${s <= review.rating ? 'text-amber-500 fill-amber-500' : 'text-slate-800'}`}
-                          />
-                        ))}
+            {reviewsList.length === 0 ? (
+              <div className="p-8 border border-slate-800 bg-slate-900/10 rounded-2xl text-center text-xs text-slate-500 font-bold uppercase tracking-wider animate-pulse">
+                Chưa có đánh giá nào cho sản phẩm này.
+              </div>
+            ) : (
+              reviewsList.map((review: any) => (
+                <div
+                  key={review.id}
+                  className="p-5 border border-slate-800 bg-slate-900/30 rounded-2xl backdrop-blur-sm relative"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 text-slate-400">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-200 text-xs">{review.user?.name || 'Khách hàng ẩn danh'}</h4>
+                        <div className="flex gap-0.5 mt-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star
+                              key={s}
+                              className={`w-3 h-3 ${s <= review.rating ? 'text-amber-500 fill-amber-500' : 'text-slate-800'}`}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
+
+                    <span className="text-[9px] text-slate-600 font-semibold">
+                      {new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                    </span>
                   </div>
 
-                  <span className="text-[9px] text-slate-600 font-semibold">
-                    {new Date(review.createdAt).toLocaleDateString('vi-VN')}
-                  </span>
-                </div>
+                  <p className="text-slate-300 text-xs mt-3 leading-relaxed">{review.comment}</p>
 
-                <p className="text-slate-300 text-xs mt-3 leading-relaxed">{review.comment}</p>
-
-                <div className="mt-4 flex items-center justify-between border-t border-slate-800/40 pt-3">
-                  {review.isVerifiedPurchase ? (
-                    <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">
-                      ✓ Đã mua hàng tại Express Cafe
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-slate-500 bg-slate-800 px-2 py-0.5 rounded-md uppercase tracking-wider">
-                      Khách vãng lai
-                    </span>
-                  )}
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-800/40 pt-3">
+                    {review.isVerifiedPurchase ? (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                        ✓ Đã mua hàng tại Express Cafe
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[9px] font-extrabold text-slate-500 bg-slate-800 px-2 py-0.5 rounded-md uppercase tracking-wider">
+                        Khách vãng lai
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 

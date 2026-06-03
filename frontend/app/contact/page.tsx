@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
+import { apiFetch } from '../../lib/api';
 
 // Define strict typing schema using Zod
 const contactFormSchema = z.object({
@@ -45,12 +46,23 @@ export default function ContactPage() {
   });
 
   const onSubmit = async (data: ContactFormInput) => {
-    // Simulate API query/mutation to server
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log('Contact inquiry sent:', data);
-    setIsSubmitSuccess(true);
-    reset();
-    setTimeout(() => setIsSubmitSuccess(false), 5000);
+    try {
+      await apiFetch<Record<string, unknown>>('/admin/contacts', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          content: data.content,
+        }),
+      });
+      setIsSubmitSuccess(true);
+      reset();
+      setTimeout(() => setIsSubmitSuccess(false), 5000);
+    } catch (error) {
+      console.error('Error submitting contact inquiry:', error);
+      alert('Đã xảy ra lỗi khi gửi thông tin liên hệ. Vui lòng thử lại sau.');
+    }
   };
 
   return (

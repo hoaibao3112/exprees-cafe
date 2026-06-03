@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
+import { Public } from '../../common/decorators/public.decorator';
 
 @ApiTags('Admin')
 @ApiBearerAuth('access-token')
@@ -24,6 +25,13 @@ export class AdminController {
   @ApiOperation({ summary: 'Dashboard statistics' })
   getDashboardStats() {
     return this.adminService.getDashboardStats();
+  }
+
+  @Public()
+  @Post('contacts')
+  @ApiOperation({ summary: 'Submit a new customer contact inquiry' })
+  submitContact(@Body() dto: Record<string, unknown>) {
+    return this.adminService.submitContact(dto);
   }
 
   @Get('contacts')

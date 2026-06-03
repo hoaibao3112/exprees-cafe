@@ -90,60 +90,18 @@ export default function AdminArticlesPage() {
 
   const totalPages = Math.ceil((data?.total ?? 0) / limit);
 
-  // Mock data for extremely rich visual match (if database items are empty)
-  const fallbackArticles = [
-    {
-      id: '1',
-      title: 'Hương vị mới của mùa: Cà Phê Rang Đậm Cuối Thu',
-      slug: 'cafe-rang-dam-cuoi-thu',
-      blogHandle: 'services' as BlogHandle,
-      status: 'PUBLISHED' as ArticleStatus,
-      createdAt: '2026-05-12T10:00:00Z',
-      caption: 'Nổi bật trên Banner chính',
-      imageUrl: 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=150&auto=format&fit=crop',
-      author: { name: 'Jane Doe', avatar: 'JD' },
-      dateStr: '12 thg 10, 2026'
+  const articlesList = (data?.items || []).map((art, idx) => ({
+    ...art,
+    caption: art.blogHandle === 'services' ? 'Nổi bật trên Banner chính' : art.blogHandle === 'news' ? 'Thông cáo báo chí' : 'Sự kiện cộng đồng',
+    author: {
+      name: idx % 3 === 0 ? 'Jane Doe' : idx % 3 === 1 ? 'Marcus Ross' : 'Sarah Lee',
+      avatar: idx % 3 === 0 ? 'JD' : idx % 3 === 1 ? 'MR' : 'SL'
     },
-    {
-      id: '2',
-      title: 'Chuẩn bị khai trương chi nhánh mới tại trung tâm Quận 1',
-      slug: 'khai-truong-chi-nhanh-quan-1',
-      blogHandle: 'news' as BlogHandle,
-      status: 'PUBLISHED' as ArticleStatus,
-      createdAt: '2026-05-01T09:00:00Z',
-      caption: 'Thông cáo báo chí mới',
-      imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=150&auto=format&fit=crop',
-      author: { name: 'Marcus Ross', avatar: 'MR' },
-      dateStr: '01 thg 11, 2026'
-    },
-    {
-      id: '3',
-      title: 'Đêm Nhạc Trà & Cà Phê Acoustic: Tối thứ Sáu hàng tuần',
-      slug: 'dem-nhac-acoustic-acoustic',
-      blogHandle: 'blog' as BlogHandle,
-      status: 'DRAFT' as ArticleStatus,
-      createdAt: '2026-04-28T08:00:00Z',
-      caption: 'Sự kiện cộng đồng đặc sắc',
-      imageUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=150&auto=format&fit=crop',
-      author: { name: 'Sarah Lee', avatar: 'SL' },
-      dateStr: 'Đang chờ'
-    }
-  ];
+    dateStr: formatDate(art.createdAt),
+    imageUrl: art.imageUrl ? resolveUploadUrl(art.imageUrl) : 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=150&auto=format&fit=crop'
+  }));
 
-  const articlesList = data?.items?.length 
-    ? data.items.map((art, idx) => ({
-        ...art,
-        caption: art.blogHandle === 'services' ? 'Nổi bật trên Banner chính' : art.blogHandle === 'news' ? 'Thông cáo báo chí' : 'Sự kiện cộng đồng',
-        author: {
-          name: idx % 3 === 0 ? 'Jane Doe' : idx % 3 === 1 ? 'Marcus Ross' : 'Sarah Lee',
-          avatar: idx % 3 === 0 ? 'JD' : idx % 3 === 1 ? 'MR' : 'SL'
-        },
-        dateStr: formatDate(art.createdAt),
-        imageUrl: art.imageUrl ? resolveUploadUrl(art.imageUrl) : 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=150&auto=format&fit=crop'
-      }))
-    : fallbackArticles;
-
-  const totalArticlesCount = data?.total ?? 1284;
+  const totalArticlesCount = data?.total ?? 0;
 
   return (
     <div className="space-y-6">

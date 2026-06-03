@@ -120,52 +120,8 @@ export default function AdminBranchesPage() {
     saveMutation.mutate(payload);
   };
 
-  // Fallback branches list mock to align with exact premium screenshots
-  const fallbackBranches = [
-    {
-      id: '1',
-      name: 'Downtown Core',
-      isFlagship: true,
-      address: '122 Financial Way, New York, NY',
-      phone: '+1 (212) 555-0192',
-      openingHours: { open: '06:00 AM', close: '10:00 PM' },
-      status: 'ACTIVE',
-      imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=150&auto=format&fit=crop'
-    },
-    {
-      id: '2',
-      name: 'Riverside Commons',
-      isFlagship: false,
-      address: '45 Waterfront Blvd, Jersey City, NJ',
-      phone: '+1 (201) 555-0144',
-      openingHours: { open: '07:00 AM', close: '08:00 PM' },
-      status: 'ACTIVE',
-      imageUrl: 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=150&auto=format&fit=crop'
-    },
-    {
-      id: '3',
-      name: 'Uptown Heights',
-      isFlagship: true,
-      address: '2900 Broadway Ave, New York, NY',
-      phone: '+1 (212) 555-0877',
-      openingHours: { open: '05:00 AM', close: '11:00 PM' },
-      status: 'INACTIVE',
-      imageUrl: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?q=80&w=150&auto=format&fit=crop'
-    },
-    {
-      id: '4',
-      name: 'Terminal 4 Lounge',
-      isFlagship: false,
-      address: 'JFK International Airport, Queens, NY',
-      phone: '+1 (718) 555-0111',
-      openingHours: { open: '24 Hours', close: '24 Hours' },
-      status: 'ACTIVE',
-      imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=150&auto=format&fit=crop'
-    }
-  ];
-
   const branchesListRaw = Array.isArray(data) ? data : (data as any)?.items || [];
-  const activeBranches = branchesListRaw.length ? branchesListRaw : fallbackBranches;
+  const activeBranches = branchesListRaw;
 
   const filteredBranches = activeBranches.filter((branch: any) =>
     branch.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -173,7 +129,7 @@ export default function AdminBranchesPage() {
     (branch.phone && branch.phone.includes(search))
   );
 
-  const totalBranchesCount = branchesListRaw.length ? branchesListRaw.length : 24;
+  const totalBranchesCount = branchesListRaw.length;
   const openBranchesCount = activeBranches.filter((b: any) => b.status === 'ACTIVE').length;
   const flagshipBranchesCount = activeBranches.filter((b: any) => b.isFlagship).length;
 
