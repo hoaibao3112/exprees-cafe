@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
-import { resolveUploadUrl } from '../../../lib/api';
+import { resolveUploadUrl, apiFetch } from '../../../lib/api';
 import { ArrowLeft, ChevronLeft, ChevronRight, Coffee, CheckCircle2, MessageSquare, X } from 'lucide-react';
 
 export default function ServiceDetailPage(props: { params: { id: string } }) {
@@ -19,8 +19,7 @@ export default function ServiceDetailPage(props: { params: { id: string } }) {
   useEffect(() => {
     setIsLoading(true);
     setService(null);
-    fetch(`http://localhost:3000/api/v1/services/${id}`)
-      .then(res => res.json())
+    apiFetch<any>(`/services/${id}`)
       .then(data => {
         setService(data);
         setIsLoading(false);

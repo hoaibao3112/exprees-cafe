@@ -6,7 +6,7 @@ import { Header } from '../../../components/layout/Header';
 import { Footer } from '../../../components/layout/Footer';
 import { ArrowLeft, ChevronLeft, ChevronRight, MapPin, Phone, Clock, Map, Coffee, CheckCircle2 } from 'lucide-react';
 
-import { resolveUploadUrl } from '../../../lib/api';
+import { resolveUploadUrl, apiFetch } from '../../../lib/api';
 
 export default function BranchDetailPage(props: { params: Promise<{ id: string }> }) {
   const resolvedParams = React.use(props.params);
@@ -18,11 +18,9 @@ export default function BranchDetailPage(props: { params: Promise<{ id: string }
   useEffect(() => {
     setIsLoading(true);
     setBranch(null);
-    fetch(`http://localhost:3000/api/v1/branches/${id}`)
-      .then(res => res.json())
+    apiFetch<any>(`/branches/${id}`)
       .then(data => {
-        // Backend may return { success: true, data: { ... } } or the branch object directly
-        setBranch(data?.data ?? data);
+        setBranch(data);
         setIsLoading(false);
       })
       .catch(err => {

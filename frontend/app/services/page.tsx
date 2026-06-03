@@ -8,7 +8,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
-import { resolveUploadUrl } from '../../lib/api';
+import { resolveUploadUrl, apiFetch } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 
@@ -20,12 +20,9 @@ export default function ServicesPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/v1/services')
-      .then(res => res.json())
+    apiFetch<any[]>('/services')
       .then(data => {
-        // Handle different response formats
-        const servicesData = Array.isArray(data) ? data : (data.data || []);
-        setServices(servicesData);
+        setServices(data || []);
         setIsLoading(false);
       })
       .catch(err => {

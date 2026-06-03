@@ -15,7 +15,7 @@ import {
   X
 } from 'lucide-react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
-import { resolveUploadUrl } from '../../lib/api';
+import { resolveUploadUrl, apiFetch } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 
@@ -31,12 +31,9 @@ export default function BranchesPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/v1/branches')
-      .then(res => res.json())
+    apiFetch<any[]>('/branches')
       .then(data => {
-        // Handle different response formats
-        const branchesData = Array.isArray(data) ? data : (data.data || []);
-        setBranches(branchesData);
+        setBranches(data || []);
         setIsLoading(false);
       })
       .catch(err => {
