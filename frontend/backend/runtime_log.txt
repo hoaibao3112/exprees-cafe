@@ -1,0 +1,152 @@
+
+> backend@0.0.1 start:dev
+> nest start --watch
+
+[2J[3J[H[[90m10:27:46 AM[0m] Starting compilation in watch mode...
+
+[[90m10:27:54 AM[0m] Found 0 errors. Watching for file changes.
+
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [NestFactory] Starting Nest application...
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +30ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] PassportModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] CartModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] OrdersModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] JwtModule dependencies initialized +2ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] ConfigModule dependencies initialized +2ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] AppModule dependencies initialized +15ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +74ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] ContentModule dependencies initialized +4ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] PaymentsModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] FranchiseModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] ReviewsModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] ProductsModule dependencies initialized +1ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] BranchesModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] PromotionsModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] MediaModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] AdminModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] UsersModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [InstanceLoader] AuthModule dependencies initialized +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RoutesResolver] AppController {/api/v1}: +52ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +4ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RoutesResolver] AuthController {/api/v1/auth}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/auth/register, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/auth/verify-otp, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/auth/login, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/auth/refresh, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/auth/logout, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/auth/me, GET} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RoutesResolver] UsersController {/api/v1/users}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/users/:id, PUT} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/users/:id/addresses, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/users/:id/addresses, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/users/:id/addresses/:addressId, PUT} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/users/:id/addresses/:addressId, DELETE} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/users/:id/loyalty, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RoutesResolver] ProductsController {/api/v1/products}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:57 AM     LOG [RouterExplorer] Mapped {/api/v1/products/menu, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/products/:slug, GET} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] ContentController {/api/v1/content}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/articles, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/articles/:slug, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/banners, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/videos, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/admin/articles, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/admin/banners, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/admin/videos, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/admin/videos/:id, PATCH} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/content/admin/videos/:id, DELETE} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] BranchesController {/api/v1/branches}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/branches, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/branches, GET} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/branches/nearest, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/branches/:id, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/branches/:id, PATCH} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/branches/:id, DELETE} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] PaymentsController {/api/v1/payments}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/payments/initiate, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/payments/callback/:gateway, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/payments/:id/status, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] PromotionsController {/api/v1/promotions}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/promotions, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/promotions/admin/create-promotion, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/promotions/admin/create-coupon, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/promotions/validate-coupon, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] FranchiseController {/api/v1/franchise}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/packages, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/packages/:id, GET} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/admin/packages, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/apply, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/admin/applications, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/admin/applications/:id, PATCH} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/admin/packages/:id, PATCH} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/franchise/admin/packages/:id, DELETE} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] ReviewsController {/api/v1/reviews}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/reviews, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/reviews/:targetType/:targetId, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/reviews/admin/:id/status, PATCH} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] MediaController {/api/v1/media}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/media/upload, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RoutesResolver] AdminController {/api/v1/admin}: +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/dashboard/stats, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/contacts, POST} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/contacts, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/contacts/:id/read, PATCH} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/banners, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/banners/reorder, PATCH} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/banners/:id, PATCH} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/articles, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/articles/:id, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/articles, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/articles/:id, PUT} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/articles/:id, DELETE} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/articles/:id/toggle-status, PATCH} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/branches, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/branches/:id, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/branches, POST} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/branches/:id, PUT} route +1ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/branches/:id, DELETE} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/branches/:id/toggle-status, PATCH} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/settings, GET} route +0ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [RouterExplorer] Mapped {/api/v1/admin/settings, PUT} route +0ms
+🌱 Checking / Seeding videos...
+🌱 Seeding initial branches for local SQLite fallback...
+🌱 Successfully seeded local SQLite fallback branches!
+🌱 Checking / Seeding franchise packages...
+🌱 Successfully seeded/updated 3 franchise packages!
+[Nest] 9592  - 07/13/2026, 10:27:58 AM     LOG [NestApplication] Nest application successfully started +61ms
+[Nest] 9592  - 07/13/2026, 10:27:58 AM   ERROR [NestApplication] Error: listen EADDRINUSE: address already in use :::3000 +5ms
+node:net:1940
+    const ex = new UVExceptionWithHostPort(err, 'listen', address, port);
+               ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1940:16)
+    at listenInCluster (node:net:1997:12)
+    at Server.listen (node:net:2102:7)
+    at ExpressAdapter.listen (D:\TrangWebCongTy\exprees-cafe\frontend\backend\node_modules\@nestjs\platform-express\adapters\express-adapter.js:115:32)
+    at D:\TrangWebCongTy\exprees-cafe\frontend\backend\node_modules\@nestjs\core\nest-application.js:190:30
+    at new Promise (<anonymous>)
+    at NestApplication.listen (D:\TrangWebCongTy\exprees-cafe\frontend\backend\node_modules\@nestjs\core\nest-application.js:180:16)
+    at async bootstrap (D:\TrangWebCongTy\exprees-cafe\frontend\backend\src\main.ts:74:3) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+Node.js v24.6.0

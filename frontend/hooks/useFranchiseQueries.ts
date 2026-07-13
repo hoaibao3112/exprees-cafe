@@ -32,17 +32,62 @@ export interface FranchiseApplicationResponse {
   submittedAt: string;
 }
 
+const MOCK_PACKAGES: FranchisePackage[] = [
+  {
+    id: 'express-package',
+    name: 'MÔ HÌNH QUÁN TINH GỌN',
+    modelType: 'EXPRESS',
+    investmentFrom: 0,
+    description: 'Thiết kế tinh gọn, sang trọng tối ưu diện tích từ 30m² - 50m².',
+    isActive: true,
+    images: ['/media__1780386795847.png']
+  },
+  {
+    id: 'kiosk-package',
+    name: 'MÔ HÌNH XE TAKE AWAY LINH ĐỘNG',
+    modelType: 'KIOSK',
+    investmentFrom: 0,
+    description: 'Linh động và hiệu quả tối đa cho lưu lượng khách đi đường ngắn.',
+    isActive: true,
+    images: ['/media__1780386795859.png']
+  },
+  {
+    id: 'premium-package',
+    name: 'MÔ HÌNH KIOSK TIỆN LỢI',
+    modelType: 'PREMIUM',
+    investmentFrom: 0,
+    description: 'Lắp đặt tại trung tâm thương mại, sảnh tòa nhà hoặc chung cư.',
+    isActive: true,
+    images: ['/media__1780386795867.png']
+  }
+];
+
 export function useFranchisePackagesQuery() {
   return useQuery<FranchisePackage[], ApiError>({
     queryKey: ['franchise-packages'],
-    queryFn: () => apiFetch<FranchisePackage[]>('/franchise/packages'),
+    queryFn: async () => {
+      try {
+        const data = await apiFetch<FranchisePackage[]>('/franchise/packages');
+        return data && data.length > 0 ? data : MOCK_PACKAGES;
+      } catch (err) {
+        console.warn('API /franchise/packages offline, falling back to mock packages:', err);
+        return MOCK_PACKAGES;
+      }
+    },
   });
 }
 
 export function useFranchisePackageByIdQuery(id: string) {
   return useQuery<FranchisePackage, ApiError>({
     queryKey: ['franchise-package', id],
-    queryFn: () => apiFetch<FranchisePackage>(`/franchise/packages/${id}`),
+    queryFn: async () => {
+      try {
+        return await apiFetch<FranchisePackage>(`/franchise/packages/${id}`);
+      } catch (err) {
+        console.warn(`API /franchise/packages/${id} offline, falling back to mock:`, err);
+        return MOCK_PACKAGES.find(p => p.id === id) || MOCK_PACKAGES[0];
+      }
+    },
     enabled: !!id,
   });
 }

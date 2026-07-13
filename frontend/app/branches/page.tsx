@@ -31,14 +31,39 @@ export default function BranchesPage() {
   const [branches, setBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const MOCK_BRANCHES = [
+    {
+      id: 'branch-1',
+      name: 'Express Cafe - Bến Thành',
+      address: '120 Lê Lợi, Phường Bến Thành, Quận 1, TP. HCM',
+      imageUrl: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500&auto=format&fit=crop',
+      description: 'Nằm ngay trung tâm Quận 1 sầm uất, không gian rộng rãi phù hợp gặp gỡ đối tác.'
+    },
+    {
+      id: 'branch-2',
+      name: 'Express Cafe - Dân Chủ',
+      address: '25 Dân Chủ, Phường Bình Thọ, TP. Thủ Đức',
+      imageUrl: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=500&auto=format&fit=crop',
+      description: 'Mô hình Kiosk kết hợp máy pha hiện đại phục vụ nhu cầu mang đi và ngồi tại chỗ.'
+    },
+    {
+      id: 'branch-3',
+      name: 'Express Cafe - Cao Thắng',
+      address: '48 Cao Thắng, Phường 3, Quận 3, TP. HCM',
+      imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=500&auto=format&fit=crop',
+      description: 'Phong cách ấm cúng, menu phong phú phù hợp cho làm việc và học tập.'
+    }
+  ];
+
   useEffect(() => {
     apiFetch<any[]>('/branches')
       .then(data => {
-        setBranches(data || []);
+        setBranches(data && data.length > 0 ? data : MOCK_BRANCHES);
         setIsLoading(false);
       })
       .catch(err => {
-        console.error('Error loading branches:', err);
+        console.warn('API /branches offline, falling back to mock data:', err);
+        setBranches(MOCK_BRANCHES);
         setIsLoading(false);
       });
   }, []);
@@ -84,16 +109,17 @@ export default function BranchesPage() {
 
       {/* 2. Hero Banner Section */}
       <section 
-        className="relative w-full h-[180px] md:h-[220px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
+        className="relative w-full h-[240px] md:h-[320px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200')`,
-          backgroundPosition: 'center',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundPosition: 'center 50%',
           backgroundSize: 'cover'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-wider leading-none" data-animate="blur-in">
-            Các Chi Nhánh
+          <h1 className="text-3xl md:text-5xl font-black uppercase tracking-wider leading-none" data-animate="blur-in">
+            <span className="text-white">Các </span>
+            <span className="text-[#f07b22]">Chi Nhánh</span>
           </h1>
           
           {/* Breadcrumbs */}
@@ -102,13 +128,6 @@ export default function BranchesPage() {
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-orange-500 font-bold">Danh sách chi nhánh</span>
           </div>
-        </div>
-        
-        {/* Decorative Wave Overlay */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0">
-          <svg className="relative block w-full h-8 fill-zinc-50" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" />
-          </svg>
         </div>
       </section>
 
@@ -200,8 +219,8 @@ export default function BranchesPage() {
               <div 
                 key={branch.id || index}
                 data-animate="fade-up"
-                data-delay={String(((index % 3) + 1) * 100)}
-                className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-orange-500/5 flex flex-col justify-between"
+                data-delay={String(((index % 3) + 1) * 150)}
+                className="card-tilt group bg-white rounded-3xl border border-zinc-150 overflow-hidden flex flex-col justify-between"
               >
                 <div>
                   {/* Card Banner Image */}
@@ -231,7 +250,7 @@ export default function BranchesPage() {
                 <div className="p-6 pt-0 mt-2">
                   <Link
                     href={`/branches/${branch.id}`}
-                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block"
+                    className="spotlight-wrapper w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block"
                   >
                     Xem chi tiết
                   </Link>

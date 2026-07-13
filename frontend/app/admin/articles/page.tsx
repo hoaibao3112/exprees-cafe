@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, Suspense } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { resolveUploadUrl } from '@/lib/api';
 import {
   Plus, Search, Pencil, Trash2, Eye, EyeOff,
@@ -42,12 +43,15 @@ function formatDate(d: string) {
   });
 }
 
-export default function AdminArticlesPage() {
+function ArticlesPageContent() {
   const qc = useQueryClient();
+  const searchParams = useSearchParams();
+  const defaultHandle = searchParams.get('handle') || '';
+
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [filterHandle, setFilterHandle] = useState('');
+  const [filterHandle, setFilterHandle] = useState(defaultHandle);
   const [filterStatus, setFilterStatus] = useState('');
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -396,5 +400,13 @@ export default function AdminArticlesPage() {
         onCancel={() => setDeleteId(null)}
       />
     </div>
+  );
+}
+
+export default function AdminArticlesPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-slate-500 font-medium">Đang tải danh sách bài viết...</div>}>
+      <ArticlesPageContent />
+    </Suspense>
   );
 }

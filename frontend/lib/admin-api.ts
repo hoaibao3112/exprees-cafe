@@ -1,20 +1,94 @@
 /**
- * Admin API Service
- * Tự động đính kèm token từ cookie vào header
- * Xử lý lỗi 401 → redirect /admin/login
+ * admin-api.ts — Admin panel API client
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Dùng cho tất cả các trang /admin/*
+ * Auth: JWT lấy từ cookie `admin_token` (set bởi backend sau khi login)
+ *
+ * Khi backend mới sẵn sàng → chỉ cần đổi NEXT_PUBLIC_API_URL trong .env.local
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
-const COOKIE_NAME = 'admin_token';
+import { API_BASE_URL, ADMIN_COOKIE_NAME } from './api-config';
 
-// Helper: lấy cookie ở client-side
-function getCookie(name: string): string | null {
-  if (typeof document === 'undefined') return null;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() ?? null;
-  return null;
+// Re-export từ admin.types.ts để toàn bộ app dùng 1 nguồn types
+export type {
+  AdminUser,
+  DashboardStats,
+  RecentArticle,
+  RecentContact,
+  Article,
+  ArticleListResponse,
+  ArticleStatus,
+  BlogHandle,
+  CreateArticleInput,
+  UpdateArticleInput,
+  Branch,
+  BranchListResponse,
+  BranchStatus,
+  CreateBranchInput,
+  UpdateBranchInput,
+  Banner,
+  UpdateBannerInput,
+  Contact,
+  ContactListResponse,
+  SiteSettings,
+  PaginationParams,
+  ApiListResponse,
+} from '../types/admin.types';
+
+import type {
+  Article,
+  ArticleListResponse,
+  Branch,
+  BranchListResponse,
+  Banner,
+  Contact,
+  ContactListResponse,
+  DashboardStats,
+} from '../types/admin.types';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Extra types không có trong admin.types.ts
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface MediaUploadResult {
+  id: string;
+  cdnUrl: string;
 }
+
+export interface Service {
+  id: string;
+  name: string;
+  url?: string;
+  description?: string;
+  imageUrl?: string;
+  images?: string[];
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface FranchisePackage {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  features: string[];
+  isActive: boolean;
+}
+
+export interface ContentVideo {
+  id: string;
+  title: string;
+  url: string;
+  thumbnailUrl?: string;
+  isActive: boolean;
+  order?: number;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Error class
+// ─────────────────────────────────────────────────────────────────────────────
 
 export class AdminApiError extends Error {
   constructor(
@@ -27,9 +101,32 @@ export class AdminApiError extends Error {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() ?? null;
+  return null;
+}
+
+function buildQueryString(params?: Record<string, string | number>): string {
+  if (!params) return '';
+  const entries = Object.entries(params).reduce<Record<string, string>>(
+    (acc, [k, v]) => {
+      acc[k] = String(v);
+      return acc;
+    },
+    {},
+  );
+  return '?' + new URLSearchParams(entries).toString();
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (res.status === 401) {
-    // Token hết hạn → redirect login
     if (typeof window !== 'undefined') {
       window.location.href = '/admin/login?error=session_expired';
     }
@@ -52,13 +149,13 @@ async function handleResponse<T>(res: Response): Promise<T> {
 
   if (!res.ok) {
     const message =
-      json?.message ??
-      json?.error ??
+      (json?.message as string | undefined) ??
+      (json?.error as string | undefined) ??
       `Lỗi server (${res.status})`;
     throw new AdminApiError(message, res.status, json);
   }
 
-  // Backend NestJS trả { success, data } hoặc { data } hoặc trực tiếp
+  // NestJS TransformInterceptor: { success: true, data: ... }
   return (json?.data ?? json) as T;
 }
 
@@ -66,7 +163,7 @@ async function adminFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = getCookie(COOKIE_NAME);
+  const token = getCookie(ADMIN_COOKIE_NAME);
 
   const headers = new Headers(options.headers);
   if (token) {
@@ -76,7 +173,7 @@ async function adminFetch<T>(
     headers.set('Content-Type', 'application/json');
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
     credentials: 'include',
@@ -85,10 +182,13 @@ async function adminFetch<T>(
   return handleResponse<T>(res);
 }
 
-// ===================== AUTH =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminAuthApi = {
   login: (email: string, password: string) =>
-    adminFetch<{ accessToken: string; user: { id: string; email: string; name: string; role: any } }>(
+    adminFetch<{ accessToken: string; user: { id: string; email: string; name: string; role: string } }>(
       '/auth/login',
       {
         method: 'POST',
@@ -97,78 +197,75 @@ export const adminAuthApi = {
     ),
 };
 
-// ===================== DASHBOARD =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminDashboardApi = {
-  getStats: () =>
-    adminFetch<{
-      totalArticles: number;
-      totalBranches: number;
-      activeBanners: number;
-      unreadContacts: number;
-      recentArticles: unknown[];
-      recentContacts: unknown[];
-    }>('/admin/dashboard/stats'),
+  getStats: () => adminFetch<DashboardStats>('/admin/dashboard/stats'),
 };
 
-// ===================== ARTICLES =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// ARTICLES
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminArticlesApi = {
-  getAll: (params?: Record<string, string | number>) => {
-    const qs = params ? '?' + new URLSearchParams(
-      Object.entries(params).reduce<Record<string, string>>((acc, [k, v]) => {
-        acc[k] = String(v);
-        return acc;
-      }, {})
-    ).toString() : '';
-    return adminFetch<{ items: unknown[]; total: number; page: number; limit: number }>(
-      `/admin/articles${qs}`,
-    );
-  },
-  getById: (id: string) => adminFetch<unknown>(`/admin/articles/${id}`),
-  create: (data: unknown) =>
-    adminFetch<unknown>('/admin/articles', {
+  getAll: (params?: Record<string, string | number>) =>
+    adminFetch<ArticleListResponse>(
+      `/admin/articles${buildQueryString(params)}`,
+    ),
+  getById: (id: string) => adminFetch<Article>(`/admin/articles/${id}`),
+  create: (data: Record<string, unknown>) =>
+    adminFetch<Article>('/admin/articles', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  update: (id: string, data: unknown) =>
-    adminFetch<unknown>(`/admin/articles/${id}`, {
+  update: (id: string, data: Record<string, unknown>) =>
+    adminFetch<Article>(`/admin/articles/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
   delete: (id: string) =>
     adminFetch<void>(`/admin/articles/${id}`, { method: 'DELETE' }),
   toggleStatus: (id: string) =>
-    adminFetch<unknown>(`/admin/articles/${id}/toggle-status`, {
+    adminFetch<Article>(`/admin/articles/${id}/toggle-status`, {
       method: 'PATCH',
     }),
 };
 
-// ===================== BRANCHES =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// BRANCHES
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminBranchesApi = {
-  getAll: () => adminFetch<{ items: unknown[]; total: number }>('/admin/branches'),
-  getById: (id: string) => adminFetch<unknown>(`/admin/branches/${id}`),
-  create: (data: unknown) =>
-    adminFetch<unknown>('/admin/branches', {
+  getAll: () => adminFetch<BranchListResponse>('/admin/branches'),
+  getById: (id: string) => adminFetch<Branch>(`/admin/branches/${id}`),
+  create: (data: Record<string, unknown>) =>
+    adminFetch<Branch>('/admin/branches', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  update: (id: string, data: unknown) =>
-    adminFetch<unknown>(`/admin/branches/${id}`, {
+  update: (id: string, data: Record<string, unknown>) =>
+    adminFetch<Branch>(`/admin/branches/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
   delete: (id: string) =>
     adminFetch<void>(`/admin/branches/${id}`, { method: 'DELETE' }),
   toggleStatus: (id: string) =>
-    adminFetch<unknown>(`/admin/branches/${id}/toggle-status`, {
+    adminFetch<Branch>(`/admin/branches/${id}/toggle-status`, {
       method: 'PATCH',
     }),
 };
 
-// ===================== BANNERS =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// BANNERS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminBannersApi = {
-  getAll: () => adminFetch<unknown[]>('/admin/banners'),
-  update: (id: string, data: unknown) =>
-    adminFetch<unknown>(`/admin/banners/${id}`, {
+  getAll: () => adminFetch<Banner[]>('/admin/banners'),
+  update: (id: string, data: Record<string, unknown>) =>
+    adminFetch<Banner>(`/admin/banners/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
@@ -179,22 +276,23 @@ export const adminBannersApi = {
     }),
 };
 
-// ===================== CONTACTS =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// CONTACTS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminContactsApi = {
-  getAll: (params?: Record<string, string | number>) => {
-    const qs = params ? '?' + new URLSearchParams(
-      Object.entries(params).reduce<Record<string, string>>((acc, [k, v]) => {
-        acc[k] = String(v);
-        return acc;
-      }, {})
-    ).toString() : '';
-    return adminFetch<{ items: unknown[]; total: number }>(`/admin/contacts${qs}`);
-  },
+  getAll: (params?: Record<string, string | number>) =>
+    adminFetch<ContactListResponse>(
+      `/admin/contacts${buildQueryString(params)}`,
+    ),
   markRead: (id: string) =>
-    adminFetch<unknown>(`/admin/contacts/${id}/read`, { method: 'PATCH' }),
+    adminFetch<Contact>(`/admin/contacts/${id}/read`, { method: 'PATCH' }),
 };
 
-// ===================== SETTINGS =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// SETTINGS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminSettingsApi = {
   getAll: () => adminFetch<Record<string, string>>('/admin/settings'),
   update: (data: Record<string, string | boolean | number>) =>
@@ -204,29 +302,35 @@ export const adminSettingsApi = {
     }),
 };
 
-// ===================== MEDIA / UPLOAD =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// MEDIA / UPLOAD
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminMediaApi = {
   upload: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    return adminFetch<{ id: string; cdnUrl: string }>('/media/upload', {
+    return adminFetch<MediaUploadResult>('/media/upload', {
       method: 'POST',
       body: formData,
     });
   },
 };
 
-// ===================== SERVICES =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// SERVICES
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminServicesApi = {
-  getAll: () => adminFetch<any[]>('/services'),
-  getById: (id: string) => adminFetch<any>(`/services/${id}`),
-  create: (data: any) =>
-    adminFetch<any>('/services', {
+  getAll: () => adminFetch<Service[]>('/services'),
+  getById: (id: string) => adminFetch<Service>(`/services/${id}`),
+  create: (data: Partial<Service>) =>
+    adminFetch<Service>('/services', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  update: (id: string, data: any) =>
-    adminFetch<any>(`/services/${id}`, {
+  update: (id: string, data: Partial<Service>) =>
+    adminFetch<Service>(`/services/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
@@ -234,17 +338,21 @@ export const adminServicesApi = {
     adminFetch<void>(`/services/${id}`, { method: 'DELETE' }),
 };
 
-// ===================== FRANCHISE PACKAGES =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// FRANCHISE PACKAGES
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminFranchiseApi = {
-  getAll: () => adminFetch<any[]>('/franchise/packages'),
-  getById: (id: string) => adminFetch<any>(`/franchise/packages/${id}`),
-  create: (data: any) =>
-    adminFetch<any>('/franchise/admin/packages', {
+  getAll: () => adminFetch<FranchisePackage[]>('/franchise/packages'),
+  getById: (id: string) =>
+    adminFetch<FranchisePackage>(`/franchise/packages/${id}`),
+  create: (data: Partial<FranchisePackage>) =>
+    adminFetch<FranchisePackage>('/franchise/admin/packages', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  update: (id: string, data: any) =>
-    adminFetch<any>(`/franchise/admin/packages/${id}`, {
+  update: (id: string, data: Partial<FranchisePackage>) =>
+    adminFetch<FranchisePackage>(`/franchise/admin/packages/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
@@ -252,17 +360,20 @@ export const adminFranchiseApi = {
     adminFetch<void>(`/franchise/admin/packages/${id}`, { method: 'DELETE' }),
 };
 
-// ===================== HOMEPAGE VIDEOS =====================
+// ─────────────────────────────────────────────────────────────────────────────
+// HOMEPAGE VIDEOS
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const adminVideosApi = {
-  getAll: () => adminFetch<any[]>('/content/videos'),
-  getById: (id: string) => adminFetch<any>(`/content/videos/${id}`), // not strictly needed but good for consistency
-  create: (data: any) =>
-    adminFetch<any>('/content/admin/videos', {
+  getAll: () => adminFetch<ContentVideo[]>('/content/videos'),
+  getById: (id: string) => adminFetch<ContentVideo>(`/content/videos/${id}`),
+  create: (data: Partial<ContentVideo>) =>
+    adminFetch<ContentVideo>('/content/admin/videos', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  update: (id: string, data: any) =>
-    adminFetch<any>(`/content/admin/videos/${id}`, {
+  update: (id: string, data: Partial<ContentVideo>) =>
+    adminFetch<ContentVideo>(`/content/admin/videos/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),

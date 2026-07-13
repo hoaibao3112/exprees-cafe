@@ -2,25 +2,29 @@
 
 import { useFranchisePackagesQuery } from '../../hooks/useFranchiseQueries';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
-import { Coffee, Award, ShieldCheck, TrendingUp, Building, Sparkles } from 'lucide-react';
+import { Coffee, Award, ShieldCheck, TrendingUp, Building, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { resolveUploadUrl } from '../../lib/api';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
+import { AnimatedCounter } from '../../components/ui/AnimatedCounter';
 
-const MODEL_DETAILS: Record<string, { image: string; title: string }> = {
+const MODEL_DETAILS: Record<string, { image: string; title: string; desc: string }> = {
   'EXPRESS': {
     image: '/media__1780386795847.png',
-    title: 'Mô hình quán café'
+    title: 'Mô hình quán café',
+    desc: 'Thiết kế tinh gọn, sang trọng tối ưu diện tích từ 30m² - 50m².'
   },
   'KIOSK': {
     image: '/media__1780386795859.png',
-    title: 'Mô hình xe takeaway'
+    title: 'Mô hình xe takeaway',
+    desc: 'Linh động và hiệu quả tối đa cho lưu lượng khách đi đường ngắn.'
   },
   'PREMIUM': {
     image: '/media__1780386795867.png',
-    title: 'Mô hình kiosk tiện lợi'
+    title: 'Mô hình kiosk tiện lợi',
+    desc: 'Lắp đặt tại trung tâm thương mại, sảnh tòa nhà hoặc chung cư.'
   }
 };
 
@@ -31,158 +35,279 @@ export default function FranchisePage() {
   const { data: packages, isLoading } = useFranchisePackagesQuery();
 
   return (
-    <div className="min-h-screen bg-white text-zinc-800 font-sans flex flex-col justify-between antialiased">
+    <div className="min-h-screen bg-zinc-50 text-zinc-800 font-sans flex flex-col justify-between antialiased">
       
       {/* 1. Navigation Header */}
       <Header />
 
-      {/* 2. Dark Breadcrumbs Header */}
+      {/* 2. Enhanced Hero Section */}
       <section 
-        className="relative w-full h-[180px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
+        className="relative w-full h-[320px] md:h-[420px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.75)), url('/media__1780386795847.png')`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.6)), url('/slideshow_4.jpg')`,
           backgroundPosition: 'center center',
-          backgroundSize: 'cover'
+          backgroundSize: 'cover',
+          backgroundAttachment: 'scroll'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <h1 className="text-3xl md:text-5xl font-light text-white uppercase tracking-[0.2em] leading-none" data-animate="blur-in">
-            NHƯỢNG QUYỀN
+          <span 
+            className="inline-block text-xs md:text-sm font-extrabold uppercase tracking-[0.25em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20"
+            data-animate="fade-down"
+          >
+            Hợp Tác Cùng Phát Triển
+          </span>
+          
+          <h1 className="text-3xl md:text-6xl font-black uppercase tracking-wider leading-tight drop-shadow-md" data-animate="blur-in">
+            <span className="text-white">Nhượng Quyền </span>
+            <span className="text-[#f07b22]">Thương Hiệu</span>
           </h1>
           
+          <div className="w-16 h-1 bg-orange-500 mx-auto my-4 rounded-full" data-animate="scale-up" data-delay="200" />
+          
           {/* Breadcrumbs */}
-          <div className="flex items-center justify-center gap-2 text-zinc-350 text-xs font-semibold mt-4">
-            <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
-            <span className="text-zinc-500">|</span>
-            <span className="text-zinc-300">Danh mục</span>
-            <span className="text-zinc-500">|</span>
-            <span className="text-orange-500 font-bold uppercase">NHƯỢNG QUYỀN</span>
+          <div className="flex items-center justify-center gap-2 text-zinc-300 text-xs md:text-sm font-medium mt-4 bg-black/35 backdrop-blur-md py-2 px-5 rounded-full w-max mx-auto shadow-sm" data-animate="fade-up" data-delay="300">
+            <Link href="/" className="hover:text-orange-400 transition-colors">Trang chủ</Link>
+            <span className="text-zinc-650">|</span>
+            <span className="text-zinc-400">Danh mục</span>
+            <span className="text-zinc-650">|</span>
+            <span className="text-orange-400 font-bold uppercase">Nhượng Quyền</span>
           </div>
         </div>
       </section>
 
-      {/* 3. Full-width Promo Banner */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 w-full" data-animate="fade-up">
+      {/* 3. Redesigned Full-width Promo Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 w-full" data-animate="fade-up">
         <div 
-          className="relative w-full h-[240px] rounded-3xl overflow-hidden bg-zinc-950 flex items-center p-8 sm:p-16 border border-zinc-200"
+          className="relative w-full h-[280px] md:h-[360px] rounded-3xl overflow-hidden bg-zinc-950 flex items-center p-8 sm:p-20 border border-zinc-800 shadow-2xl hover:shadow-orange-500/5 transition-all duration-500"
           style={{
-            backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0.15) 100%), url('/media__1780386795847.png')`,
+            backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.2) 100%), url('/slideshow_2.jpg')`,
             backgroundPosition: 'center center',
             backgroundSize: 'cover'
           }}
         >
           <div className="z-10 max-w-lg">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-[#f07b22]">EXPRESS CAFE</span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-2 uppercase">
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-[#f07b22] bg-[#f07b22]/10 px-3 py-1 rounded-md border border-[#f07b22]/20">Hệ Thống Đặc Quyền</span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-4 uppercase leading-none">
               NHƯỢNG QUYỀN <br />
-              <span className="text-[#f07b22]">0 ĐỒNG</span>
+              <span className="text-[#f07b22] drop-shadow-md">0 ĐỒNG</span>
             </h2>
+            <p className="text-xs sm:text-sm text-zinc-300 mt-4 leading-relaxed font-light hidden sm:block">
+              Cơ hội đồng hành cùng thương hiệu cà phê hữu cơ hàng đầu, giảm thiểu tối đa chi phí nhượng quyền ban đầu, tối ưu hiệu quả lợi nhuận.
+            </p>
+            
+            <Link 
+              href="/franchise/register"
+              className="mt-6 inline-flex items-center gap-2 bg-[#f07b22] hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest px-6 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-orange-500/10 hover:scale-105 active:scale-95"
+            >
+              <span>Liên hệ ngay</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
           
           {/* Mockup 3D Bubble watermark on the right */}
-          <div className="absolute right-12 sm:right-20 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-5">
+          <div className="absolute right-12 sm:right-24 top-1/2 -translate-y-1/2 hidden md:flex items-center gap-6 z-10 animate-float">
             <div className="text-right">
-              <span className="block text-[11px] font-black text-zinc-400 uppercase tracking-[0.2em]">HỆ THỐNG</span>
+              <span className="block text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">ĐẶC BIỆT</span>
               <span className="block text-4xl font-extrabold text-white mt-1 uppercase tracking-wider leading-none">
-                NHƯỢNG QUYỀN <br />
-                <span className="text-[#f07b22] text-5xl font-black">0Đ</span>
+                ĐẦU TƯ <br />
+                <span className="text-[#f07b22] text-5xl font-black drop-shadow-md">0Đ</span>
               </span>
             </div>
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-400 to-[#f07b22] flex items-center justify-center border-[6px] border-white/20 shadow-2xl animate-pulse">
-              <span className="text-white text-3xl font-black italic">0đ</span>
+            <div className="w-28 h-28 rounded-full bg-gradient-to-br from-orange-400 to-[#f07b22] flex items-center justify-center border-[8px] border-white/10 shadow-2xl relative">
+              <span className="text-white text-3xl font-black italic select-none">0đ</span>
+              <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-orange-500"></span>
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Three Packages Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* 4. Optimized Packages Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+        {/* Section Header */}
+        <div className="text-center mb-14" data-animate="fade-up">
+          <span className="text-xs font-black uppercase tracking-widest text-[#f07b22] bg-[#f07b22]/10 px-4 py-1.5 rounded-full border border-[#f07b22]/20">
+            Danh sách gói đầu tư
+          </span>
+          <div className="section-title-wrapper mt-4">
+            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight inline-block">
+              Các Mô Hình Nhượng Quyền
+            </h2>
+            <div className="section-underline mt-2 mx-auto" />
+          </div>
+          <p className="mt-4 text-sm text-zinc-500 max-w-xl mx-auto leading-relaxed">
+            Linh hoạt lựa chọn mô hình phù hợp với nguồn vốn và không gian — Express Cafe đồng hành trọn gói từ A đến Z.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {isLoading ? (
             [1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-3xl border border-zinc-150 p-4 shadow-sm animate-pulse h-80" />
+              <div key={i} className="bg-white rounded-3xl border border-zinc-100 shadow-sm animate-pulse h-[460px]" />
             ))
           ) : (
             (packages || []).map((pkg, idx) => {
               const details = {
                 image: (pkg.images && pkg.images.length > 0) ? resolveUploadUrl(pkg.images[0]) : (MODEL_DETAILS[pkg.modelType]?.image || '/media__1780386795847.png'),
                 title: pkg.name,
+                desc: pkg.description || MODEL_DETAILS[pkg.modelType]?.desc || 'Mô hình nhượng quyền chuyên nghiệp và hiệu quả từ Express Cafe.'
+              };
+
+              const modelBadge: Record<string, string> = {
+                EXPRESS: 'Quán Café',
+                KIOSK: 'Xe Take Away',
+                PREMIUM: 'Kiosk Tiện Lợi',
+              };
+
+              const modelIcon: Record<string, string> = {
+                EXPRESS: '🏠',
+                KIOSK: '🚐',
+                PREMIUM: '🏬',
               };
 
               return (
-                <Link 
+                <div
                   key={pkg.id}
-                  href={`/franchise/${pkg.id}`}
                   data-animate="fade-up"
-                  data-delay={String((idx + 1) * 100)}
-                  className="group relative aspect-[4/3] rounded-3xl overflow-hidden border border-zinc-200 shadow-sm hover:shadow-xl hover:border-orange-300 transition-all duration-500 cursor-pointer hover:-translate-y-2 flex flex-col justify-end"
+                  data-delay={String((idx + 1) * 150)}
+                  className="group relative bg-white rounded-[28px] overflow-hidden border border-zinc-100 shadow-md hover:shadow-2xl hover:shadow-orange-500/10 hover:border-orange-200 transition-all duration-500 flex flex-col hover:-translate-y-3"
                 >
-                  {/* Image */}
-                  <OptimizedImage 
-                    src={details.image} 
-                    alt={details.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  
-                  {/* Semi-transparent dark strip at the bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/5 transition-opacity duration-300 pointer-events-none" />
-                  
-                  {/* Text inside the dark strip at the bottom left */}
-                  <div className="relative z-10 p-6 text-left">
-                    <h3 className="font-extrabold text-sm sm:text-base text-white leading-tight tracking-wide">
-                      {details.title}
-                    </h3>
+                  {/* Image Container */}
+                  <div className="relative h-[260px] w-full overflow-hidden bg-zinc-100 shrink-0">
+                    <OptimizedImage
+                      src={details.image}
+                      alt={details.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                      style={{ transform: 'scale(1)', transition: 'transform 700ms ease-out' }}
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                    {/* Shine effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover:translate-x-full" style={{ transition: 'transform 800ms ease, opacity 400ms ease' }} />
+
+                    {/* Model Type Badge - top left */}
+                    <div className="absolute top-4 left-4">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg">
+                        <span>{modelIcon[pkg.modelType] ?? '☕'}</span>
+                        {modelBadge[pkg.modelType] ?? pkg.modelType}
+                      </span>
+                    </div>
+
+                    {/* Investment badge - top right */}
+                    <div className="absolute top-4 right-4">
+                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-black/50 backdrop-blur-sm text-white text-[10px] font-bold border border-white/20">
+                        <Sparkles className="w-3 h-3 text-orange-400" />
+                        Trọn gói
+                      </span>
+                    </div>
+
+                    {/* Title overlay at bottom of image */}
+                    <div className="absolute bottom-5 left-5 right-5">
+                      <h3 className="text-xl font-black text-white leading-tight drop-shadow-md group-hover:text-orange-300 transition-colors duration-300">
+                        {details.title}
+                      </h3>
+                    </div>
                   </div>
-                </Link>
+
+                  {/* Info Content Area */}
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+                    <p className="text-sm text-zinc-500 leading-relaxed">
+                      {details.desc}
+                    </p>
+
+                    <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between">
+                      <span className="text-[11px] font-extrabold text-[#f07b22] uppercase tracking-wider flex items-center gap-1">
+                        <Coffee className="w-3.5 h-3.5" />
+                        Hỗ trợ trọn gói
+                      </span>
+                      <Link
+                        href={`/franchise/${pkg.id}`}
+                        className="spotlight-wrapper inline-flex items-center gap-1.5 text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105 active:scale-95 shadow-md shadow-orange-500/20"
+                      >
+                        <span>Chi tiết</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               );
             })
           )}
         </div>
 
-        {/* Floating / Inline Load Button to Trigger Registration Form */}
-        <div className="mt-14 text-center">
+        {/* CTA Button */}
+        <div className="mt-14 text-center" data-animate="fade-up">
           <Link
             href="/franchise/register"
-            className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#e9762b] hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-full transition-all duration-300 shadow-lg shadow-orange-500/20 hover:scale-105 active:scale-95 cursor-pointer"
+            className="spotlight-wrapper inline-flex items-center gap-2.5 px-10 py-4 bg-[#e9762b] hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-2xl transition-all duration-300 shadow-xl shadow-orange-500/20 hover:scale-105 active:scale-95"
           >
             <Building className="w-4 h-4" />
-            <span>ĐĂNG KÝ HỢP TÁC NHƯỢNG QUYỀN</span>
+            <span>Đăng ký hợp tác nhượng quyền</span>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </section>
 
-      {/* 5. Trust Factors Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-zinc-100 w-full">
+      {/* 5. Trust Factors Section with counter animations */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-zinc-250/60 w-full" data-animate="fade-up">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-6 rounded-3xl border border-zinc-200 bg-zinc-50/50 flex items-start gap-4 hover:border-orange-200 transition-all duration-350">
-            <TrendingUp className="w-10 h-10 text-emerald-500 shrink-0 bg-emerald-500/10 p-2 rounded-2xl" />
-            <div>
-              <h3 className="font-bold text-zinc-900 text-sm">ROI cực kỳ hấp dẫn</h3>
-              <p className="text-xs text-zinc-500 mt-2 leading-relaxed font-light">
-                Thời gian hòa vốn trung bình chỉ từ 6 - 12 tháng tùy quy mô gói đầu tư. Tỷ suất lợi nhuận ròng đạt 25% - 30%.
-              </p>
+          <div className="p-8 rounded-3xl border border-zinc-150 bg-white hover:border-orange-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+            <div className="flex items-start gap-4">
+              <TrendingUp className="w-12 h-12 text-emerald-500 shrink-0 bg-emerald-500/10 p-2.5 rounded-2xl" />
+              <div>
+                <h3 className="font-bold text-zinc-900 text-base">ROI cực kỳ hấp dẫn</h3>
+                <p className="text-xs text-zinc-500 mt-2 leading-relaxed font-light">
+                  Thời gian hòa vốn trung bình nhanh chóng, tối ưu hóa điểm dòng tiền và lợi nhuận.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 pt-5 border-t border-zinc-100 flex items-baseline gap-2">
+              <span className="text-3xl font-black text-emerald-500 tracking-tight">
+                <AnimatedCounter end={6} suffix="" /> - <AnimatedCounter end={12} suffix="" />
+              </span>
+              <span className="text-xs text-zinc-400 font-semibold uppercase">Tháng hòa vốn</span>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl border border-zinc-200 bg-zinc-50/50 flex items-start gap-4 hover:border-orange-200 transition-all duration-350">
-            <ShieldCheck className="w-10 h-10 text-orange-500 shrink-0 bg-orange-500/10 p-2 rounded-2xl" />
-            <div>
-              <h3 className="font-bold text-zinc-900 text-sm">Hỗ trợ vận hành SaaS</h3>
-              <p className="text-xs text-zinc-500 mt-2 leading-relaxed font-light">
-                Cung cấp trọn gói phần mềm bán hàng POS, quản lý tồn kho, định vị GPS, khuyến mãi, Loyalty và hỗ trợ Marketing chuỗi.
-              </p>
+          <div className="p-8 rounded-3xl border border-zinc-150 bg-white hover:border-orange-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+            <div className="flex items-start gap-4">
+              <ShieldCheck className="w-12 h-12 text-orange-500 shrink-0 bg-orange-500/10 p-2.5 rounded-2xl" />
+              <div>
+                <h3 className="font-bold text-zinc-900 text-base">Công nghệ thông minh</h3>
+                <p className="text-xs text-zinc-500 mt-2 leading-relaxed font-light">
+                  Phần mềm bán hàng, quản lý kho tự động và hệ thống báo cáo SaaS chuẩn hóa toàn chuỗi.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 pt-5 border-t border-zinc-100 flex items-baseline gap-2">
+              <span className="text-3xl font-black text-orange-500 tracking-tight">
+                <AnimatedCounter end={100} suffix="%" />
+              </span>
+              <span className="text-xs text-zinc-400 font-semibold uppercase">Bảo trợ vận hành</span>
             </div>
           </div>
 
-          <div className="p-6 rounded-3xl border border-zinc-200 bg-zinc-50/50 flex items-start gap-4 hover:border-orange-200 transition-all duration-350">
-            <Award className="w-10 h-10 text-amber-500 shrink-0 bg-amber-500/10 p-2 rounded-2xl" />
-            <div>
-              <h3 className="font-bold text-zinc-900 text-sm">Thương hiệu uy tín</h3>
-              <p className="text-xs text-zinc-500 mt-2 leading-relaxed font-light">
-                Nguyên liệu cà phê hữu cơ thượng hạng đạt chuẩn XK. Menu đa dạng cập nhật định kỳ theo xu hướng thị trường.
-              </p>
+          <div className="p-8 rounded-3xl border border-zinc-150 bg-white hover:border-orange-200 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-between">
+            <div className="flex items-start gap-4">
+              <Award className="w-12 h-12 text-amber-500 shrink-0 bg-amber-500/10 p-2.5 rounded-2xl" />
+              <div>
+                <h3 className="font-bold text-zinc-900 text-base">Thương hiệu uy tín</h3>
+                <p className="text-xs text-zinc-500 mt-2 leading-relaxed font-light">
+                  Nguyên liệu cà phê hữu cơ sạch đạt chuẩn cao cùng menu cập nhật theo xu hướng thường xuyên.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 pt-5 border-t border-zinc-100 flex items-baseline gap-2">
+              <span className="text-3xl font-black text-amber-500 tracking-tight">
+                <AnimatedCounter end={30} suffix="%" />
+              </span>
+              <span className="text-xs text-zinc-400 font-semibold uppercase">Lợi nhuận ròng</span>
             </div>
           </div>
         </div>

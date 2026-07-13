@@ -152,11 +152,10 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
                     <button
                       key={idx}
                       onClick={() => setCurrentImageIndex(idx)}
-                      className={`relative w-20 h-20 rounded-lg overflow-hidden transition-all ${
-                        idx === currentImageIndex
+                      className={`relative w-20 h-20 rounded-lg overflow-hidden transition-all ${idx === currentImageIndex
                           ? 'ring-2 ring-orange-500 ring-offset-2'
                           : 'opacity-60 hover:opacity-100'
-                      }`}
+                        }`}
                     >
                       <OptimizedImage
                         src={img}
@@ -204,14 +203,18 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
             <h2 className="text-2xl font-black text-zinc-900 mb-6">Quyền lợi & Hỗ trợ</h2>
 
             {/* Feature 1 - Full System */}
-            <div className="bg-gradient-to-br from-orange-50 to-white rounded-3xl p-6 border border-orange-100 shadow-md">
+            <div
+              data-animate="fade-up"
+              data-delay="100"
+              className="bg-white rounded-3xl p-6 border border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300 transition-all duration-300"
+            >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shrink-0 shadow-md shadow-orange-200">
                   <Store className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-zinc-900 mb-2">HỆ THỐNG NHƯỢNG QUYỀN TRỌN GÓI</h3>
-                  <p className="text-sm text-zinc-600 leading-relaxed">
+                  <p className="text-sm text-zinc-500 leading-relaxed">
                     Cung cấp trọn gói từ thiết kế, thi công, trang thiết bị, nguyên liệu đến đào tạo vận hành.
                   </p>
                 </div>
@@ -219,14 +222,18 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
             </div>
 
             {/* Feature 2 - Brand Kit */}
-            <div className="bg-gradient-to-br from-amber-50 to-white rounded-3xl p-6 border border-amber-100 shadow-md">
+            <div
+              data-animate="fade-up"
+              data-delay="200"
+              className="bg-white rounded-3xl p-6 border border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300 transition-all duration-300"
+            >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shrink-0 shadow-md shadow-orange-200">
                   <Gift className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-zinc-900 mb-2">TÀI TRỢ 100% BỘ NHẬN DIỆN THƯƠNG HIỆU TRỊ GIÁ 5 TRIỆU</h3>
-                  <p className="text-sm text-zinc-600 leading-relaxed">
+                  <p className="text-sm text-zinc-500 leading-relaxed">
                     Logo, biển hiệu, menu, đồng phục, bao bì sản phẩm - tất cả được thiết kế chuyên nghiệp.
                   </p>
                 </div>
@@ -234,14 +241,18 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
             </div>
 
             {/* Feature 3 - Software */}
-            <div className="bg-gradient-to-br from-emerald-50 to-white rounded-3xl p-6 border border-emerald-100 shadow-md">
+            <div
+              data-animate="fade-up"
+              data-delay="300"
+              className="bg-white rounded-3xl p-6 border border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300 transition-all duration-300"
+            >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shrink-0 shadow-md shadow-orange-200">
                   <Monitor className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-zinc-900 mb-2">TẶNG PHẦN MỀM QUẢN LÝ TRỊ GIÁ 2 TRIỆU</h3>
-                  <p className="text-sm text-zinc-600 leading-relaxed">
+                  <p className="text-sm text-zinc-500 leading-relaxed">
                     Hệ thống POS hiện đại, quản lý tồn kho, báo cáo doanh thu, CRM tích hợp sẵn.
                   </p>
                 </div>
@@ -249,14 +260,18 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
             </div>
 
             {/* Feature 4 - Branch Network */}
-            <div className="bg-gradient-to-br from-blue-50 to-white rounded-3xl p-6 border border-blue-100 shadow-md">
+            <div
+              data-animate="fade-up"
+              data-delay="400"
+              className="bg-white rounded-3xl p-6 border border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300 transition-all duration-300"
+            >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center shrink-0 shadow-md shadow-orange-200">
                   <CheckCircle className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="font-bold text-zinc-900 mb-2">CÁC CHI NHÁNH NHƯỢNG QUYỀN CỦA EXPRESS CAFE</h3>
-                  <p className="text-sm text-zinc-600 leading-relaxed">
+                  <p className="text-sm text-zinc-500 leading-relaxed">
                     Hệ thống 15+ chi nhánh hoạt động hiệu quả, hỗ trợ chia sẻ kinh nghiệm thực tế.
                   </p>
                 </div>
@@ -264,26 +279,26 @@ export default function FranchiseDetailPage(props: { params: Promise<{ id: strin
             </div>
 
             {/* Additional Benefits */}
-            <div className="bg-zinc-900 rounded-3xl p-6 text-white">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-orange-400" />
+            <div data-animate="fade-up" data-delay="500" className="bg-white rounded-3xl p-6 border border-orange-100 shadow-sm hover:shadow-md hover:border-orange-300 transition-all duration-300">
+              <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-zinc-900">
+                <CheckCircle className="w-5 h-5 text-orange-500" />
                 Các quyền lợi khác
               </h3>
-              <ul className="space-y-3 text-sm text-zinc-300">
+              <ul className="space-y-3 text-sm text-zinc-500">
                 <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Đào tạo pha chế và vận hành miễn phí</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Hỗ trợ marketing và mở cửa hàng</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Cung cấp nguyên liệu giá sỉ ưu đãi</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-orange-400 shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                   <span>Bảo hành thiết bị 12 tháng</span>
                 </li>
               </ul>

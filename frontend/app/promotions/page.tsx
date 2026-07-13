@@ -246,12 +246,11 @@ export default function PromotionsPage() {
                         data-category-slug={category.slug}
                         className="scroll-mt-28"
                       >
-                        <div className="mb-4 flex items-center justify-center gap-3">
-                          <div className="h-px w-10 bg-orange-200" />
-                          <h3 className="text-lg font-black uppercase tracking-wider text-orange-500 md:text-xl">
+                        <div className="section-title-wrapper mb-6 text-center" data-animate="fade-up">
+                          <h3 className="text-lg font-black uppercase tracking-wider text-orange-500 md:text-xl inline-block">
                             {category.name}
                           </h3>
-                          <div className="h-px w-10 bg-orange-200" />
+                          <div className="section-underline mt-2 mx-auto" />
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -259,8 +258,8 @@ export default function PromotionsPage() {
                             <article
                               key={product.id}
                               data-animate="fade-up"
-                              data-delay={String(((idx % 3) + 1) * 100)}
-                              className="group overflow-hidden rounded-[24px] border border-orange-100 bg-white shadow-[0_12px_30px_rgba(210,120,30,0.06)] transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_18px_45px_rgba(210,120,30,0.15)] hover:border-orange-300"
+                              data-delay={String(((idx % 3) + 1) * 150)}
+                              className="card-tilt group overflow-hidden rounded-[24px] border border-orange-100 bg-white flex flex-col justify-between"
                             >
                               <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100">
                                 <OptimizedImage
@@ -279,7 +278,7 @@ export default function PromotionsPage() {
                                 )}
                               </div>
 
-                              <div className="p-4">
+                              <div className="p-4 flex flex-col justify-between flex-1">
                                 <div className="flex items-start justify-between gap-3">
                                   <div>
                                     <h4 className="text-sm font-extrabold text-zinc-900 line-clamp-1">{product.name}</h4>

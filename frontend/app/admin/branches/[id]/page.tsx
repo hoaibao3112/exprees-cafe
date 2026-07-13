@@ -50,7 +50,7 @@ export default function AdminEditBranchPage() {
   // Fetch branch details
   const { data: branch, isLoading, error } = useQuery({
     queryKey: ['admin', 'branches', id],
-    queryFn: () => adminBranchesApi.getById(id) as Promise<Record<string, unknown>>,
+    queryFn: () => adminBranchesApi.getById(id) as Promise<unknown> as Promise<Record<string, unknown>>,
     enabled: !!id,
   });
 

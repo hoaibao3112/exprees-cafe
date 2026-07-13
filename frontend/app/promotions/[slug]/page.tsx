@@ -233,37 +233,53 @@ export default function ProductDetailPage(props: PageProps) {
             </div>
 
             <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-              <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-[0_18px_45px_rgba(210,120,30,0.06)]">
+              <div className="rounded-[28px] border border-orange-100 bg-white p-6 shadow-[0_18px_45px_rgba(210,120,30,0.06)] transition-all duration-300 hover:shadow-[0_24px_50px_rgba(210,120,30,0.1)]">
                 <h2 className="text-sm font-black uppercase tracking-[0.18em] text-orange-500">Thông tin nhanh</h2>
-                <div className="mt-4 space-y-3 text-sm text-zinc-600">
-                  <div className="flex items-center justify-between gap-4 border-b border-orange-100 pb-2">
+                <div className="mt-4 space-y-3.5 text-sm text-zinc-650">
+                  <div className="flex items-center justify-between gap-4 border-b border-orange-50/80 pb-2.5">
                     <span>Danh mục</span>
-                    <span className="font-semibold text-zinc-900">{product.categoryName}</span>
+                    <span className="font-extrabold text-zinc-900">{product.categoryName}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 border-b border-orange-100 pb-2">
-                    <span>Slug</span>
-                    <span className="font-semibold text-zinc-900">{product.slug}</span>
+                  <div className="flex items-center justify-between gap-4 border-b border-orange-50/80 pb-2.5">
+                    <span>Mã sản phẩm</span>
+                    <span className="font-semibold text-zinc-600 uppercase">{product.slug}</span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 border-b border-orange-100 pb-2">
+                  <div className="flex items-center justify-between gap-4 border-b border-orange-50/80 pb-2.5">
                     <span>Giá từ</span>
-                    <span className="font-semibold text-orange-500">{formatPrice(product.priceFrom)}</span>
+                    <span className="font-black text-orange-500">{formatPrice(product.priceFrom)}</span>
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <span>Trạng thái</span>
-                    <span className="font-semibold text-emerald-600">Đang hoạt động</span>
+                    <span className="inline-flex items-center gap-1.5 font-bold text-emerald-600">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Đang phục vụ
+                    </span>
                   </div>
                 </div>
-
               </div>
 
-              <div className="rounded-[28px] border border-orange-100 bg-white p-5 shadow-[0_18px_45px_rgba(210,120,30,0.06)]">
+              {product.variants && product.variants.length > 0 && (
+                <div className="rounded-[28px] border border-orange-100 bg-white p-6 shadow-[0_18px_45px_rgba(210,120,30,0.06)] transition-all duration-300 hover:shadow-[0_24px_50px_rgba(210,120,30,0.1)]">
+                  <h2 className="text-sm font-black uppercase tracking-[0.18em] text-orange-500">Tùy chọn Kích thước</h2>
+                  <div className="mt-4 space-y-3">
+                    {product.variants.map((v: any) => (
+                      <div key={v.id} className="flex items-center justify-between rounded-2xl border border-orange-50 bg-orange-50/20 p-3 text-xs">
+                        <span className="font-bold text-zinc-800">{v.name}</span>
+                        <span className="font-black text-orange-500">{formatPrice(v.price)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="rounded-[28px] border border-orange-100 bg-white p-6 shadow-[0_18px_45px_rgba(210,120,30,0.06)] transition-all duration-300 hover:shadow-[0_24px_50px_rgba(210,120,30,0.1)]">
                 <h3 className="text-sm font-black uppercase tracking-[0.18em] text-orange-500">Quay lại menu</h3>
-                <p className="mt-3 text-sm leading-relaxed text-zinc-500">
-                  Bạn có thể xem thêm các sản phẩm khác trong cùng danh mục hoặc chuyển về danh sách tổng.
+                <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+                  Khám phá thêm các hương vị đặc trưng khác trong thực đơn của Express Cafe.
                 </p>
                 <Link
                   href="/promotions"
-                  className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-orange-200 bg-white px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-orange-500 transition-all hover:bg-orange-50"
+                  className="spotlight-wrapper mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-orange-200 bg-white px-4 py-3.5 text-xs font-extrabold uppercase tracking-[0.18em] text-orange-500 transition-all hover:bg-orange-50"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Về danh sách menu

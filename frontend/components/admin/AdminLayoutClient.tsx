@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true },
   { href: '/admin/articles', label: 'Bài viết', icon: FileText },
   { href: '/admin/branches', label: 'Chi nhánh', icon: MapPin },
-  { href: '/admin/services', label: 'Dịch vụ', icon: Coffee },
+  { href: '/admin/articles?handle=services', label: 'Dịch vụ', icon: Coffee },
   { href: '/admin/franchise', label: 'Nhượng quyền', icon: Award },
   { href: '/admin/banners', label: 'Banner', icon: ImageIcon },
   { href: '/admin/videos', label: 'Video', icon: Play },

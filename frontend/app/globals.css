@@ -106,6 +106,8 @@ html {
 [data-delay="300"] { transition-delay: 0.3s; }
 [data-delay="400"] { transition-delay: 0.4s; }
 [data-delay="500"] { transition-delay: 0.5s; }
+[data-delay="600"] { transition-delay: 0.6s; }
+[data-delay="700"] { transition-delay: 0.7s; }
 
 /* Navbar scroll effect */
 .navbar-scrolled {
@@ -136,6 +138,259 @@ html {
   50% { opacity: 0.3; transform: scale(1.05); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes slide-in-bottom {
+  0% { transform: translateY(50px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 .animate-pulse-slow {
   animation: pulse-slow 8s infinite ease-in-out;
 }
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-bottom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM ANIMATION LIBRARY — Express Cafe
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Shimmer (loading skeleton & highlight sweep) ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.55) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+/* Skeleton block dùng chung */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 0.5rem;
+}
+
+/* ── Typewriter cursor blink ── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+/* Dùng: <span class="animate-blink">|</span> */
+
+/* ── Bounce-in từ dưới (entrance mạnh hơn slide) ── */
+@keyframes bounce-in {
+  0%   { transform: scale(0.6) translateY(60px); opacity: 0; }
+  60%  { transform: scale(1.08) translateY(-8px); opacity: 1; }
+  80%  { transform: scale(0.97) translateY(3px); }
+  100% { transform: scale(1) translateY(0); }
+}
+.animate-bounce-in {
+  animation: bounce-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Rotate-in (icon / badge entrance) ── */
+@keyframes rotate-in {
+  0%   { transform: rotate(-180deg) scale(0); opacity: 0; }
+  100% { transform: rotate(0deg) scale(1);   opacity: 1; }
+}
+.animate-rotate-in {
+  animation: rotate-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ── Flip-in (card xuất hiện kiểu lật) ── */
+@keyframes flip-in {
+  0%   { transform: perspective(400px) rotateX(-90deg); opacity: 0; }
+  100% { transform: perspective(400px) rotateX(0deg);   opacity: 1; }
+}
+.animate-flip-in {
+  animation: flip-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: top center;
+}
+
+/* ── Ink-bleed (text xuất hiện từ trong ra, dùng cho hero title) ── */
+@keyframes ink-bleed {
+  0%   { letter-spacing: -0.5em; opacity: 0; filter: blur(12px); }
+  40%  { opacity: 0.6; filter: blur(4px); }
+  100% { letter-spacing: inherit; opacity: 1; filter: blur(0); }
+}
+.animate-ink-bleed {
+  animation: ink-bleed 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Spotlight sweep (light trượt qua button / banner) ── */
+@keyframes spotlight {
+  0%   { left: -60%; }
+  100% { left: 130%; }
+}
+.spotlight-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.spotlight-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: skewX(-20deg);
+  animation: spotlight 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── Magnetic glow (box shadow nhấp nháy sóng lan tỏa) ── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 123, 34, 0.4); }
+  50%       { box-shadow: 0 0 0 14px rgba(240, 123, 34, 0); }
+}
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* ── Starburst (ring mở rộng, dùng ở badge / nút hot) ── */
+@keyframes starburst {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.starburst-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+.starburst-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid #f07b22;
+  animation: starburst 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ── Slide-right (mobile drawer / panel) ── */
+@keyframes slide-right {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0);     opacity: 1; }
+}
+.animate-slide-right {
+  animation: slide-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Fade-in nhanh (overlay / modal backdrop) ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.25s ease forwards;
+}
+
+/* ── Swing (dùng cho icon thông báo / toast) ── */
+@keyframes swing {
+  20%  { transform: rotate(15deg); }
+  40%  { transform: rotate(-10deg); }
+  60%  { transform: rotate(5deg); }
+  80%  { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
+.animate-swing {
+  animation: swing 0.8s ease-in-out;
+  transform-origin: top center;
+}
+
+/* ── Scroll-indicator bounce ── */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50%       { transform: translateY(6px); opacity: 1; }
+}
+.animate-scroll-bounce {
+  animation: scroll-bounce 1.5s ease-in-out infinite;
+}
+
+/* ── Underline grow (animated text underline) ── */
+.animated-underline {
+  position: relative;
+  display: inline-block;
+}
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #f07b22;
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animated-underline:hover::after,
+.animated-underline.active::after {
+  width: 100%;
+}
+
+/* ── Card hover tilt (3D perspective nhẹ khi hover) ── */
+.card-tilt {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.card-tilt:hover {
+  transform: perspective(800px) rotateY(-3deg) rotateX(1.5deg) translateY(-6px);
+  box-shadow: 8px 16px 40px rgba(240, 123, 34, 0.12);
+}
+
+/* ── Number ticker (số đếm trượt lên) ── */
+@keyframes ticker-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.animate-ticker-up {
+  animation: ticker-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  display: inline-block;
+}
+
+/* ── Gradient text (chữ gradient động) ── */
+.gradient-text {
+  background: linear-gradient(135deg, #f07b22 0%, #fbbf24 40%, #ea580c 80%, #f07b22 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 3s linear infinite;
+}
+
+/* ── Section Title Underline Sweep Animation ── */
+.section-title-wrapper .section-underline {
+  width: 0px;
+  height: 4px;
+  background: linear-gradient(90deg, #f07b22, #fbbf24);
+  border-radius: 9999px;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: 0.2s;
+}
+.section-title-wrapper.animate-in .section-underline {
+  width: 90px;
+}
+

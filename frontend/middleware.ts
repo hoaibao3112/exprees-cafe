@@ -3,9 +3,15 @@ import { jwtVerify } from 'jose';
 
 const COOKIE_NAME = 'admin_token';
 
-// Chỉ cần secret để verify, không cần Prisma hay DB ở đây
+// JWT_SECRET phải khớp với backend NestJS (xem .env.example)
+// Server-side only — không prefix NEXT_PUBLIC_
 const getSecret = () => {
-  const secret = process.env.JWT_SECRET ?? 'express-cafe-secret';
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error(
+      '[middleware] JWT_SECRET is not set. Add it to .env.local (see .env.example).',
+    );
+  }
   return new TextEncoder().encode(secret);
 };
 

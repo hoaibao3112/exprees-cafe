@@ -81,9 +81,9 @@ function SectionCard({
   content: string;
 }) {
   return (
-    <div className="border border-zinc-900 bg-[#fff7eb] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
-      <h3 className="text-sm font-semibold text-zinc-950">{title}</h3>
-      <p className="mt-2 text-[11px] leading-6 text-zinc-700">{content}</p>
+    <div className="border border-zinc-150 bg-white p-6 rounded-2xl shadow-sm hover:border-orange-200 hover:-translate-y-0.5 transition-all duration-300">
+      <h3 className="text-sm font-bold text-zinc-950">{title}</h3>
+      <p className="mt-2 text-[11px] leading-relaxed text-zinc-500 font-light">{content}</p>
     </div>
   );
 }
@@ -179,9 +179,12 @@ export default function AboutPage() {
 
         <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f8c58f_0%,#fee1be_18%,#fff4e1_44%,#fffdf4_100%)] py-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-9 text-2xl font-bold uppercase tracking-[0.04em] text-zinc-950">
-              GIỚI THIỆU CHUNG
-            </h2>
+            <div className="section-title-wrapper mb-9" data-animate="fade-up">
+              <h2 className="text-2xl font-bold uppercase tracking-[0.04em] text-zinc-950">
+                GIỚI THIỆU <span className="gradient-text">CHUNG</span>
+              </h2>
+              <div className="section-underline mt-2" />
+            </div>
 
             <div className="grid items-center gap-6 lg:grid-cols-[1fr_300px_1fr]">
               <div className="space-y-4" data-animate="fade-right">
@@ -191,13 +194,13 @@ export default function AboutPage() {
               </div>
 
               <div className="relative mx-auto w-full max-w-[300px]" data-animate="scale-up">
-                <div className="absolute inset-0 translate-x-4 translate-y-4 bg-orange-500/12" />
+                <div className="absolute inset-0 translate-x-4 translate-y-4 bg-orange-500/12 rounded-3xl" />
                 <Image
                   src="/p-about-sv_1.jpg"
                   alt="Express Cafe quầy phục vụ"
                   width={300}
                   height={250}
-                  className="relative z-10 h-[250px] w-full object-cover shadow-xl"
+                  className="relative z-10 h-[250px] w-full object-cover shadow-xl rounded-3xl"
                 />
               </div>
 
@@ -205,9 +208,9 @@ export default function AboutPage() {
                 <SectionCard title={INTRO_CARDS[3].title} content={INTRO_CARDS[3].content} />
                 <SectionCard title={INTRO_CARDS[4].title} content={INTRO_CARDS[4].content} />
 
-                <div className="border border-zinc-900 bg-[#fff7eb] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.04)]">
-                  <p className="text-sm font-semibold text-zinc-950">Cam kết nền tảng</p>
-                  <ul className="mt-2 space-y-1 text-[11px] leading-6 text-zinc-700">
+                <div className="border border-zinc-150 bg-white p-6 rounded-2xl shadow-sm hover:border-orange-200 hover:-translate-y-0.5 transition-all duration-300">
+                  <p className="text-sm font-bold text-zinc-950">Cam kết nền tảng</p>
+                  <ul className="mt-2 space-y-1 text-[11px] leading-relaxed text-zinc-500 font-light">
                     <li>• Chất lượng ổn định</li>
                     <li>• Hỗ trợ đối tác nhanh</li>
                     <li>• Vận hành tinh gọn</li>
@@ -221,9 +224,12 @@ export default function AboutPage() {
 
         <section className="relative overflow-hidden bg-[radial-gradient(circle_at_1px_1px,rgba(0,0,0,0.08)_1px,transparent_0)] bg-[size:14px_14px] py-16">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-10 text-2xl font-bold uppercase tracking-[0.04em] text-zinc-950">
-              CAM KẾT CỦA CHÚNG TÔI
-            </h2>
+            <div className="section-title-wrapper mb-10" data-animate="fade-up">
+              <h2 className="text-2xl font-bold uppercase tracking-[0.04em] text-zinc-950">
+                CAM KẾT CỦA <span className="gradient-text">CHÚNG TÔI</span>
+              </h2>
+              <div className="section-underline mt-2" />
+            </div>
 
             <div className="space-y-12">
               {COMMITMENTS.map((item, index) => {

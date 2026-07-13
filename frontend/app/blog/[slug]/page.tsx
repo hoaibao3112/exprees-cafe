@@ -91,10 +91,10 @@ export default function ArticleDetailPage(props: PageProps) {
 
       {/* 2. Hero Banner Section */}
       <section 
-        className="relative w-full h-[180px] md:h-[220px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
+        className="relative w-full h-[240px] md:h-[320px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&q=80&w=1200')`,
-          backgroundPosition: 'center',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundPosition: 'center 45%',
           backgroundSize: 'cover'
         }}
       >
@@ -111,13 +111,6 @@ export default function ArticleDetailPage(props: PageProps) {
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-orange-500 max-w-[200px] md:max-w-[400px] truncate">{article.title}</span>
           </div>
-        </div>
-        
-        {/* Decorative Wave Overlay */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0">
-          <svg className="relative block w-full h-8 fill-white" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" />
-          </svg>
         </div>
       </section>
 

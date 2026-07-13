@@ -9,11 +9,12 @@ export function useScrollAnimation() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('animate-in');
-            // Keep observing so animations run when element scrolls back
+            // Unobserve to prevent repeatedly triggering and saving resources
+            observer.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px -50px 0px' }
     );
 
     const observeAll = (root: ParentNode = document) => {

@@ -13,7 +13,6 @@ const NAV_ITEMS = [
   { label: 'DỊCH VỤ', href: '/services', slug: 'services' },
   { label: 'MENU', href: '/promotions', slug: 'promotions' },
   { label: 'TIN TỨC', href: '/blog', slug: 'blog' },
-  { label: 'BLOGS', href: '/blog', slug: 'blogs' },
   { label: 'LIÊN HỆ', href: '/contact', slug: 'contact' },
 ];
 
@@ -24,30 +23,11 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 80) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-    
-    // Explicit scroll event listener for micro-interactions class addition
-    const explicitScrollListener = () => {
-      const headerNav = document.querySelector('header');
-      if (window.scrollY > 80) {
-        headerNav?.classList.add('navbar-scrolled');
-      } else {
-        headerNav?.classList.remove('navbar-scrolled');
-      }
+      setScrolled(window.scrollY > 80);
     };
 
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('scroll', explicitScrollListener);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('scroll', explicitScrollListener);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Determine if a menu link is currently active based on path
@@ -120,16 +100,16 @@ export function Header() {
       {isOpen && (
         <div className="xl:hidden fixed inset-0 top-[65px] z-40 bg-zinc-950/20 backdrop-blur-sm animate-fade-in" onClick={() => setIsOpen(false)}>
           <div 
-            className="w-4/5 max-w-xs bg-white h-full shadow-2xl p-6 flex flex-col justify-between animate-slide-right"
+            className="w-4/5 max-w-xs bg-gradient-to-b from-white to-orange-50/20 h-full shadow-2xl p-6 flex flex-col justify-between animate-slide-right"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-2 border-b pb-4">
-                <Coffee className="w-6 h-6 text-orange-500" />
+                <Coffee className="w-6 h-6 text-orange-500 animate-pulse" />
                 <span className="font-heading italic text-2xl text-zinc-900">EXPRESS CAFE</span>
               </div>
               
-              <nav className="flex flex-col gap-4 text-sm font-medium tracking-[0.08em] uppercase text-zinc-800 font-body">
+              <nav className="flex flex-col gap-3.5 text-xs font-semibold tracking-[0.08em] uppercase text-zinc-800 font-body">
                 {NAV_ITEMS.map((item, idx) => {
                   const active = isLinkActive(item);
                   return (
@@ -137,10 +117,10 @@ export function Header() {
                       key={idx}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className={`py-2 px-3 rounded-lg transition-all duration-300 ${
+                      className={`py-2 px-3 rounded-xl transition-all duration-300 ${
                         active 
-                          ? 'bg-orange-50 text-orange-500 font-bold' 
-                          : 'hover:bg-zinc-50 hover:text-orange-500'
+                          ? 'bg-orange-500 text-white font-extrabold shadow-sm shadow-orange-500/10' 
+                          : 'hover:bg-orange-50 hover:text-orange-500'
                       }`}
                     >
                       {item.label}
@@ -150,8 +130,17 @@ export function Header() {
               </nav>
             </div>
             
-            <div className="border-t pt-4 text-center text-xs font-semibold text-zinc-400">
-              © {new Date().getFullYear()} Express Cafe. All rights reserved.
+            <div className="flex flex-col gap-4 border-t border-zinc-100 pt-4">
+              <Link 
+                href="/contact"
+                onClick={() => setIsOpen(false)}
+                className="w-full py-3 bg-orange-550 hover:bg-orange-600 active:scale-[0.98] text-white font-extrabold text-xs tracking-widest text-center rounded-xl shadow-md transition-all uppercase"
+              >
+                Đăng ký tư vấn
+              </Link>
+              <div className="text-center text-[10px] font-semibold text-zinc-400">
+                © {new Date().getFullYear()} Express Cafe. All rights reserved.
+              </div>
             </div>
           </div>
         </div>

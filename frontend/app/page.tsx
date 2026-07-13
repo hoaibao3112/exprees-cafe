@@ -21,12 +21,13 @@ import {
   Phone
 } from 'lucide-react';
 import { useFranchisePackagesQuery } from '../hooks/useFranchiseQueries';
-import { useArticlesQuery, useVideosQuery } from '../hooks/useContentQueries';
+import { useArticlesQuery, useVideosQuery, useBannersQuery } from '../hooks/useContentQueries';
 import { useBranchesQuery } from '../hooks/useBranchQueries';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
 import { resolveUploadUrl } from '../lib/api';
+import { AnimatedCounter } from '../components/ui/AnimatedCounter';
 
 // Helper to resolve local assets or backend uploads
 const resolveLocalOrUpload = (url?: string | null) => {
@@ -52,25 +53,29 @@ const SLIDES = [
   {
     url: '/slideshow_1.jpg',
     alt: 'Dịch vụ cho thuê máy cà phê',
-    title: 'CHO THUÊ MÁY PHA CÀ PHÊ',
+    titleWhite: 'CHO THUÊ',
+    titleOrange: 'MÁY PHA CÀ PHÊ',
     subtitle: 'Giải pháp chuyên nghiệp cho văn phòng, nhà hàng và chuỗi kinh doanh F&B'
   },
   {
     url: '/slideshow_2.jpg',
     alt: 'Nhượng quyền 0 đồng - Mô hình ki-ốt',
-    title: 'NHƯỢNG QUYỀN THƯƠNG HIỆU 0Đ',
+    titleWhite: 'NHƯỢNG QUYỀN',
+    titleOrange: 'THƯƠNG HIỆU 0Đ',
     subtitle: 'Hỗ trợ khởi nghiệp trọn gói, tối ưu hóa lợi nhuận, thời gian hoàn vốn cực nhanh'
   },
   {
     url: '/slideshow_3.jpg',
     alt: 'Thưởng thức cà phê sạch nguyên chất',
-    title: 'HƯƠNG VỊ NGUYÊN BẢN ĐÍNH THỰC',
+    titleWhite: 'HƯƠNG VỊ',
+    titleOrange: 'NGUYÊN BẢN ĐÍNH THỰC',
     subtitle: 'Nguồn cà phê sạch hữu cơ 100% Robusta & Arabica từ nông trại Đắk Lắk'
   },
   {
     url: '/slideshow_4.jpg',
     alt: 'Hệ thống nhượng quyền Express Cafe',
-    title: 'VẬN HÀNH SAAS THÔNG MINH',
+    titleWhite: 'VẬN HÀNH',
+    titleOrange: 'SAAS THÔNG MINH',
     subtitle: 'Quản trị chuỗi tự động từ xa với phần mềm POS & GPS hiện đại dẫn đầu xu thế'
   }
 ];
@@ -119,9 +124,32 @@ export default function Home() {
 
   // Query database packages
   const { data: packages, isLoading } = useFranchisePackagesQuery();
-  const { data: articles } = useArticlesQuery();
-  const { data: videos } = useVideosQuery();
-  const { data: branches } = useBranchesQuery();
+  const { data: articles, isLoading: isLoadingArticles } = useArticlesQuery();
+  const { data: videos, isLoading: isLoadingVideos } = useVideosQuery();
+  const { data: branches, isLoading: isLoadingBranches } = useBranchesQuery();
+  const { data: dbBanners = [] } = useBannersQuery();
+
+  // Dynamically map backend banners, with support for premium split title coloring
+  const slides = dbBanners.length > 0 ? dbBanners.map(b => {
+    const titleWords = b.title.split(' ');
+    return {
+      url: resolveLocalOrUpload(b.imageUrl),
+      alt: b.title,
+      titleWhite: titleWords[0] || '',
+      titleOrange: titleWords.slice(1).join(' ') || '',
+      subtitle: b.title.includes('Cold Brew') 
+        ? 'Thưởng thức hương vị cà phê ủ lạnh mộc mạc thanh mát' 
+        : 'Hương vị truyền thống kết hợp công nghệ hiện đại cùng Express Cafe',
+      ctaLink: b.linkUrl || '/franchise/register'
+    };
+  }) : SLIDES.map(s => ({
+    url: s.url,
+    alt: s.alt,
+    titleWhite: s.titleWhite,
+    titleOrange: s.titleOrange,
+    subtitle: s.subtitle,
+    ctaLink: '/franchise/register'
+  }));
 
   // State for playing YouTube video lightbox
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
@@ -151,18 +179,19 @@ export default function Home() {
 
   // Automatic slideshow rotation every 5 seconds
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % SLIDES.length);
+      setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const handleNextSlide = () => {
-    setActiveSlide((prev) => (prev + 1) % SLIDES.length);
+    setActiveSlide((prev) => (prev + 1) % slides.length);
   };
 
   const handlePrevSlide = () => {
-    setActiveSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
   const accordionItems: AccordionItem[] = [
@@ -201,49 +230,53 @@ export default function Home() {
 
       {/* Hero Slideshow Section */}
       <section className="relative w-full h-[400px] sm:h-[500px] md:h-[620px] bg-zinc-950 overflow-hidden group/slideshow">
-        {SLIDES.map((slide, idx) => (
+        {slides.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${idx === activeSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'
-              }`}
+            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${idx === activeSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'}`}
           >
-            {/* Slide Image */}
-            <div className="absolute inset-0 w-full h-full transition-transform duration-[8000ms] scale-105">
+            {/* Slide Image with Ken Burns effect */}
+            <div className="absolute inset-0 w-full h-full">
               <Image
                 src={slide.url}
                 alt={slide.alt}
                 fill
                 priority={idx === 0}
                 sizes="100vw"
-                className="object-cover"
+                className={`object-cover transition-transform duration-[8000ms] ${idx === activeSlide ? 'scale-110' : 'scale-100'}`}
               />
             </div>
-            {/* Premium Overlay Shadow for Light Text Contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-black/30 to-black/40 pointer-events-none" />
+            {/* Premium multi-layer gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/60 pointer-events-none" />
+            <div className="absolute inset-0 bg-black/20 pointer-events-none" />
 
-            {/* Content overlay container - Top-aligned smaller text layout */}
+            {/* Content overlay */}
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-start text-center px-4 pt-12 sm:pt-16 md:pt-24">
               <div className="max-w-3xl space-y-3">
-                <span className={`inline-flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-orange-500/5 px-3 py-1.5 text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-orange-400/50 backdrop-blur-md transition-all duration-700 delay-300 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                  }`}>
-                  <Sparkles className="w-3.5 h-3.5" /> MỸ THUẬT RANG XAY & CÔNG NGHỆ SAAS
-                </span>
+                {/* Badge with starburst */}
+                <div className={`transition-all duration-700 delay-300 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+                  <span className="starburst-wrapper inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-1.5 text-[9px] sm:text-xs font-bold uppercase tracking-[0.2em] text-orange-400 backdrop-blur-md">
+                    <Sparkles className="w-3.5 h-3.5 animate-swing" /> MỸ THUẬT RANG XAY & CÔNG NGHỆ SAAS
+                  </span>
+                </div>
 
-                <h1 className={`text-lg sm:text-2xl md:text-3.5xl font-black text-white/90 uppercase tracking-[0.12em] leading-tight drop-shadow-md transition-all duration-700 delay-500 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                  }`}>
-                  {slide.title}
+                {/* Title with ink-bleed when active */}
+                <h1 className={`text-lg sm:text-2xl md:text-4xl font-black uppercase leading-tight drop-shadow-xl transition-all duration-700 delay-500 transform ${
+                  idx === activeSlide ? 'translate-y-0 opacity-100 animate-ink-bleed' : 'translate-y-4 opacity-0'
+                }`}>
+                  <span className="text-white">{slide.titleWhite} </span>
+                  <span className="text-[#f07b22]">{slide.titleOrange}</span>
                 </h1>
 
-                <p className={`text-[10px] sm:text-xs md:text-sm text-zinc-300/80 max-w-xl mx-auto font-light leading-relaxed transition-all duration-700 delay-700 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                  }`}>
+                <p className={`text-[10px] sm:text-xs md:text-sm text-zinc-300/85 max-w-xl mx-auto font-light leading-relaxed transition-all duration-700 delay-700 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
                   {slide.subtitle}
                 </p>
 
-                <div className={`pt-2 transition-all duration-700 delay-[900ms] transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-                  }`}>
+                {/* CTA button with spotlight sweep */}
+                <div className={`pt-2 transition-all duration-700 delay-[900ms] transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
                   <Link
-                    href="/franchise/register"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-wider rounded-full transition-all shadow-md shadow-orange-500/20 hover:scale-105 active:scale-95"
+                    href={slide.ctaLink}
+                    className="spotlight-wrapper inline-flex items-center gap-1.5 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-wider rounded-full transition-all shadow-lg shadow-orange-500/30 hover:scale-105 active:scale-95 animate-glow-pulse"
                   >
                     Đăng Ký Tư Vấn <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -252,6 +285,12 @@ export default function Home() {
             </div>
           </div>
         ))}
+
+        {/* Scroll bounce indicator */}
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-1">
+          <span className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Scroll</span>
+          <ChevronDown className="w-4 h-4 text-white/40 animate-scroll-bounce" />
+        </div>
 
         {/* Carousel Prev/Next Buttons */}
         <button
@@ -269,12 +308,11 @@ export default function Home() {
 
         {/* Carousel Dots */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
-          {SLIDES.map((_, idx) => (
+          {slides.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setActiveSlide(idx)}
-              className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${idx === activeSlide ? 'bg-orange-500 w-8' : 'bg-white/60 hover:bg-white'
-                }`}
+              className={`h-2 rounded-full transition-all duration-300 ${idx === activeSlide ? 'bg-orange-500 w-8' : 'bg-white/50 w-2 hover:bg-white/80'}`}
             />
           ))}
         </div>
@@ -287,28 +325,36 @@ export default function Home() {
         <div className="absolute top-1/2 right-[-10%] w-[35vw] h-[35vw] rounded-full bg-amber-100/30 blur-[100px] pointer-events-none animate-pulse-slow" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-14" data-animate="fade-right">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
-              NHƯỢNG QUYỀN 0 ĐỒNG
+          <div className="section-title-wrapper mb-14" data-animate="fade-up">
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-wider uppercase">
+              NHƯỢNG QUYỀN <span className="gradient-text">0 ĐỒNG</span>
             </h2>
+            <div className="section-underline mt-3" />
           </div>
 
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-3xl border border-zinc-150 p-4 shadow-sm animate-pulse">
-                  <div className="w-full h-64 bg-zinc-200 rounded-2xl mb-4" />
-                  <div className="h-6 bg-zinc-200 rounded w-2/3 mb-2" />
-                  <div className="h-4 bg-zinc-200 rounded w-1/2 mb-4" />
-                  <div className="h-10 bg-zinc-200 rounded-full w-full" />
+                <div key={i} className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm">
+                  <div className="skeleton w-full h-64" />
+                  <div className="p-6 space-y-3">
+                    <div className="skeleton h-5 w-2/3" />
+                    <div className="skeleton h-4 w-1/2" />
+                    <div className="skeleton h-10 w-36 rounded-full" />
+                  </div>
                 </div>
               ))}
             </div>
           ) : !packages || packages.length === 0 ? (
-            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl" data-animate="scale-up">
-              <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-3" />
-              <h3 className="font-bold text-lg text-zinc-700">Chưa có dữ liệu gói nhượng quyền</h3>
-              <p className="text-sm text-zinc-500 mt-1">Hệ thống đang đồng bộ. Vui lòng đăng nhập trang quản trị để thêm các gói đầu tư.</p>
+            <div className="text-center py-16 p-8 border border-dashed border-zinc-200 bg-white/80 backdrop-blur-md rounded-3xl max-w-lg mx-auto shadow-sm" data-animate="bounce-in">
+              <div className="w-16 h-16 rounded-full bg-orange-500/10 flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="w-8 h-8 text-orange-500 animate-pulse" />
+              </div>
+              <h3 className="font-bold text-lg text-zinc-800">Chưa có dữ liệu gói nhượng quyền</h3>
+              <p className="text-sm text-zinc-400 mt-2 max-w-sm mx-auto">Hệ thống đang đồng bộ dữ liệu. Quý đối tác vui lòng quay lại sau hoặc liên hệ Hotline để nhận tư vấn trực tiếp.</p>
+              <Link href="/contact" className="mt-5 inline-flex items-center gap-2 px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider rounded-full transition-all shadow-md">
+                Liên hệ tư vấn
+              </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -323,8 +369,8 @@ export default function Home() {
                   <div
                     key={pkg.id}
                     data-animate="fade-up"
-                    data-delay={String((idx + 1) * 100)}
-                    className="group bg-white/70 backdrop-blur-md rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:bg-white transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col justify-between"
+                    data-delay={String((idx + 1) * 150)}
+                    className="card-tilt group bg-white/70 backdrop-blur-md rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:bg-white transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col justify-between"
                   >
                     <div>
                       {/* Card Image */}
@@ -334,26 +380,42 @@ export default function Home() {
                           alt={details.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          className="object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        {/* Model Category Badge */}
+                        <div className="absolute top-4 left-4 z-10">
+                          <span className={`inline-flex items-center rounded-full px-3 py-1 text-[9px] font-extrabold uppercase tracking-widest text-white shadow-md ${
+                            pkg.modelType === 'PREMIUM' 
+                              ? 'bg-gradient-to-r from-red-500 to-orange-500' 
+                              : pkg.modelType === 'KIOSK' 
+                                ? 'bg-gradient-to-r from-orange-500 to-amber-500' 
+                                : 'bg-gradient-to-r from-amber-500 to-yellow-500'
+                          }`}>
+                            {pkg.modelType || 'EXPRESS'}
+                          </span>
+                        </div>
                       </div>
 
                       {/* Card Body */}
                       <div className="p-6">
-                        <h3 className="font-bold text-[15px] sm:text-base text-zinc-900 tracking-wide uppercase line-clamp-1 mb-2 group-hover:text-orange-500 transition-colors">
+                        <span className="text-[10px] font-bold text-orange-500 tracking-wider uppercase block mb-1">
+                          {details.tag}
+                        </span>
+                        <h3 className="font-bold text-base text-zinc-900 tracking-wide uppercase line-clamp-1 mb-2 group-hover:text-orange-500 transition-colors duration-300">
                           {details.title}
                         </h3>
                       </div>
                     </div>
 
-                    {/* Card Action Button */}
+                    {/* Card Action Button with spotlight */}
                     <div className="px-6 pb-8 pt-0 flex flex-col">
                       <Link
                         href={`/franchise/${pkg.id}`}
-                        className="inline-flex items-center justify-between w-full sm:w-[150px] px-6 py-3 bg-[#e9762b] hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all duration-300 shadow-md shadow-orange-500/20 active:scale-[0.98]"
+                        className="spotlight-wrapper inline-flex items-center justify-between w-full sm:w-[150px] px-6 py-3 bg-[#e9762b] hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all duration-300 shadow-md shadow-orange-500/20 active:scale-[0.98] hover:scale-105"
                       >
                         <span>XEM THÊM</span>
-                        <span className="ml-2 font-bold">—</span>
+                        <ArrowRight className="w-3.5 h-3.5 ml-2 group-hover:translate-x-1 transition-transform" />
                       </Link>
                     </div>
                   </div>
@@ -374,17 +436,28 @@ export default function Home() {
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-14" data-animate="fade-right">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
-              TIN TỨC
+          <div className="section-title-wrapper mb-14" data-animate="fade-up">
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-wider uppercase">
+              TIN TỨC & <span className="gradient-text">SỰ KIỆN</span>
             </h2>
+            <div className="section-underline mt-3" />
           </div>
 
-          {!articles || articles.length === 0 ? (
-            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl">
+          {isLoadingArticles ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-3xl border border-zinc-150 overflow-hidden shadow-sm h-[320px] p-4 flex flex-col gap-4">
+                  <div className="skeleton w-full h-48 rounded-2xl" />
+                  <div className="skeleton h-6 w-3/4" />
+                  <div className="skeleton h-4 w-1/2 mt-auto" />
+                </div>
+              ))}
+            </div>
+          ) : !articles || articles.length === 0 ? (
+            <div className="text-center py-16 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl max-w-md mx-auto shadow-sm">
               <Calendar className="w-12 h-12 text-orange-400 mx-auto mb-3" />
               <h3 className="font-bold text-lg text-zinc-700">Chưa có bài viết tin tức nào</h3>
-              <p className="text-sm text-zinc-500 mt-1">Đang tải dữ liệu bài viết mới nhất từ backend...</p>
+              <p className="text-sm text-zinc-400 mt-1">Nội dung đang được ban biên tập chuẩn bị.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -393,8 +466,8 @@ export default function Home() {
                   key={article.id}
                   href={`/blog/${article.slug}`}
                   data-animate="fade-up"
-                  data-delay={String((idx + 1) * 100)}
-                  className="group rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 flex flex-col bg-white cursor-pointer"
+                  data-delay={String((idx + 1) * 150)}
+                  className="card-tilt group rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col bg-white cursor-pointer"
                 >
                   {/* Card Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
@@ -428,17 +501,28 @@ export default function Home() {
       {/* Video Section */}
       <section id="videos" className="py-20 bg-zinc-50 relative overflow-hidden border-t border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-14" data-animate="fade-right">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
-              VIDEO
+          <div className="section-title-wrapper mb-14" data-animate="fade-up">
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-wider uppercase">
+              KÊNH <span className="gradient-text">VIDEO</span>
             </h2>
+            <div className="section-underline mt-3" />
           </div>
 
-          {!videos || videos.length === 0 ? (
-            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl">
+          {isLoadingVideos ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-white rounded-3xl border border-zinc-150 overflow-hidden shadow-sm h-[280px] p-4 flex flex-col gap-4">
+                  <div className="skeleton w-full h-40 rounded-2xl" />
+                  <div className="skeleton h-6 w-5/6" />
+                  <div className="skeleton h-4 w-1/3" />
+                </div>
+              ))}
+            </div>
+          ) : !videos || videos.length === 0 ? (
+            <div className="text-center py-16 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl max-w-md mx-auto shadow-sm">
               <Sparkles className="w-12 h-12 text-orange-400 mx-auto mb-3" />
               <h3 className="font-bold text-lg text-zinc-700">Chưa có video nào</h3>
-              <p className="text-sm text-zinc-500 mt-1">Đang tải danh sách video của Express Cafe...</p>
+              <p className="text-sm text-zinc-400 mt-1">Đang cập nhật video clip mới từ kênh chính thức.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -493,17 +577,27 @@ export default function Home() {
       {/* Chi Nhánh Section */}
       <section id="branches" className="py-20 bg-white relative overflow-hidden border-b border-zinc-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-14" data-animate="fade-right">
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight uppercase">
-              CHI NHÁNH
+          <div className="section-title-wrapper mb-14" data-animate="fade-up">
+            <h2 className="text-3xl sm:text-4xl font-black text-zinc-900 tracking-wider uppercase">
+              HỆ THỐNG <span className="gradient-text">CHI NHÁNH</span>
             </h2>
+            <div className="section-underline mt-3" />
           </div>
 
-          {!branches || branches.length === 0 ? (
-            <div className="text-center py-12 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl">
+          {isLoadingBranches ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-white rounded-3xl border border-zinc-150 overflow-hidden shadow-sm h-[200px] p-4 flex flex-col gap-4">
+                  <div className="skeleton w-full h-32 rounded-2xl" />
+                  <div className="skeleton h-5 w-2/3 mx-auto mt-2" />
+                </div>
+              ))}
+            </div>
+          ) : !branches || branches.length === 0 ? (
+            <div className="text-center py-16 p-8 border border-dashed border-zinc-200 bg-white rounded-3xl max-w-md mx-auto shadow-sm">
               <MapPin className="w-12 h-12 text-orange-400 mx-auto mb-3" />
               <h3 className="font-bold text-lg text-zinc-700">Chưa có chi nhánh hoạt động</h3>
-              <p className="text-sm text-zinc-500 mt-1">Đang tải danh sách các chi nhánh của chúng tôi...</p>
+              <p className="text-sm text-zinc-400 mt-1">Hệ thống cửa hàng trên toàn quốc đang chuẩn bị khai trương.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -512,8 +606,8 @@ export default function Home() {
                   key={branch.id}
                   href={`/branches?id=${branch.id}`}
                   data-animate="fade-up"
-                  data-delay={String((idx + 1) * 80)}
-                  className="group rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1.5 flex flex-col bg-white cursor-pointer"
+                  data-delay={String((idx + 1) * 100)}
+                  className="card-tilt group rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col bg-white cursor-pointer"
                 >
                   {/* Storefront Image */}
                   <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
@@ -544,11 +638,12 @@ export default function Home() {
         <div className="absolute bottom-1/4 right-[-10%] w-[25vw] h-[25vw] rounded-full bg-orange-100/20 blur-[80px] pointer-events-none animate-pulse-slow" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-l-4 border-orange-500 pl-4 mb-12" data-animate="fade-right">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-orange-500">Về Chúng Tôi</span>
-            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-tight mt-1">
-              GIỚI THIỆU
+          <div className="section-title-wrapper mb-14" data-animate="fade-up">
+            <span className="text-xs font-black uppercase tracking-widest text-[#f07b22]">Về Chúng Tôi</span>
+            <h2 className="text-3xl md:text-4xl font-black text-zinc-900 tracking-wider mt-1 uppercase">
+              GIỚI THIỆU <span className="gradient-text">EXPRESS CAFE</span>
             </h2>
+            <div className="section-underline mt-3" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -605,7 +700,7 @@ export default function Home() {
 
               <div className="pt-6">
                 <Link
-                  href="/franchise"
+                  href="/about"
                   className="inline-flex items-center gap-2 px-6 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-widest rounded-full transition-all shadow-md shadow-orange-500/20 active:scale-95"
                 >
                   XEM THÊM <ArrowRight className="w-4 h-4" />
@@ -616,10 +711,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Dark Statistics & Story Footer */}
-      <section className="relative py-20 bg-zinc-950 text-white overflow-hidden">
+      {/* Light Statistics & Story Footer */}
+      <section className="relative py-20 bg-white text-zinc-800 overflow-hidden border-t border-zinc-100">
         {/* Background wood flooring styling pattern */}
-        <div className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
+        <div className="absolute inset-0 opacity-[0.04] mix-blend-multiply pointer-events-none"
           style={{ backgroundImage: `url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200')` }}
         />
         <div className="absolute bottom-0 right-[-10%] w-[40vw] h-[40vw] rounded-full bg-orange-500/5 blur-[150px] pointer-events-none" />
@@ -627,32 +722,49 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-            {/* Stats list (Left) */}
-            <div className="lg:col-span-6 grid grid-cols-3 gap-6 text-center lg:text-left" data-animate="fade-up">
-              <div className="flex flex-col">
-                <span className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">40M+</span>
-                <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Ly Cà Phê Bán Ra</span>
+            {/* Stats list với gradient text */}
+            <div className="lg:col-span-6 grid grid-cols-3 gap-4 sm:gap-6 text-center" data-animate="fade-up">
+              <div className="flex flex-col items-center bg-zinc-50/80 backdrop-blur-sm p-5 rounded-3xl border border-orange-100 hover:border-orange-200 transition-all shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-3 shadow-inner">
+                  <Coffee className="w-5 h-5" />
+                </div>
+                <span className="text-2xl sm:text-4xl font-black gradient-text tracking-tight">
+                  <AnimatedCounter end={40} suffix="M+" />
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest mt-2 leading-tight">Ly Cà Phê Bán Ra</span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">20+</span>
-                <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Sự Kiện Đồng Hành</span>
+              
+              <div className="flex flex-col items-center bg-zinc-50/80 backdrop-blur-sm p-5 rounded-3xl border border-orange-100 hover:border-orange-200 transition-all shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-3 shadow-inner">
+                  <Award className="w-5 h-5" />
+                </div>
+                <span className="text-2xl sm:text-4xl font-black gradient-text tracking-tight">
+                  <AnimatedCounter end={20} suffix="+" />
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest mt-2 leading-tight">Sự Kiện Đồng Hành</span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-3xl md:text-5xl font-black text-orange-500 tracking-tight">9+</span>
-                <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-2">Năm Phát Triển</span>
+
+              <div className="flex flex-col items-center bg-zinc-50/80 backdrop-blur-sm p-5 rounded-3xl border border-orange-100 hover:border-orange-200 transition-all shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 mb-3 shadow-inner">
+                  <TrendingUp className="w-5 h-5" />
+                </div>
+                <span className="text-2xl sm:text-4xl font-black gradient-text tracking-tight">
+                  <AnimatedCounter end={9} suffix="+" />
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest mt-2 leading-tight">Năm Phát Triển</span>
               </div>
             </div>
 
             {/* Story Box (Right) */}
             <div className="lg:col-span-6" data-animate="scale-up" data-delay="150">
-              <div className="p-8 border border-white/10 rounded-3xl bg-white/5 backdrop-blur-md relative overflow-hidden">
+              <div className="p-8 border border-zinc-200/80 rounded-3xl bg-zinc-50/50 backdrop-blur-md relative overflow-hidden">
                 {/* Ambient glow */}
                 <div className="absolute top-[-20%] right-[-20%] w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
                 <h3 className="text-lg font-black tracking-wider text-orange-500 mb-4 uppercase">
                   EXPRESS CAFE
                 </h3>
-                <p className="text-xs md:text-sm text-zinc-300 leading-relaxed">
+                <p className="text-xs md:text-sm text-zinc-600 leading-relaxed">
                   Express Cafe tự hào mang đến nguồn sinh khí mới, năng động và đẳng cấp trong phong cách thưởng thức cà phê hiện đại. Chúng tôi kiến tạo nên một nền tảng bán hàng và vận hành thông minh từ xa, mang lại lợi ích thực tiễn cao nhất và bền vững cho mọi đối tác nhượng quyền đồng hành trên cả nước.
                 </p>
               </div>

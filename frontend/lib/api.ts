@@ -1,40 +1,23 @@
+/**
+ * api.ts — Customer-facing API client
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Dùng cho các trang public & customer: auth, products, cart, orders…
+ * Auth: Bearer token từ Zustand store (accessToken)
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+import { API_BASE_URL, resolveAssetUrl } from './api-config';
 import { useAuthStore } from '../store/useAuthStore';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
-// Base host for serving uploaded static assets (no trailing slash)
-export const BACKEND_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '');
+// Re-export helper để các component vẫn dùng được
+export { resolveAssetUrl as resolveUploadUrl };
 
-// Resolve an uploaded asset path (e.g. "uploads/...jpg") to a full URL.
-// Falls back to localhost:3000 in development when no explicit BACKEND URL is provided.
-export function resolveUploadUrl(path?: string | null) {
-  if (!path) return '';
+/** Backward-compatible export (một số component import trực tiếp) */
+export const BACKEND_BASE = API_BASE_URL.replace(/\/api\/v1\/?$/i, '');
 
-  // Normalize absolute URLs pointing to localhost:3000 to resolve dynamically
-  let normalizedPath = path;
-  if (path.startsWith('http://localhost:3000/')) {
-    normalizedPath = path.substring('http://localhost:3000/'.length);
-  }
-
-  // If already absolute (http(s) or protocol-relative), return as-is
-  if (normalizedPath.startsWith('http://') || normalizedPath.startsWith('https://') || normalizedPath.startsWith('//')) {
-    return normalizedPath;
-  }
-
-  const fallbackDev = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : '';
-  let base = (process.env.NEXT_PUBLIC_BACKEND_URL || API_URL.replace(/\/api\/v1\/?$/i, '')) || fallbackDev;
-
-  // Bulletproof client-side local fallback when base is empty or relative
-  if (!base || base.startsWith('/')) {
-    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      base = 'http://localhost:3000';
-    } else if (process.env.NODE_ENV === 'development') {
-      base = 'http://localhost:3000';
-    }
-  }
-
-  // Ensure no duplicate slashes when joining
-  return `${base.replace(/\/$/, '')}/${normalizedPath.replace(/^\//, '')}`;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Error class
+// ─────────────────────────────────────────────────────────────────────────────
 
 export class ApiError extends Error {
   statusCode: number;
@@ -48,6 +31,17 @@ export class ApiError extends Error {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Core fetch wrapper
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * apiFetch — typed fetch wrapper cho customer API.
+ *
+ * - Tự động đính kèm Bearer token từ useAuthStore
+ * - Unwrap response `{ success, data }` (NestJS TransformInterceptor pattern)
+ * - Throw ApiError khi response không OK
+ */
 export async function apiFetch<T>(
   path: string,
   options?: RequestInit,
@@ -63,27 +57,40 @@ export async function apiFetch<T>(
     headers.set('Content-Type', 'application/json');
   }
 
-  // Credentials are set to include to enable HttpOnly refresh tokens cookie passing
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-    credentials: options?.credentials || 'include',
-  });
+  // Optimize: Set 1500ms timeout to prevent hanging when backend is offline
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 1500);
 
-  if (response.status === 204) {
-    return {} as T;
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers,
+      signal: controller.signal,
+      credentials: options?.credentials ?? 'include',
+    });
+
+    clearTimeout(timeoutId);
+
+    if (response.status === 204) {
+      return {} as T;
+    }
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new ApiError(
+        json.message ?? 'Something went wrong',
+        json.statusCode ?? response.status,
+        json.error ?? 'Bad Request',
+      );
+    }
+
+    return json.data as T;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new ApiError('API request timeout', 408, 'Timeout');
+    }
+    throw error;
   }
-
-  const json = await response.json();
-
-  if (!response.ok) {
-    throw new ApiError(
-      json.message || 'Something went wrong',
-      json.statusCode || response.status,
-      json.error || 'Bad Request',
-    );
-  }
-
-  // Return the raw data unwrapped from the standard transform interceptor `{ success, data }`
-  return json.data as T;
 }

@@ -21,7 +21,7 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
   useEffect(() => {
     setIsLoading(true);
     setService(null);
-    apiFetch<any>(`/services/${id}`)
+    apiFetch<any>(`/content/articles/${id}`)
       .then(data => {
         setService(data);
         setIsLoading(false);
@@ -109,7 +109,7 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
               <div className="relative h-[400px]">
                 <OptimizedImage
                   src={serviceImages[currentImageIndex]}
-                  alt={`${service.name} - Image ${currentImageIndex + 1}`}
+                  alt={`${service.title || 'Dịch vụ'} - Image ${currentImageIndex + 1}`}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-all duration-300"
@@ -148,7 +148,7 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
                     Dịch vụ
                   </span>
                   <h1 className="text-3xl md:text-4xl font-black text-white mb-2">
-                    {service.name}
+                    {service.title}
                   </h1>
                 </div>
               </div>
@@ -185,7 +185,10 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
                 <Coffee className="w-6 h-6 text-orange-500" />
                 Mô tả dịch vụ
               </h2>
-              <p className="text-zinc-600 leading-relaxed whitespace-pre-line">{service.description}</p>
+              <div 
+                className="text-zinc-650 leading-relaxed prose prose-orange max-w-none prose-sm md:prose-base font-light"
+                dangerouslySetInnerHTML={{ __html: service.contentHtml || '' }}
+              />
             </div>
 
             {/* CTA Button */}

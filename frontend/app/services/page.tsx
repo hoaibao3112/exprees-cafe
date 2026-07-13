@@ -5,32 +5,34 @@ import Link from 'next/link';
 import { 
   Coffee, 
   ChevronRight, 
-  ArrowRight
+  ArrowRight,
+  Sparkles,
+  Layers,
+  Award
 } from 'lucide-react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { resolveUploadUrl, apiFetch } from '../../lib/api';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
+import { AnimatedCounter } from '../../components/ui/AnimatedCounter';
+
+interface ServiceItem {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl?: string;
+  images?: string[];
+}
+
+import { useArticlesQuery } from '../../hooks/useContentQueries';
 
 export default function ServicesPage() {
   // Activate scroll animations
   useScrollAnimation();
 
-  const [services, setServices] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    apiFetch<any[]>('/services')
-      .then(data => {
-        setServices(data || []);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('Error loading services:', err);
-        setIsLoading(false);
-      });
-  }, []);
+  const { data: articles = [], isLoading } = useArticlesQuery();
+  const services = articles.filter(a => a.blogHandle === 'services');
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 font-sans flex flex-col justify-between antialiased">
@@ -38,33 +40,35 @@ export default function ServicesPage() {
       {/* 1. Header Bar */}
       <Header />
 
-      {/* 2. Hero Banner Section */}
+      {/* 2. Enhanced Hero Banner Section */}
       <section 
-        className="relative w-full h-[180px] md:h-[220px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
+        className="relative w-full h-[240px] md:h-[320px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=80&w=1200')`,
-          backgroundPosition: 'center',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1507133750040-4a8f57021571?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundPosition: 'center 62%',
           backgroundSize: 'cover'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-wider leading-none" data-animate="blur-in">
-            Các Dịch Vụ
+          <span 
+            className="inline-block text-xs md:text-sm font-extrabold uppercase tracking-[0.2em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20"
+            data-animate="fade-down"
+          >
+            Express Cafe Services
+          </span>
+          <h1 className="text-3xl md:text-6xl font-black uppercase tracking-wider leading-tight drop-shadow-md" data-animate="blur-in">
+            <span className="text-white">Dịch vụ </span>
+            <span className="text-[#f07b22]">của chúng tôi</span>
           </h1>
           
+          <div className="w-16 h-1 bg-orange-500 mx-auto my-4 rounded-full" data-animate="scale-up" data-delay="200" />
+          
           {/* Breadcrumbs */}
-          <div className="flex items-center justify-center gap-2 text-zinc-300 text-xs font-semibold mt-4">
-            <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <span className="text-orange-500 font-bold">Các dịch vụ</span>
+          <div className="flex items-center justify-center gap-2 text-zinc-300 text-xs md:text-sm font-medium mt-4 bg-black/35 backdrop-blur-md py-2 px-5 rounded-full w-max mx-auto shadow-sm" data-animate="fade-up" data-delay="300">
+            <Link href="/" className="hover:text-orange-450 transition-colors">Trang chủ</Link>
+            <ChevronRight className="w-3 h-3 text-zinc-500" />
+            <span className="text-orange-400 font-bold">Các dịch vụ</span>
           </div>
-        </div>
-        
-        {/* Decorative Wave Overlay */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0">
-          <svg className="relative block w-full h-8 fill-zinc-50" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" />
-          </svg>
         </div>
       </section>
 
@@ -73,13 +77,13 @@ export default function ServicesPage() {
         
         {/* Descriptive Section Heading */}
         <div className="text-center max-w-2xl mx-auto mb-16" data-animate="fade-up">
-          <span className="text-xs font-extrabold uppercase tracking-widest text-orange-500 bg-orange-500/10 px-3.5 py-1.5 rounded-full">
+          <span className="text-xs font-black uppercase tracking-widest text-[#f07b22] bg-[#f07b22]/10 px-3.5 py-1.5 rounded-full">
             Giải pháp F&B chuyên nghiệp
           </span>
           <h2 className="text-2xl md:text-3.5xl font-black text-zinc-950 mt-4 leading-tight tracking-tight">
             Chúng Tôi Đồng Hành Cùng Bạn
           </h2>
-          <p className="text-xs md:text-sm text-zinc-500 mt-3 leading-relaxed">
+          <p className="text-xs md:text-sm text-zinc-500 mt-4 leading-relaxed font-light">
             Express Cafe mang đến hệ sinh thái sản phẩm, nguyên vật liệu và giải pháp kỹ thuật công nghệ toàn diện giúp bạn vận hành kinh doanh quán đạt hiệu quả tối ưu và bền vững.
           </p>
         </div>
@@ -88,12 +92,7 @@ export default function ServicesPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-3xl border border-zinc-150 p-4 shadow-sm animate-pulse">
-                <div className="w-full aspect-[4/3] bg-zinc-200 rounded-2xl mb-4" />
-                <div className="h-6 bg-zinc-200 rounded w-2/3 mb-2" />
-                <div className="h-12 bg-zinc-200 rounded mb-4" />
-                <div className="h-10 bg-zinc-200 rounded-2xl w-full" />
-              </div>
+              <div key={i} className="bg-white rounded-3xl border border-zinc-100 p-4 shadow-sm animate-pulse h-[380px]" />
             ))}
           </div>
         ) : !services || services.length === 0 ? (
@@ -108,38 +107,38 @@ export default function ServicesPage() {
               <div 
                 key={service.id || index}
                 data-animate="fade-up"
-                data-delay={String(((index % 3) + 1) * 100)}
-                className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-300 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-orange-500/5 flex flex-col justify-between"
+                data-delay={String(((index % 3) + 1) * 150)}
+                className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden hover:border-orange-200 hover:-translate-y-2 transition-all duration-500 shadow-sm hover:shadow-2xl flex flex-col justify-between h-full"
               >
                 <div>
-                  {/* Card Banner Image */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
+                  {/* Card Banner Image with perfect crop config */}
+                  <div className="relative h-60 w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
                     <OptimizedImage 
-                      src={service.images && service.images.length > 0 ? resolveUploadUrl(service.images[0]) : (resolveUploadUrl(service.imageUrl) || 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=500&auto=format&fit=crop')} 
-                      alt={service.name}
+                      src={service.imageUrl ? resolveUploadUrl(service.imageUrl) : '/p-about-sv_1.jpg'} 
+                      alt={service.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300 pointer-events-none" />
                   </div>
 
                   {/* Card Content Body */}
-                  <div className="p-6">
-                    <h3 className="font-extrabold text-base text-zinc-950 group-hover:text-orange-500 transition-colors duration-355 leading-tight">
-                      {service.name}
+                  <div className="p-8">
+                    <h3 className="font-extrabold text-base md:text-lg text-zinc-900 group-hover:text-orange-500 transition-colors duration-300 leading-snug">
+                      {service.title}
                     </h3>
                     <p className="text-xs text-zinc-500 mt-3 leading-relaxed line-clamp-3 min-h-[3.3rem] font-light">
-                      {service.description}
+                      {service.contentHtml ? service.contentHtml.replace(/<[^>]*>/g, '') : ''}
                     </p>
                   </div>
                 </div>
 
                 {/* Card Button Footer */}
-                <div className="p-6 pt-0">
+                <div className="p-8 pt-0">
                   <Link
-                    href={`/services/${service.id}`}
-                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-2xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block"
+                    href={`/services/${service.slug}`}
+                    className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block hover:scale-[1.02] active:scale-[0.98]"
                   >
                     Xem chi tiết
                   </Link>

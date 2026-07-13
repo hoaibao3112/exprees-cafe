@@ -84,16 +84,17 @@ export default function BlogPage() {
 
       {/* 2. Hero Banner Section */}
       <section 
-        className="relative w-full h-[180px] md:h-[220px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
+        className="relative w-full h-[240px] md:h-[320px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&q=80&w=1200')`,
-          backgroundPosition: 'center',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundPosition: 'center 50%',
           backgroundSize: 'cover'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <h1 data-animate="blur-in" className="text-white font-heading italic text-4xl md:text-5xl uppercase tracking-wider leading-none">
-            Blog & Tin Tức
+          <h1 data-animate="blur-in" className="font-black text-4xl md:text-5xl uppercase tracking-wider leading-none">
+            <span className="text-white">Blog &amp; </span>
+            <span className="text-[#f07b22]">Tin Tức</span>
           </h1>
           
           {/* Breadcrumbs */}
@@ -102,14 +103,6 @@ export default function BlogPage() {
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-orange-500 font-bold">Blog</span>
           </div>
-        </div>
-
-        
-        {/* Decorative Wave Overlay */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0">
-          <svg className="relative block w-full h-8 fill-white" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" />
-          </svg>
         </div>
       </section>
 
@@ -137,13 +130,12 @@ export default function BlogPage() {
                     const localDate = article.publishedAt
                       ? new Date(article.publishedAt).toLocaleDateString('vi-VN')
                       : 'Gần đây';
-
                     return (
                       <div 
                         key={article.id}
                         data-animate="fade-up"
-                        data-delay={String(((index % 6) + 1) * 100)}
-                        className="group bg-white rounded-3xl border border-zinc-150 overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-lg hover:shadow-orange-100 flex flex-col justify-between"
+                        data-delay={String(((index % 6) + 1) * 150)}
+                        className="card-tilt group bg-white rounded-3xl border border-zinc-150 overflow-hidden flex flex-col justify-between"
                       >
                         <div>
                           {/* Card Thumbnail wrapped in standard dynamic Link */}
@@ -160,7 +152,7 @@ export default function BlogPage() {
                               {article.blogHandle === 'news' ? 'TIN TỨC' : 'EXPERIENCE'}
                             </span>
                           </Link>
-
+ 
                           {/* Card Content Body */}
                           <div className="p-6">
                             {/* Date published */}
@@ -171,7 +163,7 @@ export default function BlogPage() {
                               <Clock className="w-3.5 h-3.5 text-zinc-400" />
                               <span className="font-reading">5 phút đọc</span>
                             </div>
-
+ 
                             <Link href={`/blog/${article.slug}`} className="block hover:text-orange-500">
                               <h3 className="font-body font-semibold text-lg leading-snug text-zinc-950 group-hover:text-orange-500 transition-colors duration-300 line-clamp-2">
                                 {article.title}
@@ -187,12 +179,12 @@ export default function BlogPage() {
                             </p>
                           </div>
                         </div>
-
+ 
                         {/* Card CTA Button */}
                         <div className="p-6 pt-0">
                           <Link
                             href={`/blog/${article.slug}`}
-                            className="block w-full py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] transition-all duration-200 text-white font-body font-semibold text-xs tracking-[0.15em] hover:tracking-[0.2em] hover:text-orange-600 uppercase rounded-2xl shadow-md shadow-orange-500/10 text-center"
+                            className="spotlight-wrapper block w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] transition-all duration-200 text-white font-body font-bold text-xs tracking-[0.15em] uppercase rounded-xl shadow-md shadow-orange-500/10 text-center"
                           >
                             ĐỌC TIẾP
                           </Link>
@@ -204,7 +196,7 @@ export default function BlogPage() {
 
                 {/* Pagination Controls Block */}
                 {totalPages > 1 && (
-                  <div className="flex justify-center items-center gap-2.5 mt-12 border-t border-zinc-100 pt-8">
+                  <div className="flex flex-wrap justify-center items-center gap-2 mt-12 border-t border-zinc-100 pt-8">
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
