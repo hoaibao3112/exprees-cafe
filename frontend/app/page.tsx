@@ -11,6 +11,7 @@ import { VideoSection } from '../components/home/VideoSection';
 import { BranchSection } from '../components/home/BranchSection';
 import { AboutSection } from '../components/home/AboutSection';
 import { StatsSection } from '../components/home/StatsSection';
+import { PromoPopup } from '../components/home/PromoPopup';
 
 export default function Home() {
   // Activate scroll animations
@@ -51,6 +52,9 @@ export default function Home() {
 
       {/* Main Footer (Bottom copyright) */}
       <Footer />
+
+      {/* Promotional Pop-up Modal */}
+      <PromoPopup />
     </div>
   );
 }

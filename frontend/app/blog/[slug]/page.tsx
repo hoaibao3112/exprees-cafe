@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useArticleBySlugQuery, useArticlesQuery } from '../../../hooks/useContentQueries';
+import { useArticleBySlugQuery, useArticlesQuery, useBannersQuery } from '../../../hooks/useContentQueries';
 import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { 
   Calendar, 
@@ -34,6 +34,10 @@ export default function ArticleDetailPage(props: PageProps) {
   
   // Fetch general articles to populate the sidebar list
   const { data: articles, isLoading: isLoadingArticles } = useArticlesQuery();
+  const { data: banners = [] } = useBannersQuery();
+
+  const activeBanner = banners.find((b) => b.position === 'BLOG_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=1200';
 
   // Filter out services and extract newest 7 articles for sidebar
   const blogAndNewsArticles = (articles || []).filter(
@@ -93,7 +97,7 @@ export default function ArticleDetailPage(props: PageProps) {
       <section 
         className="relative w-full h-[240px] md:h-[320px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)), url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)), url(${bgImage})`,
           backgroundPosition: 'center 45%',
           backgroundSize: 'cover'
         }}

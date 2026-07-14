@@ -57,7 +57,9 @@ export function HeroSection() {
   const [activeSlide, setActiveSlide] = useState(0);
   const { data: dbBanners = [] } = useBannersQuery();
 
-  const slides = dbBanners.length > 0 ? dbBanners.map(b => {
+  const homeHeroBanners = dbBanners.filter(b => b.position === 'HOME_HERO' && b.isActive);
+
+  const slides = homeHeroBanners.length > 0 ? homeHeroBanners.map(b => {
     const titleWords = b.title.split(' ');
     return {
       url: resolveLocalOrUpload(b.imageUrl),

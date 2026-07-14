@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Banner } from '../content/entities/banner.entity';
 import { Branch } from '../branches/entities/branch.entity';
+import { Setting } from './entities/setting.entity';
+import { Service } from '../services/entities/service.entity';
 import { ContentModule } from '../content/content.module';
 import { BranchesModule } from '../branches/branches.module';
 import { AdminController } from './admin.controller';
@@ -9,7 +11,7 @@ import { AdminService } from './admin.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Banner, Branch]),
+    TypeOrmModule.forFeature([Banner, Branch, Setting, Service]),
     ContentModule,
     BranchesModule,
   ],

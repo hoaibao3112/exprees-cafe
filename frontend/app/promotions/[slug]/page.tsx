@@ -19,6 +19,7 @@ import { useScrollAnimation } from '../../../hooks/useScrollAnimation';
 import { useProductDetailQuery } from '../../../hooks/useProductsQueries';
 import { resolveUploadUrl } from '../../../lib/api';
 import { OptimizedImage } from '../../../components/ui/OptimizedImage';
+import { useBannersQuery } from '../../../hooks/useContentQueries';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -35,6 +36,10 @@ export default function ProductDetailPage(props: PageProps) {
   const { slug } = resolvedParams as { slug: string };
   const { data: product, isLoading, error } = useProductDetailQuery(slug);
   const [activeImageIndex, setActiveImageIndex] = React.useState(0);
+  const { data: banners = [] } = useBannersQuery();
+
+  const activeBanner = banners.find((b) => b.position === 'PROMOTIONS_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : '/slideshow_4.jpg';
 
   React.useEffect(() => {
     setActiveImageIndex(0);
@@ -97,8 +102,7 @@ export default function ProductDetailPage(props: PageProps) {
       <section
         className="relative overflow-hidden border-b border-white/40"
         style={{
-          backgroundImage:
-            'linear-gradient(90deg, rgba(25, 14, 8, 0.88), rgba(25, 14, 8, 0.58)), url(/slideshow_4.jpg)',
+          backgroundImage: `linear-gradient(90deg, rgba(25, 14, 8, 0.88), rgba(25, 14, 8, 0.58)), url(${bgImage})`,
           backgroundPosition: 'center',
           backgroundSize: 'cover',
         }}

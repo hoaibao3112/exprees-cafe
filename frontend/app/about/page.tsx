@@ -7,6 +7,9 @@ import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 
+import { useBannersQuery } from '../../hooks/useContentQueries';
+import { resolveUploadUrl } from '../../lib/api';
+
 const STORY_IMAGES = [
   '/p-about-stories_1.jpg',
   '/p-about-stories_2.jpg',
@@ -90,6 +93,12 @@ function SectionCard({
 
 export default function AboutPage() {
   useScrollAnimation();
+  const { data: banners = [] } = useBannersQuery();
+
+  const activeBanner = banners.find((b) => b.position === 'ABOUT_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : '/h-about_banner.jpg';
+  const pageTitle = activeBanner ? activeBanner.title : 'GIỚI THIỆU';
+  const pageSubtitle = activeBanner?.linkUrl || 'Giới thiệu';
 
   return (
     <div className="min-h-screen bg-white text-zinc-900">
@@ -98,8 +107,7 @@ export default function AboutPage() {
       <section
         className="relative h-[260px] md:h-[320px] lg:h-[360px] overflow-hidden border-b border-zinc-200"
         style={{
-          backgroundImage:
-            'linear-gradient(90deg, rgba(33, 24, 18, 0.92), rgba(33, 24, 18, 0.42)), url(/h-about_banner.jpg)',
+          backgroundImage: `linear-gradient(90deg, rgba(33, 24, 18, 0.92), rgba(33, 24, 18, 0.42)), url(${bgImage})`,
           backgroundPosition: 'center',
           backgroundSize: 'cover',
         }}
@@ -107,14 +115,14 @@ export default function AboutPage() {
         <div className="mx-auto flex h-full max-w-6xl items-center px-4 sm:px-6 lg:px-8">
           <div className="text-white">
             <p className="text-xl font-semibold uppercase tracking-[0.22em] md:text-2xl">
-              GIỚI THIỆU
+              {pageTitle}
             </p>
             <div className="mt-3 flex items-center gap-2 text-[10px] text-white/80">
               <Link href="/" className="hover:text-orange-300">
                 Trang chủ
               </Link>
               <span className="text-white/50">|</span>
-              <span>Giới thiệu</span>
+              <span>{pageSubtitle}</span>
             </div>
           </div>
         </div>

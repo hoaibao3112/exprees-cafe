@@ -20,7 +20,8 @@ import Link from 'next/link';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
-import { apiFetch } from '../../lib/api';
+import { useBannersQuery } from '../../hooks/useContentQueries';
+import { apiFetch, resolveUploadUrl } from '../../lib/api';
 
 // Define strict typing schema using Zod
 const contactFormSchema = z.object({
@@ -35,6 +36,12 @@ type ContactFormInput = z.infer<typeof contactFormSchema>;
 export default function ContactPage() {
   useScrollAnimation();
   const [isSubmitSuccess, setIsSubmitSuccess] = useState(false);
+  const { data: banners = [] } = useBannersQuery();
+
+  const activeBanner = banners.find((b) => b.position === 'CONTACT_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : 'https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&q=80&w=1200';
+  const pageTitle = activeBanner ? activeBanner.title : 'LIÊN HỆ';
+  const pageSubtitle = activeBanner ? activeBanner.linkUrl : 'Express Cafe';
 
   const {
     register,
@@ -75,17 +82,19 @@ export default function ContactPage() {
       <section 
         className="relative w-full h-[180px] md:h-[220px] bg-zinc-900 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65)), url('https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.65)), url(${bgImage})`,
           backgroundPosition: 'center',
           backgroundSize: 'cover'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <span data-animate="fade-down" className="inline-block text-xs font-extrabold uppercase tracking-[0.2em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20">
-            Express Cafe
-          </span>
+          {pageSubtitle && (
+            <span data-animate="fade-down" className="inline-block text-xs font-extrabold uppercase tracking-[0.2em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20">
+              {pageSubtitle}
+            </span>
+          )}
           <h1 data-animate="blur-in" className="text-4xl md:text-5xl font-heading italic text-white uppercase tracking-wider leading-none mt-2">
-            LIÊN HỆ
+            {pageTitle}
           </h1>
           
           {/* Breadcrumbs */}

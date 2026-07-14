@@ -61,6 +61,7 @@ import { Video } from './modules/content/entities/video.entity';
 import { Review } from './modules/reviews/entities/review.entity';
 import { MediaFile } from './modules/media/entities/media-file.entity';
 import { Service } from './modules/services/entities/service.entity';
+import { Setting } from './modules/admin/entities/setting.entity';
 
 @Module({
   imports: [
@@ -116,6 +117,7 @@ import { Service } from './modules/services/entities/service.entity';
           Review,
           MediaFile,
           Service,
+          Setting,
         ],
         synchronize: true, // Safe for local sandboxed development
       }),

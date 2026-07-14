@@ -5,6 +5,8 @@ import { Banner } from '../content/entities/banner.entity';
 import { Branch } from '../branches/entities/branch.entity';
 import { ContentService } from '../content/content.service';
 import { BranchesService } from '../branches/branches.service';
+import { Setting } from './entities/setting.entity';
+import { Service } from '../services/entities/service.entity';
 
 @Injectable()
 export class AdminService {
@@ -12,6 +14,10 @@ export class AdminService {
     private readonly contentService: ContentService,
     @InjectRepository(Banner)
     private readonly bannerRepository: Repository<Banner>,
+    @InjectRepository(Setting)
+    private readonly settingRepository: Repository<Setting>,
+    @InjectRepository(Service)
+    private readonly serviceRepository: Repository<Service>,
     private readonly branchesService: BranchesService,
   ) {}
 
@@ -23,8 +29,8 @@ export class AdminService {
     { id: '4', name: 'David Wilson', email: 'david@gmail.com', phone: '0978901234', message: 'Đại diện hợp tác xã cà phê Arabica Cầu Đất, chúng tôi xin cung cấp mẫu thử nguyên chất...', isRead: true, createdAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString() },
   ];
 
-  // In-memory settings store
-  private settings: Record<string, string | boolean | number> = {
+  // Default settings configuration baseline
+  private defaultSettings: Record<string, string | boolean | number> = {
     brandName: 'Express Cafe',
     slogan: 'Mỹ thuật Rang Xay & Công nghệ SAAS',
     logoUrl: '/logo.png',
@@ -58,21 +64,23 @@ export class AdminService {
 
   // --- DASHBOARD ---
   async getDashboardStats() {
-    const articles = await this.contentService.findAllArticlesAdmin();
-    const totalArticles = articles.length;
+    const totalServices = await this.serviceRepository.count();
     const branches = await this.branchesService.findAll();
     const totalBranches = branches.length;
     const activeBanners = await this.bannerRepository.count({ where: { isActive: true } });
     const unreadContacts = this.contacts.filter(c => !c.isRead).length;
 
-    const recentArticles = articles.slice(0, 5);
+    const recentServices = await this.serviceRepository.find({
+      order: { createdAt: 'DESC' },
+      take: 5,
+    });
 
     return {
-      totalArticles,
+      totalServices,
       totalBranches,
       activeBanners,
       unreadContacts,
-      recentArticles,
+      recentServices,
       recentContacts: this.contacts.slice(0, 5),
     };
   }
@@ -128,6 +136,18 @@ export class AdminService {
     if (dto.order !== undefined) {
       banner.sortOrder = dto.order;
     }
+    
+    // Safely parse date fields
+    if (dto.startsAt !== undefined) {
+      dto.startsAt = dto.startsAt ? new Date(dto.startsAt) : undefined;
+    }
+    if (dto.endsAt !== undefined) {
+      dto.endsAt = dto.endsAt ? new Date(dto.endsAt) : undefined;
+    }
+    if (dto.linkUrl !== undefined) {
+      dto.linkUrl = dto.linkUrl || undefined;
+    }
+
     Object.assign(banner, dto);
     return this.bannerRepository.save(banner);
   }
@@ -140,6 +160,34 @@ export class AdminService {
         await this.bannerRepository.save(banner);
       }
     }
+  }
+
+  async createBanner(dto: any) {
+    const maxSortOrderBanner = await this.bannerRepository.findOne({
+      where: {},
+      order: { sortOrder: 'DESC' },
+    });
+    const nextSortOrder = maxSortOrderBanner ? maxSortOrderBanner.sortOrder + 1 : 1;
+
+    const banner = this.bannerRepository.create({
+      title: dto.title,
+      imageUrl: dto.imageUrl,
+      linkUrl: dto.linkUrl || undefined,
+      position: dto.position || 'HOME_HERO',
+      sortOrder: dto.sortOrder !== undefined ? dto.sortOrder : nextSortOrder,
+      isActive: dto.isActive !== undefined ? dto.isActive : true,
+      startsAt: dto.startsAt ? new Date(dto.startsAt) : undefined,
+      endsAt: dto.endsAt ? new Date(dto.endsAt) : undefined,
+    });
+    return this.bannerRepository.save(banner);
+  }
+
+  async deleteBanner(id: string) {
+    const banner = await this.bannerRepository.findOne({ where: { id } });
+    if (!banner) {
+      throw new NotFoundException(`Banner with ID ${id} not found`);
+    }
+    await this.bannerRepository.remove(banner);
   }
 
   // --- ARTICLES CRUD ---
@@ -218,10 +266,52 @@ export class AdminService {
 
   // --- SETTINGS ---
   async getSettings() {
-    return this.settings;
+    const dbSettings = await this.settingRepository.find();
+    
+    // Seed default settings if database table is empty
+    if (dbSettings.length === 0) {
+      for (const [key, value] of Object.entries(this.defaultSettings)) {
+        const valStr = typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value);
+        await this.settingRepository.save({ key, value: valStr });
+      }
+      return this.defaultSettings;
+    }
+
+    const settingsObj: Record<string, string | boolean | number> = {};
+    // Initialize settings with defaults
+    Object.assign(settingsObj, this.defaultSettings);
+
+    // Overlay values fetched from SQLite database
+    dbSettings.forEach((s) => {
+      const defaultValue = this.defaultSettings[s.key];
+      if (defaultValue !== undefined) {
+        if (typeof defaultValue === 'boolean') {
+          settingsObj[s.key] = s.value === 'true' || s.value === '1';
+        } else if (typeof defaultValue === 'number') {
+          settingsObj[s.key] = Number(s.value);
+        } else {
+          settingsObj[s.key] = s.value;
+        }
+      } else {
+        settingsObj[s.key] = s.value;
+      }
+    });
+
+    return settingsObj;
   }
 
   async updateSettings(dto: any) {
-    Object.assign(this.settings, dto);
+    for (const [key, value] of Object.entries(dto)) {
+      const valStr = typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value ?? '');
+      
+      let setting = await this.settingRepository.findOne({ where: { key } });
+      if (!setting) {
+        setting = this.settingRepository.create({ key, value: valStr });
+      } else {
+        setting.value = valStr;
+      }
+      await this.settingRepository.save(setting);
+    }
+    return this.getSettings();
   }
 }

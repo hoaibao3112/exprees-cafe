@@ -343,10 +343,14 @@ export class ContentService implements OnApplicationBootstrap {
   }
 
   async findAllBanners(): Promise<Banner[]> {
-    return this.bannerRepository.find({
-      where: { isActive: true },
-      order: { sortOrder: 'ASC' },
-    });
+    const now = new Date();
+    return this.bannerRepository
+      .createQueryBuilder('banner')
+      .where('banner.isActive = :isActive', { isActive: true })
+      .andWhere('(banner.startsAt IS NULL OR banner.startsAt <= :now)', { now })
+      .andWhere('(banner.endsAt IS NULL OR banner.endsAt >= :now)', { now })
+      .orderBy('banner.sortOrder', 'ASC')
+      .getMany();
   }
 
   async findAllVideos(): Promise<Video[]> {

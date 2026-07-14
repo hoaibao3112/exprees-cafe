@@ -8,19 +8,19 @@ export interface AdminUser {
 
 // ===================== DASHBOARD =====================
 export interface DashboardStats {
-  totalArticles: number;
+  totalServices: number;
   totalBranches: number;
   activeBanners: number;
   unreadContacts: number;
-  recentArticles: RecentArticle[];
+  recentServices: RecentService[];
   recentContacts: RecentContact[];
 }
 
-export interface RecentArticle {
+export interface RecentService {
   id: string;
-  title: string;
-  blogHandle: string;
-  status: ArticleStatus;
+  name: string;
+  imageUrl?: string;
+  status: string;
   createdAt: string;
 }
 

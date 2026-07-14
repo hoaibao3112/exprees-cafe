@@ -14,7 +14,7 @@ import { API_BASE_URL, ADMIN_COOKIE_NAME } from './api-config';
 export type {
   AdminUser,
   DashboardStats,
-  RecentArticle,
+  RecentService,
   RecentContact,
   Article,
   ArticleListResponse,
@@ -264,10 +264,19 @@ export const adminBranchesApi = {
 
 export const adminBannersApi = {
   getAll: () => adminFetch<Banner[]>('/admin/banners'),
+  create: (data: Record<string, unknown>) =>
+    adminFetch<Banner>('/admin/banners', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
   update: (id: string, data: Record<string, unknown>) =>
     adminFetch<Banner>(`/admin/banners/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    adminFetch<void>(`/admin/banners/${id}`, {
+      method: 'DELETE',
     }),
   reorder: (items: { id: string; order: number }[]) =>
     adminFetch<void>('/admin/banners/reorder', {

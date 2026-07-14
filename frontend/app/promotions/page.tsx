@@ -19,6 +19,8 @@ import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { resolveUploadUrl } from '../../lib/api';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
+import { useBannersQuery } from '../../hooks/useContentQueries';
+
 const BANNER_IMAGE = '/slideshow_4.jpg';
 
 function formatPrice(value: number | null) {
@@ -35,6 +37,12 @@ export default function PromotionsPage() {
 
   const { data: menuCategories, isLoading, isError } = useMenuQuery();
   const [activeCategory, setActiveCategory] = useState<string>('');
+  const { data: banners = [] } = useBannersQuery();
+
+  const activeBanner = banners.find((b) => b.position === 'PROMOTIONS_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : BANNER_IMAGE;
+  const pageTitle = activeBanner ? activeBanner.title : 'Menu';
+  const pageSubtitle = activeBanner ? activeBanner.linkUrl : 'Danh mục sản phẩm được lấy trực tiếp từ backend, trình bày theo bố cục sạch, sáng và dễ chọn món.';
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const categories = useMemo(() => menuCategories || [], [menuCategories]);
@@ -95,7 +103,7 @@ export default function PromotionsPage() {
       <section
         className="relative h-[180px] md:h-[235px] overflow-hidden border-b border-white/40"
         style={{
-          backgroundImage: `linear-gradient(90deg, rgba(25, 14, 8, 0.74), rgba(25, 14, 8, 0.2)), url(${BANNER_IMAGE})`,
+          backgroundImage: `linear-gradient(90deg, rgba(25, 14, 8, 0.74), rgba(25, 14, 8, 0.2)), url(${bgImage})`,
           backgroundPosition: 'center',
           backgroundSize: 'cover',
         }}
@@ -108,10 +116,12 @@ export default function PromotionsPage() {
               <Sparkles className="h-3.5 w-3.5 text-orange-300" />
               Express Cafe
             </div>
-            <h1 data-animate="blur-in" className="mt-4 text-3xl font-black uppercase tracking-[0.2em] md:text-5xl">Menu</h1>
-            <p data-animate="fade-up" data-delay="200" className="mt-3 max-w-md text-xs font-light text-white/80 md:text-sm">
-              Danh mục sản phẩm được lấy trực tiếp từ backend, trình bày theo bố cục sạch, sáng và dễ chọn món.
-            </p>
+            <h1 data-animate="blur-in" className="mt-4 text-3xl font-black uppercase tracking-[0.2em] md:text-5xl">{pageTitle}</h1>
+            {pageSubtitle && (
+              <p data-animate="fade-up" data-delay="200" className="mt-3 max-w-md text-xs font-light text-white/80 md:text-sm">
+                {pageSubtitle}
+              </p>
+            )}
             <div data-animate="fade-up" data-delay="300" className="mt-4 flex items-center gap-2 text-[11px] text-white/70">
               <Link href="/" className="hover:text-orange-300 transition-colors">
                 Trang chủ

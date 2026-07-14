@@ -65,6 +65,19 @@ export class AdminController {
     return this.adminService.updateBanner(id, dto);
   }
 
+  @Post('banners')
+  @ApiOperation({ summary: 'Create banner slide' })
+  createBanner(@Body() dto: Record<string, unknown>) {
+    return this.adminService.createBanner(dto);
+  }
+
+  @Delete('banners/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete banner slide' })
+  deleteBanner(@Param('id') id: string) {
+    return this.adminService.deleteBanner(id);
+  }
+
   @Get('articles')
   @ApiOperation({ summary: 'List all articles' })
   getArticles(@Query() query: Record<string, string>) {

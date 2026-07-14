@@ -1,5 +1,6 @@
 'use client';
 
+import { useBannersQuery } from '../../hooks/useContentQueries';
 import { useFranchisePackagesQuery } from '../../hooks/useFranchiseQueries';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { Coffee, Award, ShieldCheck, TrendingUp, Building, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
@@ -13,18 +14,18 @@ import { AnimatedCounter } from '../../components/ui/AnimatedCounter';
 const MODEL_DETAILS: Record<string, { image: string; title: string; desc: string }> = {
   'EXPRESS': {
     image: '/media__1780386795847.png',
-    title: 'Mô hình quán café',
-    desc: 'Thiết kế tinh gọn, sang trọng tối ưu diện tích từ 30m² - 50m².'
+    title: 'Mô hình xe đẩy Express',
+    desc: 'Linh hoạt, chi phí thấp, tối ưu diện tích mặt bằng nhỏ.'
   },
   'KIOSK': {
-    image: '/media__1780386795859.png',
-    title: 'Mô hình xe takeaway',
-    desc: 'Linh động và hiệu quả tối đa cho lưu lượng khách đi đường ngắn.'
+    image: '/slideshow_3.jpg',
+    title: 'Mô hình Kiosk Cafe',
+    desc: 'Mô hình bán lẻ chuyên nghiệp, tập trung lượng khách hàng trung tâm.'
   },
-  'PREMIUM': {
-    image: '/media__1780386795867.png',
-    title: 'Mô hình kiosk tiện lợi',
-    desc: 'Lắp đặt tại trung tâm thương mại, sảnh tòa nhà hoặc chung cư.'
+  'STORE': {
+    image: '/slideshow_1.jpg',
+    title: 'Mô hình Cửa hàng Store',
+    desc: 'Mô hình cửa hàng đầy đủ dịch vụ trải nghiệm, phục vụ lượng khách đông đảo.'
   }
 };
 
@@ -33,6 +34,27 @@ export default function FranchisePage() {
   useScrollAnimation();
 
   const { data: packages, isLoading } = useFranchisePackagesQuery();
+  const { data: banners = [] } = useBannersQuery();
+
+  const activeBanner = banners.find((b) => b.position === 'FRANCHISE_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : '/slideshow_4.jpg';
+  const pageTitle = activeBanner ? activeBanner.title : 'Nhượng Quyền Thương Hiệu';
+  const pageSubtitle = activeBanner ? activeBanner.linkUrl : 'Hợp Tác Cùng Phát Triển';
+
+  const renderTitle = () => {
+    const words = pageTitle.split(' ');
+    if (words.length <= 1) return <span className="text-white">{pageTitle}</span>;
+    // Split franchise page title cleanly in half
+    const splitIndex = Math.ceil(words.length / 2);
+    const whiteText = words.slice(0, splitIndex).join(' ');
+    const orangeText = words.slice(splitIndex).join(' ');
+    return (
+      <>
+        <span className="text-white">{whiteText} </span>
+        <span className="text-[#f07b22]">{orangeText}</span>
+      </>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 font-sans flex flex-col justify-between antialiased">
@@ -44,23 +66,24 @@ export default function FranchisePage() {
       <section 
         className="relative w-full h-[320px] md:h-[420px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.6)), url('/slideshow_4.jpg')`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.6)), url(${bgImage})`,
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
           backgroundAttachment: 'scroll'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <span 
-            className="inline-block text-xs md:text-sm font-extrabold uppercase tracking-[0.25em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20"
-            data-animate="fade-down"
-          >
-            Hợp Tác Cùng Phát Triển
-          </span>
+          {pageSubtitle && (
+            <span 
+              className="inline-block text-xs md:text-sm font-extrabold uppercase tracking-[0.25em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20"
+              data-animate="fade-down"
+            >
+              {pageSubtitle}
+            </span>
+          )}
           
           <h1 className="text-3xl md:text-6xl font-black uppercase tracking-wider leading-tight drop-shadow-md" data-animate="blur-in">
-            <span className="text-white">Nhượng Quyền </span>
-            <span className="text-[#f07b22]">Thương Hiệu</span>
+            {renderTitle()}
           </h1>
           
           <div className="w-16 h-1 bg-orange-500 mx-auto my-4 rounded-full" data-animate="scale-up" data-delay="200" />

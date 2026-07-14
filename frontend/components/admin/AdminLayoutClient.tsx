@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, FileText, Image as ImageIcon,
   Settings, LogOut, Coffee, ChevronLeft, ChevronRight,
@@ -13,8 +13,7 @@ import { ToastContainer } from '@/components/admin/Toast';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true },
-  { href: '/admin/articles', label: 'Bài viết', icon: FileText },
-  { href: '/admin/articles?handle=services', label: 'Dịch vụ', icon: Coffee },
+  { href: '/admin/services', label: 'Dịch vụ', icon: Coffee },
   { href: '/admin/banners', label: 'Banner', icon: ImageIcon },
   { href: '/admin/videos', label: 'Video', icon: Play },
   { href: '/admin/settings', label: 'Cài đặt', icon: Settings },
@@ -30,6 +29,11 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
   const { user, logout } = useAdminAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Nếu là trang đăng nhập thì chỉ hiển thị nội dung trang đăng nhập, không kèm Sidebar/Header
   if (pathname === '/admin/login') {
@@ -53,14 +57,24 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#f8fafc]">
       {/* Brand Logo & Title */}
-      <div className={`flex items-center gap-3 px-6 py-6 border-b border-slate-200/80 ${collapsed ? 'justify-center' : ''}`}>
-        <div className="w-10 h-10 rounded-xl bg-[#0047cc] flex items-center justify-center shrink-0 shadow-md shadow-blue-500/10">
-          <Coffee className="w-5 h-5 text-white" />
-        </div>
-        {!collapsed && (
-          <div className="overflow-hidden">
-            <span className="text-slate-800 font-bold text-lg tracking-tight block">Express Cafe</span>
-            <span className="text-slate-400 text-[10px] font-bold tracking-wider uppercase block mt-0.5">QUẢN TRỊ HỆ THỐNG</span>
+      <div className={`flex items-center gap-3 px-5 py-5 border-b border-slate-200/80 ${collapsed ? 'justify-center' : ''}`}>
+        {collapsed ? (
+          <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center shrink-0 text-orange-500 shadow-sm border border-orange-500/10">
+            <Coffee className="w-5 h-5" />
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="relative w-36 h-10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo.png?v=3"
+                alt="Express Cafe Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <span className="text-slate-400 text-[9px] font-extrabold tracking-wider uppercase border-l border-slate-200 pl-2">
+              ADMIN
+            </span>
           </div>
         )}
       </div>
@@ -95,7 +109,7 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
 
       {/* Admin Profile & Logout */}
       <div className="border-t border-slate-200/80 p-4 space-y-2">
-        {!collapsed && user && (
+        {mounted && !collapsed && user && (
           <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-100/60 border border-slate-200/40">
             <div className="w-9 h-9 rounded-full bg-blue-600/10 text-[#0047cc] flex items-center justify-center text-sm font-bold uppercase shrink-0">
               {(user.name ?? user.email).charAt(0)}
@@ -193,7 +207,7 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
             </button>
 
             {/* User Profile Info card */}
-            {user && (
+            {mounted && user && (
               <div className="flex items-center gap-3 border-l border-slate-200/80 pl-6">
                 <div className="text-right hidden sm:block">
                   <p className="text-slate-800 text-sm font-bold leading-none">{user.name}</p>

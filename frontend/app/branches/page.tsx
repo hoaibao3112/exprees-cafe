@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useScrollAnimation } from '../../hooks/useScrollAnimation';
 import { resolveUploadUrl, apiFetch } from '../../lib/api';
+import { useBannersQuery } from '../../hooks/useContentQueries';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { OptimizedImage } from '../../components/ui/OptimizedImage';
@@ -30,6 +31,27 @@ export default function BranchesPage() {
   const [activeRegion, setActiveRegion] = useState<RegionFilter>('ALL');
   const [branches, setBranches] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { data: banners = [] } = useBannersQuery();
+  const activeBanner = banners.find((b) => b.position === 'BRANCHES_HERO');
+  const bgImage = activeBanner ? resolveUploadUrl(activeBanner.imageUrl) : 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200';
+  const pageTitle = activeBanner ? activeBanner.title : 'Các Chi Nhánh';
+  const pageSubtitle = activeBanner ? activeBanner.linkUrl : '';
+
+  const renderTitle = () => {
+    const words = pageTitle.split(' ');
+    if (words.length <= 1) return <span className="text-white">{pageTitle}</span>;
+    // Split branches page title cleanly
+    const splitIndex = Math.ceil(words.length / 2);
+    const whiteText = words.slice(0, splitIndex).join(' ');
+    const orangeText = words.slice(splitIndex).join(' ');
+    return (
+      <>
+        <span className="text-white">{whiteText} </span>
+        <span className="text-[#f07b22]">{orangeText}</span>
+      </>
+    );
+  };
 
   const MOCK_BRANCHES = [
     {
@@ -114,15 +136,23 @@ export default function BranchesPage() {
       <section 
         className="relative w-full h-[240px] md:h-[320px] bg-zinc-950 flex flex-col items-center justify-center text-center overflow-hidden"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1200')`,
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.45)), url(${bgImage})`,
           backgroundPosition: 'center 50%',
           backgroundSize: 'cover'
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
+          {pageSubtitle && (
+            <span 
+              className="inline-block text-xs md:text-sm font-extrabold uppercase tracking-[0.2em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20"
+              data-animate="fade-down"
+            >
+              {pageSubtitle}
+            </span>
+          )}
+          
           <h1 className="text-3xl md:text-5xl font-black uppercase tracking-wider leading-none" data-animate="blur-in">
-            <span className="text-white">Các </span>
-            <span className="text-[#f07b22]">Chi Nhánh</span>
+            {renderTitle()}
           </h1>
           
           {/* Breadcrumbs */}

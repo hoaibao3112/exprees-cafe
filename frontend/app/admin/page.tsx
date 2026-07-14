@@ -1,34 +1,18 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import {
-  FileText, Image as ImageIcon, ArrowRight,
-  TrendingUp, Clock, Eye, CheckCircle2, ChevronRight
+  Image as ImageIcon, ArrowRight,
+  TrendingUp, Clock, Eye, CheckCircle2, ChevronRight,
+  Coffee, Mail, X, MessageSquare, MapPin
 } from 'lucide-react';
-import { adminDashboardApi } from '@/lib/admin-api';
+import { adminDashboardApi, adminContactsApi } from '@/lib/admin-api';
 import { StatCardSkeleton, Skeleton } from '@/components/admin/Skeleton';
 import type { DashboardStats } from '@/types/admin.types';
+import { resolveUploadUrl } from '@/lib/api';
 
-const BADGE_HANDLE: Record<string, string> = {
-  news: 'Tin tức',
-  blog: 'Blog',
-  services: 'Dịch vụ',
-  techniques: 'Kỹ thuật',
-  marketing: 'Tiếp thị',
-  sustainability: 'Bền vững',
-  education: 'Đào tạo'
-};
-
-const BADGE_COLOR: Record<string, string> = {
-  news: 'bg-blue-50 text-blue-600 border border-blue-100',
-  blog: 'bg-purple-50 text-purple-600 border border-purple-100',
-  services: 'bg-emerald-50 text-emerald-600 border border-emerald-100',
-  techniques: 'bg-indigo-50 text-indigo-600 border border-indigo-100',
-  marketing: 'bg-amber-50 text-amber-600 border border-amber-100',
-  sustainability: 'bg-teal-50 text-teal-600 border border-teal-100',
-  education: 'bg-rose-50 text-rose-600 border border-rose-100'
-};
 
 // SVG sparklines for gorgeous visual trends
 const SPARKLINES = {
@@ -141,14 +125,31 @@ function formatDate(dateStr: string) {
 }
 
 export default function AdminDashboardPage() {
+  const qc = useQueryClient();
+  const [selectedContact, setSelectedContact] = useState<any | null>(null);
+
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'dashboard'],
     queryFn: () => adminDashboardApi.getStats() as Promise<DashboardStats>,
     staleTime: 30_000,
   });
 
-  const articlesToShow = data?.recentArticles || [];
+  const servicesToShow = data?.recentServices || [];
   const contactsToShow = data?.recentContacts || [];
+
+  const viewContactMutation = useMutation({
+    mutationFn: (id: string) => adminContactsApi.markRead(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+    },
+  });
+
+  const handleViewContact = (contact: any) => {
+    setSelectedContact(contact);
+    if (!contact.isRead) {
+      viewContactMutation.mutate(contact.id);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -167,18 +168,18 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stat Cards with Sparklines */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {isLoading ? (
-          Array.from({ length: 2 }).map((_, i) => <StatCardSkeleton key={i} />)
+          Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
         ) : (
           <>
             <StatCard 
-              label="TỔNG BÀI VIẾT" 
-              value={data?.totalArticles ?? 0} 
-              icon={FileText} 
-              color="bg-blue-600/10 text-[#0047cc]" 
-              href="/admin/articles" 
-              trend={{ text: '+12%', isUp: true }}
+              label="TỔNG DỊCH VỤ" 
+              value={data?.totalServices ?? 0} 
+              icon={Coffee} 
+              color="bg-orange-600/10 text-orange-600" 
+              href="/admin/services" 
+              trend={{ text: 'Hoạt động', isNew: true }}
               sparkline={SPARKLINES.upStrong}
             />
             <StatCard 
@@ -187,117 +188,204 @@ export default function AdminDashboardPage() {
               icon={ImageIcon} 
               color="bg-purple-600/10 text-purple-600" 
               href="/admin/banners" 
-              trend={{ text: '-2%', isUp: false }}
+              trend={{ text: 'Đang chạy', isNew: true }}
               sparkline={SPARKLINES.downMild}
+            />
+            <StatCard 
+              label="CHI NHÁNH CỬA HÀNG" 
+              value={data?.totalBranches ?? 0} 
+              icon={MapPin} 
+              color="bg-blue-600/10 text-blue-600" 
+              href="/admin/settings" 
+              trend={{ text: 'Bản đồ', isNew: true }}
+              sparkline={SPARKLINES.waveBlue}
+            />
+            <StatCard 
+              label="LIÊN HỆ MỚI" 
+              value={data?.unreadContacts ?? 0} 
+              icon={Mail} 
+              color="bg-rose-600/10 text-rose-600" 
+              href="#" 
+              trend={{ text: data?.unreadContacts ? 'Cần xử lý' : 'Hoàn thành', isUp: (data?.unreadContacts ?? 0) > 0 }}
+              sparkline={SPARKLINES.upMild}
             />
           </>
         )}
       </div>
 
-      {/* Recent Articles Card */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
-        <div>
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-blue-600" />
-              <h3 className="text-slate-800 font-bold text-base">Bài viết mới nhất</h3>
-            </div>
-            <Link href="/admin/articles" className="text-blue-600 text-xs font-bold hover:text-blue-700 flex items-center gap-1 transition-colors">
-              Xem tất cả <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-          
-          <div className="divide-y divide-slate-100">
-            {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="px-6 py-4 flex items-center gap-3">
-                  <Skeleton className="h-4 flex-1" />
-                  <Skeleton className="h-5 w-16 rounded-full" />
-                </div>
-              ))
-            ) : articlesToShow.map((article: any) => (
-              <div
-                key={article.id}
-                className="flex items-center gap-4 px-6 py-[17px] hover:bg-slate-50/50 transition-colors group"
-              >
-                <FileText className="w-5 h-5 text-slate-400 shrink-0 group-hover:text-blue-600 transition-colors" />
-                <span className="text-slate-700 text-sm font-bold flex-1 truncate group-hover:text-slate-900 transition-colors">
-                  {article.title}
-                </span>
-                
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
-                  BADGE_COLOR[article.blogHandle] ?? 'bg-slate-100 text-slate-500'
-                }`}>
-                  {BADGE_HANDLE[article.blogHandle] ?? article.blogHandle}
-                </span>
-                
-                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
-                  article.status === 'PUBLISHED' 
-                    ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
-                    : 'bg-slate-100 text-slate-500 border border-slate-200/60'
-                }`}>
-                  {article.status === 'PUBLISHED' ? 'Đã đăng' : 'Nháp'}
-                </span>
+      {/* Grid columns below: Articles & Contacts side-by-side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Services Card */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-blue-600" />
+                <h3 className="text-slate-800 font-bold text-base">Dịch vụ mới nhất</h3>
               </div>
-            ))}
+              <Link href="/admin/services" className="text-blue-600 text-xs font-bold hover:text-blue-700 flex items-center gap-1 transition-colors">
+                Xem tất cả <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+            
+            <div className="divide-y divide-slate-100">
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="px-6 py-4 flex items-center gap-3">
+                    <Skeleton className="h-4 flex-1" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                ))
+              ) : servicesToShow.length === 0 ? (
+                <div className="px-6 py-12 text-center text-slate-400 text-xs font-semibold">
+                  Chưa có dịch vụ nào
+                </div>
+              ) : servicesToShow.map((service: any) => (
+                <div
+                  key={service.id}
+                  className="flex items-center gap-4 px-6 py-[11px] hover:bg-slate-50/50 transition-colors group"
+                >
+                  {service.imageUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={resolveUploadUrl(service.imageUrl)}
+                      alt=""
+                      className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-100"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                      <Coffee className="w-4 h-4" />
+                    </div>
+                  )}
+                  <span className="text-slate-700 text-sm font-bold flex-1 truncate group-hover:text-slate-900 transition-colors">
+                    {service.name}
+                  </span>
+                  
+                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
+                    service.status === 'ACTIVE' 
+                      ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
+                      : 'bg-slate-100 text-slate-500 border border-slate-200/60'
+                  }`}>
+                    {service.status === 'ACTIVE' ? 'Hoạt động' : 'Nháp'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Contacts Card */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <Mail className="w-5 h-5 text-rose-500" />
+                <h3 className="text-slate-800 font-bold text-base">Liên hệ mới nhất</h3>
+              </div>
+            </div>
+            
+            <div className="divide-y divide-slate-100">
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="px-6 py-4 flex items-center gap-3">
+                    <Skeleton className="h-4 flex-1" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                ))
+              ) : contactsToShow.length === 0 ? (
+                <div className="px-6 py-12 text-center text-slate-400 text-xs font-semibold">
+                  Chưa có tin nhắn liên hệ nào
+                </div>
+              ) : contactsToShow.map((contact: any) => (
+                <div
+                  key={contact.id}
+                  onClick={() => handleViewContact(contact)}
+                  className="flex items-center justify-between gap-4 px-6 py-[13.5px] hover:bg-slate-50/50 transition-colors group cursor-pointer"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-slate-700 text-sm font-bold truncate">
+                        {contact.name}
+                      </span>
+                      {!contact.isRead && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                      )}
+                    </div>
+                    <p className="text-slate-400 text-xs truncate mt-0.5">{contact.message}</p>
+                  </div>
+                  
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] text-slate-400 block font-semibold">
+                      {formatDate(contact.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* System Activity Timeline section */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl p-6">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
-          <h3 className="text-slate-800 font-bold text-base flex items-center gap-2">
-            <Clock className="w-5 h-5 text-blue-600" />
-            Dòng thời gian hoạt động hệ thống
-          </h3>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-bold border border-blue-100">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-            CẬP NHẬT TRỰC TIẾP
-          </span>
+      {/* Contact Details Modal */}
+      {selectedContact && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full p-6 md:p-8 animate-scale-up space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <h3 className="text-lg font-extrabold text-slate-850 flex items-center gap-2">
+                <Mail className="w-5 h-5 text-rose-500" />
+                Chi tiết phản hồi
+              </h3>
+              <button
+                onClick={() => setSelectedContact(null)}
+                className="p-1.5 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-605 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Khách hàng</label>
+                <p className="text-slate-800 text-sm font-bold mt-0.5">{selectedContact.name}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Số điện thoại</label>
+                  <p className="text-slate-700 text-sm font-semibold mt-0.5">{selectedContact.phone || '—'}</p>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Email</label>
+                  <p className="text-slate-700 text-sm font-semibold mt-0.5 truncate">{selectedContact.email || '—'}</p>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Nội dung tin nhắn</label>
+                <div className="bg-slate-50 border border-slate-100 p-4 rounded-2xl text-slate-600 text-xs leading-relaxed max-h-48 overflow-y-auto mt-1 font-medium whitespace-pre-wrap">
+                  {selectedContact.message}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Ngày gửi</label>
+                <p className="text-slate-500 text-xs mt-0.5">
+                  {new Date(selectedContact.createdAt).toLocaleString('vi-VN')}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => setSelectedContact(null)}
+                className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div className="relative border-l-2 border-slate-100 ml-4 pl-6 space-y-6 py-1">
-          {/* Item 1 */}
-          <div className="relative">
-            <div className="absolute -left-10 top-0.5 w-7 h-7 rounded-full bg-blue-50 border-2 border-blue-200 flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-blue-600" />
-            </div>
-            <div className="text-sm">
-              <span className="font-bold text-slate-800">Alex Rivera</span> 
-              <span className="text-slate-500"> đã cập nhật bài viết: </span>
-              <a href="#" className="font-bold text-blue-600 hover:underline">"Kỹ thuật rang Espresso hoàn hảo độc quyền"</a>
-            </div>
-            <p className="text-slate-400 text-xs mt-1">Hôm nay lúc 11:42 AM</p>
-          </div>
-
-          {/* Item 2 */}
-          <div className="relative">
-            <div className="absolute -left-10 top-0.5 w-7 h-7 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            </div>
-            <div className="text-sm">
-              <span className="font-bold text-slate-800">Jane Smith</span> 
-              <span className="text-slate-500"> đã cập nhật Banner sự kiện: </span>
-              <span className="font-bold text-slate-700">Mừng khai trương mùa hè</span>
-            </div>
-            <p className="text-slate-400 text-xs mt-1">Hôm nay lúc 09:15 AM</p>
-          </div>
-
-          {/* Item 3 */}
-          <div className="relative">
-            <div className="absolute -left-10 top-0.5 w-7 h-7 rounded-full bg-rose-50 border-2 border-rose-200 flex items-center justify-center">
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-            </div>
-            <div className="text-sm">
-              <span className="font-bold text-slate-800">Hệ thống</span> 
-              <span className="text-slate-500"> đã tự động lưu trữ Banner sự kiện hết hạn </span>
-              <span className="font-bold text-slate-700">#452</span>
-            </div>
-            <p className="text-slate-400 text-xs mt-1">Hôm qua lúc 11:59 PM</p>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
