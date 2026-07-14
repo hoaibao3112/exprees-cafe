@@ -157,7 +157,33 @@ export class BranchesService implements OnApplicationBootstrap {
     try {
       const res = await this.contentService.posFetch<{ success: boolean; data: any[] }>('GET', '/api/warehouses', undefined, true);
       const posWarehouses = res?.data || [];
-      const branches = posWarehouses.map(w => this.mapPosToBranch(w));
+      
+      // Load all local branches from SQLite to match images
+      const localBranches = await this.branchRepository.find();
+      
+      const normalize = (s: string) => s
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/^express\s+cafe\s*-\s*/i, '')
+        .replace(/[^a-z0-9]/g, '');
+
+      const branches = posWarehouses.map(w => {
+        const branch = this.mapPosToBranch(w);
+        
+        // Find matching local branch for images
+        const normWName = normalize(w.name);
+        const match = localBranches.find(lb => {
+          const normLbName = normalize(lb.name);
+          return normLbName === normWName || normLbName.includes(normWName) || normWName.includes(normLbName);
+        });
+
+        if (match) {
+          branch.imageUrl = match.imageUrl;
+          branch.images = match.images || [];
+        }
+        return branch;
+      });
       
       if (status) {
         return branches.filter(b => b.status === status);
@@ -182,7 +208,28 @@ export class BranchesService implements OnApplicationBootstrap {
     try {
       const res = await this.contentService.posFetch<{ success: boolean; data: any }>('GET', `/api/warehouses/${id}`, undefined, true);
       if (res?.success && res.data) {
-        return this.mapPosToBranch(res.data);
+        const branch = this.mapPosToBranch(res.data);
+        
+        // Match local branch for images
+        const localBranches = await this.branchRepository.find();
+        const normalize = (s: string) => s
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/^express\s+cafe\s*-\s*/i, '')
+          .replace(/[^a-z0-9]/g, '');
+          
+        const normWName = normalize(res.data.name);
+        const match = localBranches.find(lb => {
+          const normLbName = normalize(lb.name);
+          return normLbName === normWName || normLbName.includes(normWName) || normWName.includes(normLbName);
+        });
+
+        if (match) {
+          branch.imageUrl = match.imageUrl;
+          branch.images = match.images || [];
+        }
+        return branch;
       }
     } catch (err) {
       console.error(`POS API error fetching warehouse ${id}, falling back to local SQLite:`, err);

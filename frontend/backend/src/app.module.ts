@@ -23,6 +23,7 @@ import { ContentModule } from './modules/content/content.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { MediaModule } from './modules/media/media.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { ServicesModule } from './modules/services/services.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -59,6 +60,7 @@ import { Banner } from './modules/content/entities/banner.entity';
 import { Video } from './modules/content/entities/video.entity';
 import { Review } from './modules/reviews/entities/review.entity';
 import { MediaFile } from './modules/media/entities/media-file.entity';
+import { Service } from './modules/services/entities/service.entity';
 
 @Module({
   imports: [
@@ -113,6 +115,7 @@ import { MediaFile } from './modules/media/entities/media-file.entity';
           Video,
           Review,
           MediaFile,
+          Service,
         ],
         synchronize: true, // Safe for local sandboxed development
       }),
@@ -131,6 +134,7 @@ import { MediaFile } from './modules/media/entities/media-file.entity';
     ReviewsModule,
     MediaModule,
     AdminModule,
+    ServicesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -3,8 +3,8 @@
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import {
-  FileText, MapPin, Image as ImageIcon, Mail, ArrowRight,
-  TrendingUp, Clock, Eye, CheckCircle2, ChevronRight, MessageSquare
+  FileText, Image as ImageIcon, ArrowRight,
+  TrendingUp, Clock, Eye, CheckCircle2, ChevronRight
 } from 'lucide-react';
 import { adminDashboardApi } from '@/lib/admin-api';
 import { StatCardSkeleton, Skeleton } from '@/components/admin/Skeleton';
@@ -167,9 +167,9 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stat Cards with Sparklines */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
+          Array.from({ length: 2 }).map((_, i) => <StatCardSkeleton key={i} />)
         ) : (
           <>
             <StatCard 
@@ -182,15 +182,6 @@ export default function AdminDashboardPage() {
               sparkline={SPARKLINES.upStrong}
             />
             <StatCard 
-              label="TỔNG CHI NHÁNH" 
-              value={data?.totalBranches ?? 0} 
-              icon={MapPin} 
-              color="bg-emerald-600/10 text-emerald-600" 
-              href="/admin/branches" 
-              trend={{ text: '+4%', isUp: true }}
-              sparkline={SPARKLINES.upMild}
-            />
-            <StatCard 
               label="BANNER HOẠT ĐỘNG" 
               value={data?.activeBanners ?? 0} 
               icon={ImageIcon} 
@@ -199,136 +190,58 @@ export default function AdminDashboardPage() {
               trend={{ text: '-2%', isUp: false }}
               sparkline={SPARKLINES.downMild}
             />
-            <StatCard 
-              label="LIÊN HỆ MỚI" 
-              value={data?.unreadContacts ?? 0} 
-              icon={Mail} 
-              color="bg-blue-600/10 text-[#0047cc]" 
-              href="/admin/contacts" 
-              trend={{ text: 'NEW', isNew: true }}
-              sparkline={SPARKLINES.waveBlue}
-            />
           </>
         )}
       </div>
 
-      {/* Two columns: Recent Articles vs Recent Contacts */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        
-        {/* Recent Articles Card */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-blue-600" />
-                <h3 className="text-slate-800 font-bold text-base">Bài viết mới nhất</h3>
-              </div>
-              <Link href="/admin/articles" className="text-blue-600 text-xs font-bold hover:text-blue-700 flex items-center gap-1 transition-colors">
-                Xem tất cả <ChevronRight className="w-4 h-4" />
-              </Link>
+      {/* Recent Articles Card */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
+        <div>
+          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-blue-600" />
+              <h3 className="text-slate-800 font-bold text-base">Bài viết mới nhất</h3>
             </div>
-            
-            <div className="divide-y divide-slate-100">
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="px-6 py-4 flex items-center gap-3">
-                    <Skeleton className="h-4 flex-1" />
-                    <Skeleton className="h-5 w-16 rounded-full" />
-                  </div>
-                ))
-              ) : articlesToShow.map((article: any) => (
-                <div
-                  key={article.id}
-                  className="flex items-center gap-4 px-6 py-[17px] hover:bg-slate-50/50 transition-colors group"
-                >
-                  <FileText className="w-5 h-5 text-slate-400 shrink-0 group-hover:text-blue-600 transition-colors" />
-                  <span className="text-slate-700 text-sm font-bold flex-1 truncate group-hover:text-slate-900 transition-colors">
-                    {article.title}
-                  </span>
-                  
-                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
-                    BADGE_COLOR[article.blogHandle] ?? 'bg-slate-100 text-slate-500'
-                  }`}>
-                    {BADGE_HANDLE[article.blogHandle] ?? article.blogHandle}
-                  </span>
-                  
-                  <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
-                    article.status === 'PUBLISHED' 
-                      ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
-                      : 'bg-slate-100 text-slate-500 border border-slate-200/60'
-                  }`}>
-                    {article.status === 'PUBLISHED' ? 'Đã đăng' : 'Nháp'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Recent Contacts Card */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-blue-600" />
-                <h3 className="text-slate-800 font-bold text-base">Liên hệ gần đây</h3>
-              </div>
-              <Link href="/admin/contacts" className="text-blue-600 text-xs font-bold hover:text-blue-700 flex items-center gap-1 transition-colors">
-                Xem tất cả <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-            
-            <div className="divide-y divide-slate-100">
-              {isLoading ? (
-                Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="px-6 py-4 flex items-center gap-3">
-                    <Skeleton className="w-9 h-9 rounded-full shrink-0" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-4 w-28" />
-                      <Skeleton className="h-3 w-48" />
-                    </div>
-                  </div>
-                ))
-              ) : contactsToShow.length === 0 ? (
-                <div className="px-6 py-12 text-center text-slate-400 text-xs font-semibold">
-                  Chưa có liên hệ mới nào được ghi nhận.
-                </div>
-              ) : contactsToShow.map((contact: any) => (
-                <Link
-                  key={contact.id}
-                  href="/admin/contacts"
-                  className="flex items-start gap-4 px-6 py-4.5 hover:bg-slate-50/50 transition-colors group"
-                >
-                  <div className="w-9 h-9 rounded-full bg-blue-600/10 border border-blue-500/10 flex items-center justify-center shrink-0">
-                    <span className="text-[#0047cc] text-xs font-bold uppercase">
-                      {contact.avatarText ?? contact.name.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-800 text-sm font-bold group-hover:text-[#0047cc] transition-colors truncate">
-                        {contact.name}
-                      </span>
-                      <span className="text-slate-400 text-[10px] font-bold">{contact.time ?? formatDate(contact.createdAt)}</span>
-                    </div>
-                    <p className="text-slate-700 text-xs font-bold truncate mt-1">{contact.subject ?? 'Liên hệ mới'}</p>
-                    <p className="text-slate-400 text-xs truncate mt-0.5 leading-relaxed">{contact.message}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-5 bg-slate-50/50 border-t border-slate-100 flex justify-center">
-            <Link 
-              href="/admin/contacts" 
-              className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-[#0047cc] text-xs font-bold hover:bg-slate-50 shadow-sm transition-all text-center w-full max-w-xs"
-            >
-              Đi tới Hộp thư
+            <Link href="/admin/articles" className="text-blue-600 text-xs font-bold hover:text-blue-700 flex items-center gap-1 transition-colors">
+              Xem tất cả <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
+          
+          <div className="divide-y divide-slate-100">
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="px-6 py-4 flex items-center gap-3">
+                  <Skeleton className="h-4 flex-1" />
+                  <Skeleton className="h-5 w-16 rounded-full" />
+                </div>
+              ))
+            ) : articlesToShow.map((article: any) => (
+              <div
+                key={article.id}
+                className="flex items-center gap-4 px-6 py-[17px] hover:bg-slate-50/50 transition-colors group"
+              >
+                <FileText className="w-5 h-5 text-slate-400 shrink-0 group-hover:text-blue-600 transition-colors" />
+                <span className="text-slate-700 text-sm font-bold flex-1 truncate group-hover:text-slate-900 transition-colors">
+                  {article.title}
+                </span>
+                
+                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
+                  BADGE_COLOR[article.blogHandle] ?? 'bg-slate-100 text-slate-500'
+                }`}>
+                  {BADGE_HANDLE[article.blogHandle] ?? article.blogHandle}
+                </span>
+                
+                <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full shrink-0 uppercase tracking-wider ${
+                  article.status === 'PUBLISHED' 
+                    ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
+                    : 'bg-slate-100 text-slate-500 border border-slate-200/60'
+                }`}>
+                  {article.status === 'PUBLISHED' ? 'Đã đăng' : 'Nháp'}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
-
       </div>
 
       {/* System Activity Timeline section */}
@@ -365,8 +278,8 @@ export default function AdminDashboardPage() {
             </div>
             <div className="text-sm">
               <span className="font-bold text-slate-800">Jane Smith</span> 
-              <span className="text-slate-500"> đã thêm chi nhánh mới: </span>
-              <span className="font-bold text-slate-700">Riverside Bến Vân Đồn</span>
+              <span className="text-slate-500"> đã cập nhật Banner sự kiện: </span>
+              <span className="font-bold text-slate-700">Mừng khai trương mùa hè</span>
             </div>
             <p className="text-slate-400 text-xs mt-1">Hôm nay lúc 09:15 AM</p>
           </div>

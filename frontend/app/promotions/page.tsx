@@ -104,15 +104,15 @@ export default function PromotionsPage() {
 
         <div className="relative z-10 mx-auto flex h-full max-w-6xl items-center px-4 sm:px-6 lg:px-8">
           <div className="max-w-xl text-white">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] backdrop-blur-sm">
+            <div data-animate="fade-down" className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.25em] backdrop-blur-sm">
               <Sparkles className="h-3.5 w-3.5 text-orange-300" />
               Express Cafe
             </div>
-            <h1 className="mt-4 text-3xl font-black uppercase tracking-[0.2em] md:text-5xl">Menu</h1>
-            <p className="mt-3 max-w-md text-xs font-light text-white/80 md:text-sm">
+            <h1 data-animate="blur-in" className="mt-4 text-3xl font-black uppercase tracking-[0.2em] md:text-5xl">Menu</h1>
+            <p data-animate="fade-up" data-delay="200" className="mt-3 max-w-md text-xs font-light text-white/80 md:text-sm">
               Danh mục sản phẩm được lấy trực tiếp từ backend, trình bày theo bố cục sạch, sáng và dễ chọn món.
             </p>
-            <div className="mt-4 flex items-center gap-2 text-[11px] text-white/70">
+            <div data-animate="fade-up" data-delay="300" className="mt-4 flex items-center gap-2 text-[11px] text-white/70">
               <Link href="/" className="hover:text-orange-300 transition-colors">
                 Trang chủ
               </Link>
@@ -315,21 +315,21 @@ export default function PromotionsPage() {
               </div>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-[24px] border border-orange-100 bg-white p-5 shadow-sm">
+                <div data-animate="fade-up" data-delay="100" className="rounded-[24px] border border-orange-100 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                   <Coffee className="h-7 w-7 text-orange-500" />
                   <h4 className="mt-3 text-sm font-black uppercase tracking-[0.15em]">Tươi mới mỗi ngày</h4>
                   <p className="mt-2 text-sm leading-relaxed text-zinc-500">
                     Menu lấy từ backend nên bạn chỉ cần cập nhật dữ liệu là FE tự hiển thị lại.
                   </p>
                 </div>
-                <div className="rounded-[24px] border border-orange-100 bg-white p-5 shadow-sm">
+                <div data-animate="fade-up" data-delay="200" className="rounded-[24px] border border-orange-100 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                   <MenuIcon className="h-7 w-7 text-orange-500" />
                   <h4 className="mt-3 text-sm font-black uppercase tracking-[0.15em]">Bố cục đúng ảnh</h4>
                   <p className="mt-2 text-sm leading-relaxed text-zinc-500">
                     Sidebar danh mục bên trái, lưới món bên phải, tông trắng sáng và nhấn cam.
                   </p>
                 </div>
-                <div className="rounded-[24px] border border-orange-100 bg-white p-5 shadow-sm">
+                <div data-animate="fade-up" data-delay="300" className="rounded-[24px] border border-orange-100 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
                   <RefreshCw className="h-7 w-7 text-orange-500" />
                   <h4 className="mt-3 text-sm font-black uppercase tracking-[0.15em]">Dễ mở rộng</h4>
                   <p className="mt-2 text-sm leading-relaxed text-zinc-500">

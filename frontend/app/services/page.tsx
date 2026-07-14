@@ -25,14 +25,13 @@ interface ServiceItem {
   images?: string[];
 }
 
-import { useArticlesQuery } from '../../hooks/useContentQueries';
+import { useServicesQuery } from '../../hooks/useServicesQueries';
 
 export default function ServicesPage() {
   // Activate scroll animations
   useScrollAnimation();
 
-  const { data: articles = [], isLoading } = useArticlesQuery();
-  const services = articles.filter(a => a.blogHandle === 'services');
+  const { data: services = [], isLoading } = useServicesQuery();
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-800 font-sans flex flex-col justify-between antialiased">
@@ -65,7 +64,7 @@ export default function ServicesPage() {
           
           {/* Breadcrumbs */}
           <div className="flex items-center justify-center gap-2 text-zinc-300 text-xs md:text-sm font-medium mt-4 bg-black/35 backdrop-blur-md py-2 px-5 rounded-full w-max mx-auto shadow-sm" data-animate="fade-up" data-delay="300">
-            <Link href="/" className="hover:text-orange-450 transition-colors">Trang chủ</Link>
+            <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
             <ChevronRight className="w-3 h-3 text-zinc-500" />
             <span className="text-orange-400 font-bold">Các dịch vụ</span>
           </div>
@@ -115,7 +114,7 @@ export default function ServicesPage() {
                   <div className="relative h-60 w-full overflow-hidden bg-zinc-100 border-b border-zinc-100">
                     <OptimizedImage 
                       src={service.imageUrl ? resolveUploadUrl(service.imageUrl) : '/p-about-sv_1.jpg'} 
-                      alt={service.title}
+                      alt={service.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -126,10 +125,10 @@ export default function ServicesPage() {
                   {/* Card Content Body */}
                   <div className="p-8">
                     <h3 className="font-extrabold text-base md:text-lg text-zinc-900 group-hover:text-orange-500 transition-colors duration-300 leading-snug">
-                      {service.title}
+                      {service.name}
                     </h3>
                     <p className="text-xs text-zinc-500 mt-3 leading-relaxed line-clamp-3 min-h-[3.3rem] font-light">
-                      {service.contentHtml ? service.contentHtml.replace(/<[^>]*>/g, '') : ''}
+                      {service.description ? service.description.replace(/<[^>]*>/g, '') : ''}
                     </p>
                   </div>
                 </div>
@@ -137,7 +136,7 @@ export default function ServicesPage() {
                 {/* Card Button Footer */}
                 <div className="p-8 pt-0">
                   <Link
-                    href={`/services/${service.slug}`}
+                    href={`/services/${service.id}`}
                     className="w-full py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wider text-center rounded-xl transition-all duration-300 shadow-md shadow-orange-500/10 inline-block hover:scale-[1.02] active:scale-[0.98]"
                   >
                     Xem chi tiết

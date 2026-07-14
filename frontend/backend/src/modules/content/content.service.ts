@@ -19,30 +19,46 @@ export class ContentService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     // Seed initial banners
-    const bannerCount = await this.bannerRepository.count();
-    if (bannerCount === 0) {
-      console.log('🌱 Seeding initial banners...');
-      const seedBanners = [
-        {
-          title: 'Khởi đầu ngày mới tỉnh thức cùng Express Cafe',
-          imageUrl: 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=1200&auto=format&fit=crop',
-          linkUrl: '/promotions',
-          position: 'HOME_HERO',
-          sortOrder: 1,
-          isActive: true,
-        },
-        {
-          title: 'Signature Cold Brew - Đậm đà hương vị ủ chậm 24h',
-          imageUrl: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?q=80&w=1200&auto=format&fit=crop',
-          linkUrl: '/branches',
-          position: 'HOME_HERO',
-          sortOrder: 2,
-          isActive: true,
-        },
-      ];
-      await this.bannerRepository.save(this.bannerRepository.create(seedBanners));
-      console.log('🌱 Successfully seeded 2 home banners!');
+    console.log('🌱 Seeding / Updating home banners...');
+    const seedBanners = [
+      {
+        title: 'Khởi đầu ngày mới tỉnh thức cùng Express Cafe',
+        imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=70&w=1000&auto=format&fit=crop',
+        linkUrl: '/promotions',
+        position: 'HOME_HERO',
+        sortOrder: 1,
+        isActive: true,
+      },
+      {
+        title: 'Signature Cold Brew - Đậm đà hương vị ủ chậm 24h',
+        imageUrl: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=70&w=1000&auto=format&fit=crop',
+        linkUrl: '/branches',
+        position: 'HOME_HERO',
+        sortOrder: 2,
+        isActive: true,
+      },
+      {
+        title: 'Mỹ thuật rang xay - Nguồn hạt sạch hữu cơ 100%',
+        imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=70&w=1000&auto=format&fit=crop',
+        linkUrl: '/franchise',
+        position: 'HOME_HERO',
+        sortOrder: 3,
+        isActive: true,
+      },
+    ];
+
+    for (const seed of seedBanners) {
+      const existing = await this.bannerRepository.findOne({ where: { title: seed.title } });
+      if (existing) {
+        existing.imageUrl = seed.imageUrl;
+        existing.linkUrl = seed.linkUrl;
+        existing.sortOrder = seed.sortOrder;
+        await this.bannerRepository.save(existing);
+      } else {
+        await this.bannerRepository.save(this.bannerRepository.create(seed));
+      }
     }
+    console.log('🌱 Successfully updated/seeded 3 home banners!');
 
     // Seed initial videos
     console.log('🌱 Checking / Seeding videos...');
@@ -100,10 +116,14 @@ export class ContentService implements OnApplicationBootstrap {
       return this.cachedToken!;
     }
 
-    const storeCode = process.env.POS_STORE_CODE || 'aizen';
-    const email = process.env.POS_ADMIN_EMAIL || 'baohoaitran3112@gmail.com';
-    const password = process.env.POS_ADMIN_PASSWORD || '123456';
-    const apiUrl = process.env.POS_API_URL || 'http://103.188.82.245:6001';
+    const storeCode = process.env.POS_STORE_CODE;
+    const email = process.env.POS_ADMIN_EMAIL;
+    const password = process.env.POS_ADMIN_PASSWORD;
+    const apiUrl = process.env.POS_API_URL;
+
+    if (!storeCode || !email || !password || !apiUrl) {
+      throw new Error('POS configuration missing in environment variables (.env)');
+    }
 
     try {
       const response = await fetch(`${apiUrl}/api/auth/login`, {
@@ -130,9 +150,13 @@ export class ContentService implements OnApplicationBootstrap {
     body?: any,
     useAuthToken = false,
   ): Promise<T> {
-    const apiUrl = process.env.POS_API_URL || 'http://103.188.82.245:6001';
-    const storeCode = process.env.POS_STORE_CODE || 'aizen';
-    const apiKey = process.env.POS_API_KEY || 'pk_52623926435f4abe50a7de1c7152bf5c8aae264af8f5870b';
+    const apiUrl = process.env.POS_API_URL;
+    const storeCode = process.env.POS_STORE_CODE;
+    const apiKey = process.env.POS_API_KEY;
+
+    if (!apiUrl || !storeCode) {
+      throw new Error('POS configuration (POS_API_URL, POS_STORE_CODE) missing in environment variables (.env)');
+    }
 
     const headers: Record<string, string> = {
       'X-Store-Code': storeCode,
@@ -142,6 +166,9 @@ export class ContentService implements OnApplicationBootstrap {
       const token = await this.getAuthToken();
       headers['Authorization'] = `Bearer ${token}`;
     } else {
+      if (!apiKey) {
+        throw new Error('POS_API_KEY missing in environment variables (.env)');
+      }
       headers['X-API-Key'] = apiKey;
     }
 
@@ -188,7 +215,30 @@ export class ContentService implements OnApplicationBootstrap {
     article.title = posPost.title;
     article.slug = posPost.slug;
     article.contentHtml = contentHtml;
-    article.imageUrl = posPost.thumbnail || null;
+    
+    // Extract first image from content as fallback if thumbnail is missing
+    let resolvedImage = posPost.thumbnail || null;
+    if (!resolvedImage) {
+      // Look for markdown image syntax: ![alt](url)
+      const mdMatch = content.match(/!\[.*?\]\((.*?)\)/);
+      if (mdMatch && mdMatch[1]) {
+        resolvedImage = mdMatch[1];
+      } else {
+        // Look for HTML img tag syntax: <img src="url" />
+        const htmlMatch = content.match(/<img\s+[^>]*src=["'](.*?)["']/i);
+        if (htmlMatch && htmlMatch[1]) {
+          resolvedImage = htmlMatch[1];
+        } else {
+          // Look for any raw http(s) URL ending with common image extensions
+          const urlMatch = content.match(/https?:\/\/[^\s"'<>\(\)]+\.(?:png|jpg|jpeg|gif|webp|svg)/i);
+          if (urlMatch) {
+            resolvedImage = urlMatch[0];
+          }
+        }
+      }
+    }
+
+    article.imageUrl = resolvedImage;
     article.status = posPost.status;
     article.publishedAt = posPost.published_at ? new Date(posPost.published_at) : (null as any);
     article.createdAt = posPost.created_at ? new Date(posPost.created_at) : new Date();

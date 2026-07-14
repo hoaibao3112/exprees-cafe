@@ -72,17 +72,20 @@ export default function BranchesPage() {
   const getBranchRegion = (branch: any): RegionFilter => {
     const name = (branch.name || '').toLowerCase();
     const desc = (branch.description || '').toLowerCase();
+    const addr = (branch.address || '').toLowerCase();
     
     if (
       name.includes('quận 1') || name.includes('quận 3') || name.includes('quận 5') ||
-      desc.includes('quận 1') || desc.includes('quận 3') || desc.includes('quận 5')
+      desc.includes('quận 1') || desc.includes('quận 3') || desc.includes('quận 5') ||
+      addr.includes('quận 1') || addr.includes('quận 3') || addr.includes('quận 5')
     ) {
       return 'CENTER';
     }
     
     if (
       name.includes('quận 9') || name.includes('thủ đức') ||
-      desc.includes('quận 9') || desc.includes('thủ đức')
+      desc.includes('quận 9') || desc.includes('thủ đức') ||
+      addr.includes('quận 9') || addr.includes('thủ đức')
     ) {
       return 'EAST';
     }

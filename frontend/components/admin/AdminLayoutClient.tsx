@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
-  LayoutDashboard, FileText, MapPin, Image as ImageIcon, Mail,
+  LayoutDashboard, FileText, Image as ImageIcon,
   Settings, LogOut, Coffee, ChevronLeft, ChevronRight,
-  Menu, X, Search, Bell, Award, Play
+  Menu, X, Search, Bell, Play
 } from 'lucide-react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { ToastContainer } from '@/components/admin/Toast';
@@ -14,12 +14,9 @@ import { ToastContainer } from '@/components/admin/Toast';
 const NAV_ITEMS = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true },
   { href: '/admin/articles', label: 'Bài viết', icon: FileText },
-  { href: '/admin/branches', label: 'Chi nhánh', icon: MapPin },
   { href: '/admin/articles?handle=services', label: 'Dịch vụ', icon: Coffee },
-  { href: '/admin/franchise', label: 'Nhượng quyền', icon: Award },
   { href: '/admin/banners', label: 'Banner', icon: ImageIcon },
   { href: '/admin/videos', label: 'Video', icon: Play },
-  { href: '/admin/contacts', label: 'Liên hệ', icon: Mail },
   { href: '/admin/settings', label: 'Cài đặt', icon: Settings },
 ];
 
@@ -90,16 +87,6 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
               <Icon className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-105 ${active ? 'text-[#0047cc]' : 'text-slate-400'}`} />
               {!collapsed && (
                 <span className="flex-1 truncate">{label}</span>
-              )}
-              {!collapsed && label === 'Liên hệ' && unreadCount > 0 && (
-                <span className="ml-auto bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">
-                  {unreadCount > 99 ? '99+' : unreadCount}
-                </span>
-              )}
-              {collapsed && label === 'Liên hệ' && unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 rounded-full text-[9px] text-white flex items-center justify-center font-bold">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
               )}
             </Link>
           );
@@ -192,7 +179,7 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Tìm kiếm bài viết, chi nhánh, liên hệ..."
+                placeholder="Tìm kiếm bài viết, dịch vụ..."
                 className="w-full pl-9 pr-4 py-2 bg-slate-100/80 border border-slate-200/40 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-slate-700 placeholder:text-slate-400"
               />
             </div>

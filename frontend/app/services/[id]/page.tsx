@@ -9,28 +9,16 @@ import { resolveUploadUrl, apiFetch } from '../../../lib/api';
 import { ArrowLeft, ChevronLeft, ChevronRight, Coffee, CheckCircle2, MessageSquare, X, Phone } from 'lucide-react';
 import { OptimizedImage } from '../../../components/ui/OptimizedImage';
 
+import { useServiceByIdQuery } from '../../../hooks/useServicesQueries';
+
 export default function ServiceDetailPage(props: { params: Promise<{ id: string }> }) {
   useScrollAnimation();
   const resolvedParams = React.use(props.params);
   const id = resolvedParams.id;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [service, setService] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    setIsLoading(true);
-    setService(null);
-    apiFetch<any>(`/content/articles/${id}`)
-      .then(data => {
-        setService(data);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error('Error loading service:', err);
-        setIsLoading(false);
-      });
-  }, [id]);
+  const { data: service, isLoading } = useServiceByIdQuery(id);
 
   if (isLoading) {
     return (
@@ -109,7 +97,7 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
               <div className="relative h-[400px]">
                 <OptimizedImage
                   src={serviceImages[currentImageIndex]}
-                  alt={`${service.title || 'Dịch vụ'} - Image ${currentImageIndex + 1}`}
+                  alt={`${service.name || 'Dịch vụ'} - Image ${currentImageIndex + 1}`}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-all duration-300"
@@ -148,7 +136,7 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
                     Dịch vụ
                   </span>
                   <h1 className="text-3xl md:text-4xl font-black text-white mb-2">
-                    {service.title}
+                    {service.name}
                   </h1>
                 </div>
               </div>
@@ -187,7 +175,7 @@ export default function ServiceDetailPage(props: { params: Promise<{ id: string 
               </h2>
               <div 
                 className="text-zinc-650 leading-relaxed prose prose-orange max-w-none prose-sm md:prose-base font-light"
-                dangerouslySetInnerHTML={{ __html: service.contentHtml || '' }}
+                dangerouslySetInnerHTML={{ __html: service.description || '' }}
               />
             </div>
 

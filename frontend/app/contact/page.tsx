@@ -81,12 +81,15 @@ export default function ContactPage() {
         }}
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl px-4 z-10">
-          <h1 data-animate="blur-in" className="text-4xl md:text-5xl font-heading italic text-white uppercase tracking-wider leading-none">
+          <span data-animate="fade-down" className="inline-block text-xs font-extrabold uppercase tracking-[0.2em] text-orange-400 mb-3 bg-orange-500/10 px-4 py-1.5 rounded-full border border-orange-500/20">
+            Express Cafe
+          </span>
+          <h1 data-animate="blur-in" className="text-4xl md:text-5xl font-heading italic text-white uppercase tracking-wider leading-none mt-2">
             LIÊN HỆ
           </h1>
           
           {/* Breadcrumbs */}
-          <div className="flex items-center justify-center gap-2 text-zinc-300 font-body text-xs font-light mt-4">
+          <div data-animate="fade-up" data-delay="300" className="flex items-center justify-center gap-2 text-zinc-300 font-body text-xs font-light mt-4">
             <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-orange-500 font-bold">Liên hệ</span>
@@ -142,7 +145,7 @@ export default function ContactPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
+                <div data-animate="fade-up" data-delay="100" className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
                   <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-500/10">
                     <MapPin className="w-5 h-5" />
                   </div>
@@ -152,7 +155,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
+                <div data-animate="fade-up" data-delay="200" className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
                   <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-500/10">
                     <Mail className="w-5 h-5" />
                   </div>
@@ -162,7 +165,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
+                <div data-animate="fade-up" data-delay="300" className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
                   <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-500/10">
                     <Phone className="w-5 h-5" />
                   </div>
@@ -172,7 +175,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
+                <div data-animate="fade-up" data-delay="400" className="flex gap-3 bg-[#fbf7f2] p-5 rounded-[22px] border border-orange-100/60 hover:border-orange-200 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300 shadow-sm">
                   <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-500/10">
                     <Clock className="w-5 h-5" />
                   </div>
@@ -196,7 +199,7 @@ export default function ContactPage() {
             </div>
 
             {/* Questions Form Box */}
-            <div className="border-t border-zinc-150 pt-8 space-y-6">
+            <div data-animate="fade-up" data-delay="200" className="border-t border-zinc-150 pt-8 space-y-6">
               <div className="flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-orange-500" />
                 <h3 className="font-black text-lg text-zinc-950 uppercase tracking-wide">Gửi thắc mắc cho chúng tôi</h3>

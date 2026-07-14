@@ -134,7 +134,7 @@ export function Header() {
               <Link 
                 href="/contact"
                 onClick={() => setIsOpen(false)}
-                className="w-full py-3 bg-orange-550 hover:bg-orange-600 active:scale-[0.98] text-white font-extrabold text-xs tracking-widest text-center rounded-xl shadow-md transition-all uppercase"
+                className="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-extrabold text-xs tracking-widest text-center rounded-xl shadow-md transition-all uppercase"
               >
                 Đăng ký tư vấn
               </Link>
