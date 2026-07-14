@@ -43,6 +43,22 @@ export function resolveAssetUrl(path?: string | null): string {
     return normalized;
   }
 
+  // Nếu là các asset tĩnh trong thư mục public của frontend -> trả về đường dẫn relative gốc
+  if (
+    normalized.startsWith('/media__') ||
+    normalized.startsWith('media__') ||
+    normalized.startsWith('/slideshow_') ||
+    normalized.startsWith('slideshow_') ||
+    normalized.startsWith('/logo.png') ||
+    normalized.startsWith('logo.png') ||
+    normalized.startsWith('/p-about') ||
+    normalized.startsWith('p-about') ||
+    normalized.startsWith('/h-about') ||
+    normalized.startsWith('h-about')
+  ) {
+    return normalized.startsWith('/') ? normalized : `/${normalized}`;
+  }
+
   const base = BACKEND_HOST.replace(/\/$/, '');
   const segment = normalized.replace(/^\//, '');
   return `${base}/${segment}`;
