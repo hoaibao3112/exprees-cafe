@@ -38,3 +38,5 @@ Thumbs.db
 # Local uploads
 **/uploads/
 
+# Scraped data
+scraped_data/
