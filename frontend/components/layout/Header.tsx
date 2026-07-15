@@ -130,7 +130,7 @@ export function Header() {
             onClick={() => setIsOpen(false)}
           >
             <motion.div
-              className="w-4/5 max-w-xs bg-gradient-to-b from-white to-orange-50/20 h-full shadow-2xl p-6 flex flex-col justify-between"
+              className="w-4/5 max-w-xs bg-gradient-to-b from-white to-orange-50 h-full shadow-2xl p-6 flex flex-col justify-between"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
