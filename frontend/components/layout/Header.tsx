@@ -121,21 +121,24 @@ export function Header() {
       {/* Mobile Drawer Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            className="xl:hidden fixed inset-0 top-[65px] z-40 bg-zinc-950/20 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            onClick={() => setIsOpen(false)}
-          >
+          <>
+            {/* Backdrop overlay */}
             <motion.div
-              className="w-4/5 max-w-xs bg-gradient-to-b from-white to-orange-50 h-full shadow-2xl p-6 flex flex-col justify-between"
+              className="xl:hidden fixed inset-0 top-[65px] z-40 bg-zinc-950/20 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setIsOpen(false)}
+            />
+
+            {/* Drawer Container */}
+            <motion.div
+              className="xl:hidden fixed left-0 top-[65px] bottom-0 w-4/5 max-w-xs bg-gradient-to-b from-white to-orange-50 z-50 shadow-2xl p-6 flex flex-col justify-between"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 34 }}
-              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-2 border-b pb-4">
@@ -190,7 +193,7 @@ export function Header() {
                 </div>
               </motion.div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
