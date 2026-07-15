@@ -412,42 +412,7 @@ export default function AdminSettingsPage() {
                   </div>
                 </div>
 
-                {/* Social media links */}
-                <div>
-                  <h3 className="text-slate-800 font-bold text-sm border-b border-slate-100 pb-3 flex items-center gap-2 pt-2">
-                    <Share2 className="w-4 h-4 text-[#0047cc]" /> Liên kết mạng xã hội
-                  </h3>
-                  
-                  <div className="space-y-4 mt-5">
-                    <div className="space-y-1.5">
-                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider block">Đường dẫn Facebook</label>
-                      <input
-                        value={settings.facebookUrl}
-                        onChange={(e) => handleChange('facebookUrl', e.target.value)}
-                        placeholder="https://facebook.com/trang-cua-ban"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-blue-500 bg-slate-50 focus:bg-white transition-all font-semibold"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider block">Đường dẫn YouTube</label>
-                      <input
-                        value={settings.youtubeUrl}
-                        onChange={(e) => handleChange('youtubeUrl', e.target.value)}
-                        placeholder="https://youtube.com/@kenh-cua-ban"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-blue-500 bg-slate-50 focus:bg-white transition-all font-semibold"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider block">Đường dẫn TikTok</label>
-                      <input
-                        value={settings.tiktokUrl}
-                        onChange={(e) => handleChange('tiktokUrl', e.target.value)}
-                        placeholder="https://tiktok.com/@tai-khoan"
-                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-slate-800 text-sm focus:outline-none focus:border-blue-500 bg-slate-50 focus:bg-white transition-all font-semibold"
-                      />
-                    </div>
-                  </div>
-                </div>
+
               </div>
             )}
 
@@ -984,18 +949,7 @@ export default function AdminSettingsPage() {
 
                 {/* Footer Preview inside mockup */}
                 <footer className={`mt-auto px-4 py-4 border-t flex flex-col items-center gap-2 shrink-0 transition-colors duration-300 ${settings.darkMode ? 'bg-zinc-900 border-zinc-800 text-zinc-400' : 'bg-slate-50 border-slate-200/65 text-slate-500'}`}>
-                  {/* Social icons block */}
-                  <div className="flex items-center gap-3">
-                    {settings.facebookUrl && (
-                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border transition-colors duration-300 ${settings.darkMode ? 'border-zinc-700 text-blue-400' : 'border-slate-200 text-blue-600 bg-white'}`}>FB</span>
-                    )}
-                    {settings.youtubeUrl && (
-                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border transition-colors duration-300 ${settings.darkMode ? 'border-zinc-700 text-rose-400' : 'border-slate-200 text-rose-600 bg-white'}`}>YT</span>
-                    )}
-                    {settings.tiktokUrl && (
-                      <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border transition-colors duration-300 ${settings.darkMode ? 'border-zinc-700 text-zinc-300' : 'border-slate-200 text-slate-800 bg-white'}`}>TT</span>
-                    )}
-                  </div>
+
                   {settings.address && (
                     <p className="text-[7px] text-center max-w-[220px] leading-normal line-clamp-2">
                       📍 {settings.address}

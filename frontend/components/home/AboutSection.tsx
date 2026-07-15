@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight, ArrowRight } from 'lucide-react';
+import { fadeUp, staggerContainer, EASE_PREMIUM } from '@/lib/motion';
 
 interface AccordionItem {
   id: string;
@@ -60,8 +62,20 @@ export function AboutSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left side Image */}
-          <div className="lg:col-span-5 relative" data-animate="fade-right" data-delay="100">
-            <div className="absolute inset-0 bg-orange-500 rounded-3xl translate-x-3.5 translate-y-3.5 z-0 opacity-80" />
+          <motion.div
+            className="lg:col-span-5 relative"
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.8, ease: EASE_PREMIUM }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-orange-500 rounded-3xl z-0 opacity-80"
+              initial={{ x: 0, y: 0 }}
+              whileInView={{ x: 14, y: 14 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: EASE_PREMIUM }}
+            />
             <div className="relative z-10 aspect-square rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-zinc-200">
               <Image
                 src="/h-about_banner.jpg"
@@ -71,16 +85,23 @@ export function AboutSection() {
                 className="object-cover"
               />
             </div>
-          </div>
+          </motion.div>
 
           {/* Right side Accordion */}
-          <div className="lg:col-span-7 space-y-4.5" data-animate="fade-left" data-delay="200">
+          <motion.div
+            className="lg:col-span-7 space-y-4.5"
+            variants={staggerContainer(0.08)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
             {ACCORDION_ITEMS.map((item) => {
               const isOpen = activeAccordion === item.id;
               return (
-                <div
+                <motion.div
                   key={item.id}
-                  className={`border rounded-2xl transition-all duration-300 ${isOpen
+                  variants={fadeUp}
+                  className={`border rounded-2xl transition-colors duration-300 ${isOpen
                     ? 'border-orange-500/40 bg-white shadow-lg shadow-orange-500/[0.04]'
                     : 'border-zinc-200/80 bg-white/70 hover:bg-white hover:border-zinc-300'
                     }`}
@@ -93,32 +114,49 @@ export function AboutSection() {
                       }`}>
                       {item.title}
                     </span>
-                    {isOpen ? (
-                      <ChevronDown className="w-5 h-5 text-orange-500 transition-transform duration-300 rotate-180" />
-                    ) : (
-                      <ChevronRight className="w-5 h-5 text-zinc-400 transition-transform duration-300" />
-                    )}
+                    <motion.span
+                      animate={{ rotate: isOpen ? 180 : 0 }}
+                      transition={{ duration: 0.3, ease: EASE_PREMIUM }}
+                    >
+                      {isOpen ? (
+                        <ChevronDown className="w-5 h-5 text-orange-500" />
+                      ) : (
+                        <ChevronRight className="w-5 h-5 text-zinc-400" />
+                      )}
+                    </motion.span>
                   </button>
 
-                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                    }`}>
-                    <div className="px-6 pb-6 pt-1 text-xs md:text-sm text-zinc-650 leading-relaxed border-t border-zinc-50 font-light">
-                      {item.content}
-                    </div>
-                  </div>
-                </div>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.35, ease: EASE_PREMIUM }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 pb-6 pt-1 text-xs md:text-sm text-zinc-650 leading-relaxed border-t border-zinc-50 font-light">
+                          {item.content}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
 
-            <div className="pt-6">
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-orange-500/20 active:scale-95"
-              >
-                XEM THÊM <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
+            <motion.div variants={fadeUp} className="pt-6">
+              <motion.div className="inline-block" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/about"
+                  className="inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-widest rounded-xl transition-colors shadow-lg shadow-orange-500/20"
+                >
+                  XEM THÊM <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

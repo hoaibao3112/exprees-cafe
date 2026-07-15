@@ -71,11 +71,27 @@ export interface Service {
 export interface FranchisePackage {
   id: string;
   name: string;
+  modelType: string;
+  investmentFrom: number;
   description?: string;
-  price: number;
-  features: string[];
+  images?: string[];
   isActive: boolean;
 }
+
+export interface FranchiseApplication {
+  id: string;
+  userId: string;
+  packageId: string;
+  applicantName: string;
+  phone: string;
+  province: string;
+  status: string;
+  notes?: string;
+  submittedAt: string;
+  updatedAt: string;
+  package?: FranchisePackage;
+}
+
 
 export interface ContentVideo {
   id: string;
@@ -367,6 +383,13 @@ export const adminFranchiseApi = {
     }),
   delete: (id: string) =>
     adminFetch<void>(`/franchise/admin/packages/${id}`, { method: 'DELETE' }),
+  getApplications: () =>
+    adminFetch<FranchiseApplication[]>('/franchise/admin/applications'),
+  updateApplicationStatus: (id: string, status: string, notes?: string) =>
+    adminFetch<FranchiseApplication>(`/franchise/admin/applications/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, notes }),
+    }),
 };
 
 // ─────────────────────────────────────────────────────────────────────────────

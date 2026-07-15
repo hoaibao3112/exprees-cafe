@@ -695,6 +695,7 @@ export default function AdminVideosPage() {
                       className="border-2 border-dashed border-slate-250 rounded-2xl p-6 text-center hover:border-orange-500 hover:bg-orange-50/10 transition-all cursor-pointer group flex flex-col items-center justify-center min-h-[140px] relative overflow-hidden"
                     >
                       <input
+                        key="videos-thumbnail-upload-input"
                         type="file"
                         ref={fileInputRef}
                         onChange={handleFileUpload}
@@ -739,6 +740,7 @@ export default function AdminVideosPage() {
                     /* Manual input URL */
                     <div className="relative">
                       <input
+                        key="videos-thumbnail-url-input"
                         type="text"
                         value={formThumbnailUrl}
                         onChange={(e) => setFormThumbnailUrl(e.target.value)}

@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import {
-  LayoutDashboard, FileText, Image as ImageIcon,
+  LayoutDashboard, Image as ImageIcon,
   Settings, LogOut, Coffee, ChevronLeft, ChevronRight,
-  Menu, X, Search, Bell, Play
+  Menu, X, Search, Bell, Play, Award
 } from 'lucide-react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { ToastContainer } from '@/components/admin/Toast';
@@ -16,15 +16,15 @@ const NAV_ITEMS = [
   { href: '/admin/services', label: 'Dịch vụ', icon: Coffee },
   { href: '/admin/banners', label: 'Banner', icon: ImageIcon },
   { href: '/admin/videos', label: 'Video', icon: Play },
+  { href: '/admin/franchise', label: 'Nhượng quyền', icon: Award },
   { href: '/admin/settings', label: 'Cài đặt', icon: Settings },
 ];
 
 interface AdminLayoutClientProps {
   children: React.ReactNode;
-  unreadCount?: number;
 }
 
-export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClientProps) {
+export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
   const pathname = usePathname();
   const { user, logout } = useAdminAuth();
   const [collapsed, setCollapsed] = useState(false);
@@ -50,9 +50,6 @@ export function AdminLayoutClient({ children, unreadCount = 0 }: AdminLayoutClie
     return pathname.startsWith(href);
   };
 
-  const currentPage = NAV_ITEMS.find((item) =>
-    item.exact ? pathname === item.href : pathname.startsWith(item.href),
-  )?.label ?? 'Quản trị';
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#f8fafc]">

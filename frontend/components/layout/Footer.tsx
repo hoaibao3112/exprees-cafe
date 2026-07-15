@@ -3,7 +3,7 @@
 import { type FC, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 
 export const Footer: FC = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +30,7 @@ export const Footer: FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-6">
           
           {/* Left: Newsletter Label */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" data-animate="fade-right" data-delay="100">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 shadow-sm">
               <Mail className="w-5 h-5" />
             </div>
@@ -48,6 +48,8 @@ export const Footer: FC = () => {
           <form 
             onSubmit={handleSubscribe} 
             className="w-full max-w-md flex items-center border border-zinc-200 rounded-2xl overflow-hidden bg-white shadow-sm focus-within:ring-2 focus-within:ring-orange-400 focus-within:ring-offset-1 focus-within:border-orange-400 transition-all duration-200"
+            data-animate="fade-up"
+            data-delay="200"
           >
             <input
               type="email"
@@ -67,7 +69,7 @@ export const Footer: FC = () => {
           </form>
 
           {/* Right: Hotline */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3" data-animate="fade-left" data-delay="300">
             <div className="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-white shadow-md">
               <Phone className="w-4 h-4 fill-current text-white animate-pulse" />
             </div>
@@ -90,7 +92,7 @@ export const Footer: FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
           
           {/* Column 1: GIỚI THIỆU */}
-          <div className="md:col-span-5 flex flex-col gap-5">
+          <div className="md:col-span-5 flex flex-col gap-5" data-animate="fade-up">
             <div className="relative w-[130px] h-[38px] mb-1">
               <Image
                 src="/logo.png?v=3"
@@ -105,7 +107,7 @@ export const Footer: FC = () => {
             {/* Social Icons */}
             <div className="flex items-center gap-3">
               <a 
-                href="https://facebook.com" 
+                href="https://www.facebook.com/aizenworlds" 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-9 h-9 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center rounded-full transition-all shadow-md shadow-orange-500/10"
@@ -116,7 +118,7 @@ export const Footer: FC = () => {
                 </svg>
               </a>
               <a 
-                href="https://youtube.com" 
+                href="https://www.youtube.com/@AIZEN.OFFICIAL12" 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-9 h-9 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center rounded-full transition-all shadow-md shadow-orange-500/10"
@@ -151,7 +153,7 @@ export const Footer: FC = () => {
           </div>
 
           {/* Column 2: VỀ CHÚNG TÔI */}
-          <div className="md:col-span-3 flex flex-col gap-6">
+          <div className="md:col-span-3 flex flex-col gap-6" data-animate="fade-up" data-delay="150">
             <h3 className="font-body font-semibold tracking-widest uppercase text-xs text-zinc-400 border-b-2 border-orange-500 w-fit pb-1">
               Về chúng tôi
             </h3>
@@ -195,7 +197,7 @@ export const Footer: FC = () => {
           </div>
 
           {/* Column 3: CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ AIZEN WORLD */}
-          <div className="md:col-span-4 flex flex-col gap-6">
+          <div className="md:col-span-4 flex flex-col gap-6" data-animate="fade-up" data-delay="300">
             <h3 className="font-heading font-semibold text-base text-zinc-900 uppercase border-b-2 border-orange-500 w-fit pb-1 leading-tight">
               CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ AIZEN WORLD
             </h3>
@@ -233,7 +235,7 @@ export const Footer: FC = () => {
       </div>
 
       {/* 3. Bottom copyright panel */}
-      <div className="w-full border-t border-zinc-100 py-6 bg-zinc-50">
+      <div className="w-full border-t border-zinc-100 py-6 bg-zinc-50" data-animate="fade-up" data-delay="400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="font-reading font-light text-sm text-zinc-400">
             Copyright © 2026 Express Cafe. Designed by Aizen World

@@ -190,7 +190,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h4 className="font-extrabold text-xs text-zinc-900 uppercase tracking-wide">Thời gian làm việc</h4>
-                    <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light">Thứ 2 - Thứ 6: 07:00 - 21:00<br />Thứ 7 - CN: 07:30 - 22:00</p>
+                    <p className="text-xs text-zinc-500 mt-1 leading-relaxed font-light">Thứ 2 - Thứ 6: 07:00 - 21:00<br />Thứ 7: 07:30 - 22:00 (Chủ nhật: Nghỉ)</p>
                   </div>
                 </div>
               </div>

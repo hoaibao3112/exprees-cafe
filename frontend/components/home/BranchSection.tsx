@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { MapPin } from 'lucide-react';
 import { useBranchesQuery } from '@/hooks/useBranchQueries';
 import { resolveUploadUrl } from '@/lib/api';
+import { fadeUp, staggerContainer, springHover } from '@/lib/motion';
 
 export function BranchSection() {
   const { data: branches, isLoading: isLoadingBranches } = useBranchesQuery();
@@ -38,36 +40,41 @@ export function BranchSection() {
             <p className="text-sm text-zinc-400 mt-1">Hệ thống cửa hàng trên toàn quốc đang chuẩn bị khai trương.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {branches.slice(0, 4).map((branch, idx) => (
-              <Link
-                key={branch.id}
-                href={`/branches?id=${branch.id}`}
-                data-animate="fade-up"
-                data-delay={String((idx + 1) * 100)}
-                className="group rounded-3xl border border-zinc-200/80 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col bg-white cursor-pointer"
-              >
-                {/* Storefront Image */}
-                <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
-                  <Image
-                    src={resolveUploadUrl(branch.imageUrl || '/slideshow_3.jpg')}
-                    alt={branch.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-45 transition-opacity duration-300 pointer-events-none" />
-                </div>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
+            variants={staggerContainer(0.1)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {branches.slice(0, 4).map((branch) => (
+              <motion.div key={branch.id} variants={fadeUp} whileHover={{ y: -8, transition: springHover }}>
+                <Link
+                  href={`/branches?id=${branch.id}`}
+                  className="group rounded-3xl border border-zinc-200/80 overflow-hidden hover:border-orange-300 hover:shadow-2xl hover:shadow-orange-500/10 transition-[border-color,box-shadow] duration-500 flex flex-col bg-white cursor-pointer"
+                >
+                  {/* Storefront Image */}
+                  <div className="relative aspect-square w-full overflow-hidden bg-zinc-100">
+                    <Image
+                      src={resolveUploadUrl(branch.imageUrl || '/slideshow_3.jpg')}
+                      alt={branch.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-45 transition-opacity duration-300 pointer-events-none" />
+                  </div>
 
-                {/* Branch name footer strip with premium gradient */}
-                <div className="p-4 bg-gradient-to-r from-[#f07b22] to-orange-600 text-white text-center shadow-inner">
-                  <h3 className="font-extrabold text-xs sm:text-[13px] text-white tracking-wider uppercase line-clamp-2">
-                    EXPRESS CAFE - {branch.name}
-                  </h3>
-                </div>
-              </Link>
+                  {/* Branch name footer strip with premium gradient */}
+                  <div className="p-4 bg-gradient-to-r from-[#f07b22] to-orange-600 text-white text-center shadow-inner">
+                    <h3 className="font-extrabold text-xs sm:text-[13px] text-white tracking-wider uppercase line-clamp-2">
+                      EXPRESS CAFE - {branch.name}
+                    </h3>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>

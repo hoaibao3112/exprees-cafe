@@ -25,6 +25,20 @@ import { OptimizedImage } from '../../components/ui/OptimizedImage';
 
 const ARTICLES_PER_PAGE = 6;
 
+function stripHtmlAndEntities(html: string): string {
+  if (!html) return '';
+  let text = html.replace(/<[^>]*>/g, '');
+  text = text
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'");
+  return text.replace(/\s+/g, ' ').trim();
+}
+
 export default function BlogPage() {
   useScrollAnimation();
   const [activeCategory, setActiveCategory] = useState<string>('ALL');
@@ -197,10 +211,9 @@ export default function BlogPage() {
                               </h3>
                             </Link>
                             
-                            {/* Simple text excerpt */}
                             <p className="font-reading font-light text-zinc-500 text-sm leading-relaxed mt-3 line-clamp-3">
                               {article.contentHtml 
-                                ? article.contentHtml.replace(/<[^>]*>/g, '').slice(0, 140) + '...'
+                                ? stripHtmlAndEntities(article.contentHtml || '').slice(0, 140) + '...'
                                 : 'Tìm hiểu những chia sẻ hữu ích, thông tin chuyển giao mô hình xe cà phê và công thức pha chế...'
                               }
                             </p>

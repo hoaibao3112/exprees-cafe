@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ChevronDown, Sparkles, ArrowRight } from 'lucide-react';
 import { useBannersQuery } from '@/hooks/useContentQueries';
 import { resolveUploadUrl } from '@/lib/api';
+import { fadeUp, staggerContainer, springHover, springTap, EASE_PREMIUM } from '@/lib/motion';
 
 const SLIDES = [
   {
@@ -66,8 +68,8 @@ export function HeroSection() {
       alt: b.title,
       titleWhite: titleWords[0] || '',
       titleOrange: titleWords.slice(1).join(' ') || '',
-      subtitle: b.title.includes('Cold Brew') 
-        ? 'Thưởng thức hương vị cà phê ủ lạnh mộc mạc thanh mát' 
+      subtitle: b.title.includes('Cold Brew')
+        ? 'Thưởng thức hương vị cà phê ủ lạnh mộc mạc thanh mát'
         : 'Hương vị truyền thống kết hợp công nghệ hiện đại cùng Express Cafe',
       ctaLink: b.linkUrl || '/franchise/register'
     };
@@ -96,62 +98,91 @@ export function HeroSection() {
     setActiveSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
 
+  const slide = slides[activeSlide];
+  if (!slide) return null;
+
   return (
     <section className="relative w-full h-[400px] sm:h-[500px] md:h-[620px] bg-zinc-950 overflow-hidden group/slideshow">
-      {slides.map((slide, idx) => (
-        <div
-          key={idx}
-          className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${idx === activeSlide ? 'opacity-100 z-10 scale-100' : 'opacity-0 z-0 scale-105'}`}
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={activeSlide}
+          className="absolute inset-0 w-full h-full"
+          initial={{ opacity: 0, scale: 1.06 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          transition={{ duration: 1, ease: EASE_PREMIUM }}
         >
           <div className="absolute inset-0 w-full h-full">
-            <Image
-              src={slide.url}
-              alt={slide.alt}
-              fill
-              priority={idx === 0}
-              sizes="100vw"
-              className={`object-cover transition-transform duration-[8000ms] ${idx === activeSlide ? 'scale-110' : 'scale-100'}`}
-            />
+            <motion.div
+              className="absolute inset-0 w-full h-full"
+              initial={{ scale: 1 }}
+              animate={{ scale: 1.1 }}
+              transition={{ duration: 8, ease: 'linear' }}
+            >
+              <Image
+                src={slide.url}
+                alt={slide.alt}
+                fill
+                priority={activeSlide === 0}
+                sizes="100vw"
+                className="object-cover"
+              />
+            </motion.div>
           </div>
           {/* Enhanced Multi-layer Premium Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/60 pointer-events-none" />
           <div className="absolute inset-0 bg-black/10 pointer-events-none" />
 
-          {/* Premium Glassmorphic content layout */}
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4">
+          {/* Premium Glassmorphic content layout — stagger reveal */}
+          <motion.div
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center px-4"
+            variants={staggerContainer(0.15, 0.2)}
+            initial="hidden"
+            animate="show"
+          >
             <div className="max-w-3xl space-y-4">
               {/* Glassmorphic Badge */}
-              <div className={`transition-all duration-700 delay-300 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+              <motion.div variants={fadeUp}>
                 <span className="starburst-wrapper inline-flex items-center gap-1.5 rounded-full border border-orange-500/30 bg-orange-950/40 px-5 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-orange-400 backdrop-blur-md shadow-lg shadow-orange-950/20">
                   <Sparkles className="w-4 h-4 text-orange-400 animate-pulse" /> MỸ THUẬT RANG XAY & CÔNG NGHỆ SAAS
                 </span>
-              </div>
+              </motion.div>
 
-              {/* Responsive Title with glowing text shadow */}
-              <h1 className={`text-2xl sm:text-4xl md:text-6xl font-black uppercase leading-none drop-shadow-2xl tracking-wide transition-all duration-700 delay-500 transform ${
-                idx === activeSlide ? 'translate-y-0 opacity-100 animate-ink-bleed' : 'translate-y-4 opacity-0'
-              }`}>
+              {/* Responsive Title */}
+              <motion.h1
+                variants={fadeUp}
+                className="text-2xl sm:text-4xl md:text-6xl font-black uppercase leading-none drop-shadow-2xl tracking-wide"
+              >
                 <span className="text-white block sm:inline drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">{slide.titleWhite} </span>
                 <span className="text-[#f07b22] block sm:inline drop-shadow-[0_2px_15px_rgba(240,123,34,0.3)]">{slide.titleOrange}</span>
-              </h1>
+              </motion.h1>
 
-              <p className={`text-xs sm:text-sm md:text-base text-zinc-200/90 max-w-2xl mx-auto font-light leading-relaxed tracking-wide transition-all duration-700 delay-700 transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+              <motion.p
+                variants={fadeUp}
+                className="text-xs sm:text-sm md:text-base text-zinc-200/90 max-w-2xl mx-auto font-light leading-relaxed tracking-wide"
+              >
                 {slide.subtitle}
-              </p>
+              </motion.p>
 
               {/* Glowing CTA Button */}
-              <div className={`pt-4 transition-all duration-700 delay-[900ms] transform ${idx === activeSlide ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
-                <Link
-                  href={slide.ctaLink}
-                  className="spotlight-wrapper inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all shadow-xl shadow-orange-500/35 hover:scale-105 active:scale-95 hover:shadow-orange-500/50"
+              <motion.div variants={fadeUp} className="pt-4">
+                <motion.div
+                  className="inline-block"
+                  whileHover={{ scale: 1.05, transition: springHover }}
+                  whileTap={{ scale: 0.95, transition: springTap }}
                 >
-                  Đăng Ký Tư Vấn <ArrowRight className="w-4 h-4 animate-float-horizontal" />
-                </Link>
-              </div>
+                  <Link
+                    href={slide.ctaLink}
+                    className="spotlight-wrapper inline-flex items-center gap-2 px-8 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider rounded-full transition-colors shadow-xl shadow-orange-500/35 hover:shadow-orange-500/50"
+                  >
+                    Đăng Ký Tư Vấn <ArrowRight className="w-4 h-4 animate-float-horizontal" />
+                  </Link>
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
-        </div>
-      ))}
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
 
       {/* Down arrow scroll helper */}
       <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-1 select-none pointer-events-none">
@@ -160,18 +191,22 @@ export function HeroSection() {
       </div>
 
       {/* Prev/Next buttons */}
-      <button
+      <motion.button
         onClick={handlePrevSlide}
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-orange-500 text-white flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg transition-all opacity-0 group-hover/slideshow:opacity-100 hover:scale-105 active:scale-95"
+        whileHover={{ scale: 1.1, transition: springHover }}
+        whileTap={{ scale: 0.9, transition: springTap }}
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-orange-500 text-white flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg transition-colors opacity-0 group-hover/slideshow:opacity-100"
       >
         <ChevronLeft className="w-6 h-6" />
-      </button>
-      <button
+      </motion.button>
+      <motion.button
         onClick={handleNextSlide}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-orange-500 text-white flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg transition-all opacity-0 group-hover/slideshow:opacity-100 hover:scale-105 active:scale-95"
+        whileHover={{ scale: 1.1, transition: springHover }}
+        whileTap={{ scale: 0.9, transition: springTap }}
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/40 hover:bg-orange-500 text-white flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg transition-colors opacity-0 group-hover/slideshow:opacity-100"
       >
         <ChevronRight className="w-6 h-6" />
-      </button>
+      </motion.button>
 
       {/* Dots navigation */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-3">
@@ -185,8 +220,8 @@ export function HeroSection() {
       </div>
 
       <div className="hidden" aria-hidden="true">
-        {slides.map((slide, idx) => (
-          <img key={idx} src={slide.url} alt="preload" />
+        {slides.map((s, idx) => (
+          <img key={idx} src={s.url} alt="preload" />
         ))}
       </div>
     </section>

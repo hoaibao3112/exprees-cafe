@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
 import { useArticlesQuery } from '@/hooks/useContentQueries';
 import { resolveUploadUrl } from '@/lib/api';
+import { fadeUp, staggerContainer, springHover } from '@/lib/motion';
 
 const formatVietnameseDate = (dateStr?: string) => {
   if (!dateStr) return 'Thứ Ba 03/02/2026';
@@ -65,42 +67,47 @@ export function NewsSection() {
             <p className="text-sm text-zinc-400 mt-1">Nội dung đang được ban biên tập chuẩn bị.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogAndNewsArticles.slice(0, 3).map((article, idx) => (
-              <Link
-                key={article.id}
-                href={`/blog/${article.slug}`}
-                data-animate="fade-up"
-                data-delay={String((idx + 1) * 150)}
-                className="group rounded-3xl border border-zinc-200/80 overflow-hidden hover:border-orange-300 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 flex flex-col bg-white cursor-pointer"
-              >
-                {/* Card Image */}
-                <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-100">
-                  <Image
-                    src={resolveUploadUrl(article.imageUrl || 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=500&auto=format&fit=crop')}
-                    alt={article.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                </div>
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            variants={staggerContainer(0.15)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {blogAndNewsArticles.slice(0, 3).map((article) => (
+              <motion.div key={article.id} variants={fadeUp} whileHover={{ y: -8, transition: springHover }}>
+                <Link
+                  href={`/blog/${article.slug}`}
+                  className="group rounded-3xl border border-zinc-200/80 overflow-hidden hover:border-orange-300 hover:shadow-2xl hover:shadow-orange-500/10 transition-[border-color,box-shadow] duration-500 flex flex-col bg-white cursor-pointer h-full"
+                >
+                  {/* Card Image */}
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-100">
+                    <Image
+                      src={resolveUploadUrl(article.imageUrl || 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=500&auto=format&fit=crop')}
+                      alt={article.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                  </div>
 
-                {/* Card Content with Orange gradient background */}
-                <div className="p-6 bg-gradient-to-br from-[#f07b22] to-orange-600 text-white flex-1 flex flex-col justify-between shadow-inner">
-                  <div>
-                    <h3 className="font-bold text-[14px] sm:text-[15px] text-white leading-snug tracking-wide uppercase line-clamp-3 mb-4 min-h-[64px] group-hover:text-zinc-100 transition-colors">
-                      {article.title}
-                    </h3>
+                  {/* Card Content with Orange gradient background */}
+                  <div className="p-6 bg-gradient-to-br from-[#f07b22] to-orange-600 text-white flex-1 flex flex-col justify-between shadow-inner">
+                    <div>
+                      <h3 className="font-bold text-[14px] sm:text-[15px] text-white leading-snug tracking-wide uppercase line-clamp-3 mb-4 min-h-[64px] group-hover:text-zinc-100 transition-colors">
+                        {article.title}
+                      </h3>
+                    </div>
+                    <div className="text-zinc-100 text-[11px] sm:text-xs font-semibold tracking-wider flex items-center gap-1.5 border-t border-white/10 pt-4">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {formatVietnameseDate(article.publishedAt || article.createdAt)}
+                    </div>
                   </div>
-                  <div className="text-zinc-100 text-[11px] sm:text-xs font-semibold tracking-wider flex items-center gap-1.5 border-t border-white/10 pt-4">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {formatVietnameseDate(article.publishedAt || article.createdAt)}
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
