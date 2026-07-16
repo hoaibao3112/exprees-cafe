@@ -288,7 +288,11 @@ export default function BranchDetailPage(props: { params: Promise<{ id: string }
                 </div>
                 <div>
                   <h3 className="font-bold text-zinc-900 mb-1">Giờ hoạt động</h3>
-                  <p className="text-sm text-zinc-500 leading-relaxed">{branch.openTime}</p>
+                  <p className="text-sm text-zinc-500 leading-relaxed">
+                    {(branch as any).openingHours
+                      ? `${(branch as any).openingHours.open} – ${(branch as any).openingHours.close}`
+                      : branch.openTime || '07:00 – 17:00'}
+                  </p>
                 </div>
               </div>
             </div>

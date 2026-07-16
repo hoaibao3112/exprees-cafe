@@ -53,11 +53,11 @@ export class BranchesService implements OnApplicationBootstrap {
           phone: '0909666792',
           openingHours: {
             open: branch.description.includes('Giờ hoạt động')
-              ? branch.description.split('Giờ hoạt động:')[1]?.split('-')[0]?.trim() || '6h30'
-              : '6h30',
+              ? branch.description.split('Giờ hoạt động:')[1]?.split('-')[0]?.trim() || '07:00'
+              : '07:00',
             close: branch.description.includes('Giờ hoạt động')
-              ? branch.description.split('Giờ hoạt động:')[1]?.split('-')[1]?.trim() || '22h30'
-              : '22h30'
+              ? branch.description.split('Giờ hoạt động:')[1]?.split('-')[1]?.trim() || '17:00'
+              : '17:00'
           },
           status: 'ACTIVE',
           isFlagship: false,
@@ -79,7 +79,7 @@ export class BranchesService implements OnApplicationBootstrap {
           "phone": "0909666792",
           "openingHours": {
             "open": "07:00",
-            "close": "22:00"
+            "close": "17:00"
           },
           "status": "ACTIVE",
           "isFlagship": false,
@@ -109,7 +109,7 @@ export class BranchesService implements OnApplicationBootstrap {
     branch.lat = pos.latitude ? Number(pos.latitude) : 10.7769; 
     branch.lng = pos.longitude ? Number(pos.longitude) : 106.7009; 
     branch.phone = '0909666792'; 
-    branch.openingHours = { open: '06:30', close: '22:30' }; 
+    branch.openingHours = { open: '07:00', close: '17:00' }; 
     branch.status = pos.is_active ? 'ACTIVE' : 'INACTIVE';
     branch.isFlagship = pos.type === 'MAIN'; 
     branch.imageUrl = null as any;
