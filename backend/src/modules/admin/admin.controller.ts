@@ -152,6 +152,13 @@ export class AdminController {
     return this.adminService.toggleBranchStatus(id);
   }
 
+  @Public()
+  @Get('settings/public')
+  @ApiOperation({ summary: 'Get public site settings' })
+  getPublicSettings() {
+    return this.adminService.getSettings();
+  }
+
   @Get('settings')
   @ApiOperation({ summary: 'Get site settings' })
   getSettings() {

@@ -4,11 +4,14 @@ import { type FC, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone } from 'lucide-react';
+import { useSettingsQuery } from '@/hooks/useSettingsQueries';
+import { resolveAssetUrl } from '@/lib/api-config';
 
 export const Footer: FC = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
+  const { data: settings } = useSettingsQuery();
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,10 +79,10 @@ export const Footer: FC = () => {
             <div className="text-right lg:text-left">
               <span className="font-body font-semibold tracking-widest uppercase text-[10px] text-zinc-400 block">Hotline hỗ trợ</span>
               <a 
-                href="tel:0362077399" 
+                href={`tel:${settings?.contactPhone?.replace(/\s+/g, '') || '0362077399'}`} 
                 className="font-body font-bold text-base text-red-500 hover:text-red-600 transition-colors tracking-wide block mt-0.5"
               >
-                0362 077 399
+                {settings?.contactPhone || '0362 077 399'}
               </a>
             </div>
           </div>
@@ -95,8 +98,8 @@ export const Footer: FC = () => {
           <div className="md:col-span-5 flex flex-col gap-5" data-animate="fade-up">
             <div className="relative w-[130px] h-[38px] mb-1">
               <Image
-                src="/logo.png?v=3"
-                alt="Express Cafe Logo"
+                src={settings?.logoUrl ? resolveAssetUrl(settings.logoUrl) : '/logo.png?v=3'}
+                alt={`${settings?.brandName || 'Express Cafe'} Logo`}
                 fill
                 className="object-contain"
               />
@@ -107,7 +110,7 @@ export const Footer: FC = () => {
             {/* Social Icons */}
             <div className="flex items-center gap-3">
               <a 
-                href="https://www.facebook.com/aizenworlds" 
+                href={settings?.facebookUrl || 'https://www.facebook.com/aizenworlds'} 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-9 h-9 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center rounded-full transition-all shadow-md shadow-orange-500/10"
@@ -118,7 +121,7 @@ export const Footer: FC = () => {
                 </svg>
               </a>
               <a 
-                href="https://www.youtube.com/@AIZEN.OFFICIAL12" 
+                href={settings?.youtubeUrl || 'https://www.youtube.com/@AIZEN.OFFICIAL12'} 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-9 h-9 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center rounded-full transition-all shadow-md shadow-orange-500/10"
@@ -129,7 +132,7 @@ export const Footer: FC = () => {
                 </svg>
               </a>
               <a 
-                href="https://tiktok.com" 
+                href={settings?.tiktokUrl || 'https://tiktok.com'} 
                 target="_blank" 
                 rel="noreferrer" 
                 className="w-9 h-9 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white flex items-center justify-center rounded-full transition-all shadow-md shadow-orange-500/10"
@@ -205,19 +208,19 @@ export const Footer: FC = () => {
               <li className="flex items-start gap-1.5 leading-relaxed">
                 <span className="text-zinc-300 shrink-0">—</span>
                 <span>
-                  <strong className="text-zinc-800 font-medium font-body">Địa chỉ:</strong> 112 Lý Phục Man, Phường Tân Thuận, Quận 7, Thành phố Hồ Chí Minh
+                  <strong className="text-zinc-800 font-medium font-body">Địa chỉ:</strong> {settings?.address || '112 Lý Phục Man, Phường Tân Thuận, Quận 7, Thành phố Hồ Chí Minh'}
                 </span>
               </li>
               <li className="flex items-center gap-1.5">
                 <span className="text-zinc-300 shrink-0">—</span>
                 <span>
-                  <strong className="text-zinc-800 font-medium font-body">Điện thoại:</strong> 0362 077 399
+                  <strong className="text-zinc-800 font-medium font-body">Điện thoại:</strong> {settings?.contactPhone || '0362 077 399'}
                 </span>
               </li>
               <li className="flex items-center gap-1.5">
                 <span className="text-zinc-300 shrink-0">—</span>
                 <span>
-                  <strong className="text-zinc-800 font-medium font-body">Email:</strong> info@aizenworld.com
+                  <strong className="text-zinc-800 font-medium font-body">Email:</strong> {settings?.contactEmail || 'info@aizenworld.com'}
                 </span>
               </li>
             </ul>
@@ -238,7 +241,7 @@ export const Footer: FC = () => {
       <div className="w-full border-t border-zinc-100 py-6 bg-zinc-50" data-animate="fade-up" data-delay="400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="font-reading font-light text-sm text-zinc-400">
-            Copyright © 2026 Express Cafe. Designed by Aizen World
+            Copyright © {new Date().getFullYear()} {settings?.brandName || 'Express Cafe'}. Designed by Aizen World
           </p>
         </div>
       </div>

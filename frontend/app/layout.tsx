@@ -17,10 +17,30 @@ const lora = Lora({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: 'Express Cafe | Premium F&B SaaS & Franchise Management',
-  description: 'Manage sales, customers, loyalty rewards, and franchise networks with ultimate speed and premium experience.',
-};
+import { API_BASE_URL } from '@/lib/api-config';
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/admin/settings/public`, {
+      next: { revalidate: 300 }
+    });
+    if (!res.ok) throw new Error('Failed to fetch settings');
+    const responseJson = await res.json();
+    const settings = responseJson.data;
+
+    return {
+      title: settings.seoTitle || 'Express Cafe | Cà Phê Nguyên Chất & Nhượng Quyền 0đ',
+      description: settings.seoDescription || 'Express Cafe cung cấp giải pháp cà phê chất lượng cao và dịch vụ chu đáo.',
+      keywords: settings.seoKeywords || 'express cafe, ca phe sach, ca phe nguyen chat',
+    };
+  } catch (error) {
+    console.error('Error generating layout metadata:', error);
+    return {
+      title: 'Express Cafe | Premium F&B SaaS & Franchise Management',
+      description: 'Manage sales, customers, loyalty rewards, and franchise networks with ultimate speed and premium experience.',
+    };
+  }
+}
 
 export default function RootLayout({
   children,

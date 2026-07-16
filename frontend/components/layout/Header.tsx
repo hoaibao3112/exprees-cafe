@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Coffee } from 'lucide-react';
 import { fadeUp, staggerContainer, EASE_PREMIUM } from '@/lib/motion';
+import { useSettingsQuery } from '@/hooks/useSettingsQueries';
+import { resolveAssetUrl } from '@/lib/api-config';
 
 const NAV_ITEMS = [
   { label: 'GIỚI THIỆU', href: '/about', slug: 'about' },
@@ -22,6 +24,7 @@ export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { data: settings } = useSettingsQuery();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,8 +63,8 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2 group transition-transform duration-300 active:scale-95">
           <div className="relative w-[150px] h-[45px] sm:w-[170px] sm:h-[50px]">
             <Image
-              src="/logo.png?v=3"
-              alt="Express Cafe Logo"
+              src={settings?.logoUrl ? resolveAssetUrl(settings.logoUrl) : '/logo.png?v=3'}
+              alt={`${settings?.brandName || 'Express Cafe'} Logo`}
               fill
               className="object-contain"
               priority
@@ -143,7 +146,9 @@ export function Header() {
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-2 border-b pb-4">
                   <Coffee className="w-6 h-6 text-orange-500 animate-pulse" />
-                  <span className="font-heading italic text-2xl text-zinc-900">EXPRESS CAFE</span>
+                  <span className="font-heading italic text-2xl text-zinc-900">
+                    {settings?.brandName || 'EXPRESS CAFE'}
+                  </span>
                 </div>
 
                 <motion.nav
